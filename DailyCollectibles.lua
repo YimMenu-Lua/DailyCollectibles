@@ -1,4 +1,5 @@
-require ("Coords")
+require("Coords")
+require("VehicleNames")
 
 daily_collectibles_tab = gui.get_tab("Daily Collectibles")
 
@@ -35,6 +36,12 @@ local is_hidden_cache_collected = {}
 local is_treasure_chest_collected = {}
 local is_buried_stash_collected = {}
 
+local vehicle_location
+local vehicle_index
+local vehicle_order
+local vehicle_bitset
+local delivered_vehicles
+
 function format_text(format, ...)
     local formatted_text = string.format(format, ...)
     ImGui.Text(formatted_text)
@@ -61,6 +68,78 @@ function get_safe_code()
 	end
 
 	return "unavailable"
+end
+
+function get_vehicle_name(order_number)
+    local offset = (globals.get_int(1950529 + order_number) + 1)
+
+    for i = 1, #vehicle_names do
+        if (globals.get_int(1950518 + offset) % (2^32)) == joaat(vehicle_names[i]) then
+            return vehicle_display_names[i]
+        end
+    end
+
+    return "Unavailable"
+end
+
+function count_delivered_vehicles(delivered_bs)
+    delivered_count = 0
+    for i = 0, 10 do
+        if ((delivered_bs & (1 << i)) ~= 0) then
+            delivered_count = delivered_count + 1
+        end
+    end
+    return delivered_count
+end
+
+function second_part(is_second)
+	if is_second == joaat("asbo") then return false
+	elseif is_second == joaat("brioso") then return false
+	elseif is_second == joaat("buccaneer2") then return false
+	elseif is_second == joaat("dominator3") then return false
+	elseif is_second == joaat("elegy") then return false
+	elseif is_second == joaat("brawler") then return false
+	elseif is_second == joaat("flashgt") then return false
+	elseif is_second == joaat("gauntlet4") then return false
+	elseif is_second == joaat("issi3") then return false
+	elseif is_second == joaat("jugular") then return false
+	elseif is_second == joaat("kamacho") then return false
+	elseif is_second == joaat("komoda") then return false
+	elseif is_second == joaat("nightshade") then return false
+	elseif is_second == joaat("peyote3") then return false
+	elseif is_second == joaat("phoenix") then return false
+	elseif is_second == joaat("raiden") then return false
+	elseif is_second == joaat("retinue") then return false
+	elseif is_second == joaat("rocoto") then return false
+	elseif is_second == joaat("ruiner") then return false
+	elseif is_second == joaat("sabregt2") then return false
+	elseif is_second == joaat("savestra") then return false
+	elseif is_second == joaat("chino2") then return false
+	elseif is_second == joaat("cheburek") then return false
+	elseif is_second == joaat("cavalcade") then return false
+	elseif is_second == joaat("buffalo2") then return false
+	elseif is_second == joaat("alpha") then return false
+	elseif is_second == joaat("kanjo") then return false
+	elseif is_second == joaat("kuruma") then return false
+	elseif is_second == joaat("sentinel3") then return false
+	elseif is_second == joaat("sultan2") then return false
+	elseif is_second == joaat("yosemite2") then return false
+	elseif is_second == joaat("z190") then return false
+	elseif is_second == joaat("jackal") then return false
+	elseif is_second == joaat("vstr") then return false
+	elseif is_second == joaat("vagrant") then return false
+	elseif is_second == joaat("vamos") then return false
+	elseif is_second == joaat("tampa2") then return false
+	elseif is_second == joaat("tornado5") then return false
+	elseif is_second == joaat("tropos") then return false
+	elseif is_second == joaat("tulip") then return false
+	end
+	
+	return true
+end
+
+function get_vehicle_order()
+	return globals.get_int(1950518 + vehicle_order)
 end
 
 script.register_looped("UpdateLocations", function (script)
@@ -113,6 +192,14 @@ script.register_looped("UpdateStates", function (script)
 	is_treasure_chest_collected[2] = stats.get_packed_stat_bool(30308)
 	is_buried_stash_collected[1] = stats.get_packed_stat_bool(25522)
 	is_buried_stash_collected[2] = stats.get_packed_stat_bool(25523)
+end)
+
+script.register_looped("ExoticExports", function (script)
+	vehicle_location = globals.get_int(1890378 + 287 + 1)
+	vehicle_index = globals.get_int(1890378 + 287)
+	vehicle_order = (globals.get_int(1950529 + vehicle_index + 1) + 1)
+	vehicle_bitset = stats.get_int("MPX_CBV_DELIVERED_BS")
+	delivered_vehicles = count_delivered_vehicles(vehicle_bitset)
 end)
 
 dead_drop_tab:add_imgui(function()
@@ -215,8 +302,40 @@ buried_stash_tab:add_imgui(function()
 	end
 end)
 
-exotic_exports_tab:add_imgui(function()
+exotic_exports_tab:add_imgui(function()	
+	format_text("Vehicle Index: %d", vehicle_index)
+	format_text("Vehicles Delivered: %d", delivered_vehicles)
 
+	if ImGui.Button("Teleport to Vehicle") then
+		if vehicle_location ~= -1 then
+			teleport(exotic_export_coords(vehicle_location, second_part(get_vehicle_order())))
+		else
+			gui.show_message("Daily Collectibles", "Please wait until the next Exotic Exports Vehicle is spawned (90 seconds).")
+		end
+	end
+
+	ImGui.SameLine()
+
+	if ImGui.Button("Deliver Vehicle") then
+		if HUD.DOES_BLIP_EXIST(780) then
+			teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+		else
+			gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+		end
+	end
+
+	ImGui.Text("Today's list:")
+	
+	format_text("1 - %s", get_vehicle_name(1))
+	format_text("2 - %s", get_vehicle_name(2))
+	format_text("3 - %s", get_vehicle_name(3))
+	format_text("4 - %s", get_vehicle_name(4))
+	format_text("5 - %s", get_vehicle_name(5))
+	format_text("6 - %s", get_vehicle_name(6))
+	format_text("7 - %s", get_vehicle_name(7))
+	format_text("8 - %s", get_vehicle_name(8))
+	format_text("9 - %s", get_vehicle_name(9))
+	format_text("10 - %s", get_vehicle_name(10))
 end)
 
 time_trials_tab:add_imgui(function()
