@@ -66,20 +66,14 @@ function get_safe_code()
 	return "unavailable"
 end
 
-function get_vehicle_name(order_number, get_model_name)
-    local offset = (globals.get_int(1950529 + order_number) + 1)
-
-    for i = 1, #vehicle_names do
-        if (globals.get_int(1950518 + offset) % (2^32)) == joaat(vehicle_names[i]) then
-            if get_model_name then
-				return vehicle_names[i]
-			else
-				return vehicle_display_names[i]
-			end
-        end
-    end
-
-    return "Unavailable"
+function get_vehicle_name(order_number, return_joaat)
+    local offset = globals.get_int(1950529 + order_number) + 1
+	local vehicle_joaat = globals.get_int(1950518 + offset) % (2^32)
+	if return_joaat == true then
+		return vehicle_joaat
+	else
+		return vehicles.get_vehicle_display_name(vehicle_joaat)
+	end
 end
 
 function count_delivered_vehicles(delivered_bs)
@@ -328,7 +322,7 @@ exotic_exports_tab:add_imgui(function()
 	ImGui.Text("Today's list:")
 	
 	for i = 1, 10 do
-		if current_exotic_player_inside == joaat(get_vehicle_name(i, true)) then
+		if current_exotic_player_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
 			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (active)")
