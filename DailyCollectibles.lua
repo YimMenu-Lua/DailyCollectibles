@@ -1,5 +1,4 @@
 require("Coords")
-require("VehicleNames")
 
 daily_collectibles_tab = gui.get_tab("Daily Collectibles")
 
@@ -325,9 +324,19 @@ exotic_exports_tab:add_imgui(function()
 		if current_exotic_player_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
-			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (active)")
+			ImGui.TextColored(0, 0, 1, 1, get_vehicle_name(i, false) .. " (active)")
 		else
-			ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			if i == (vehicle_index + 1) then
+				ImGui.Text(i .. " -")
+				ImGui.SameLine()
+				ImGui.TextColored(0, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Looking For)")
+			elseif i <= delivered_vehicles then
+				ImGui.Text(i .. " -")
+				ImGui.SameLine()
+				ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Completed)")
+			else
+				ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			end
 		end
 	end
 end)
