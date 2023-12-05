@@ -68,7 +68,7 @@ end
 
 function get_vehicle_name(order_number, return_joaat)
     local offset = globals.get_int(1950529 + order_number) + 1
-	local vehicle_joaat = globals.get_uint(1950518 + offset) % (2^32)
+	local vehicle_joaat = globals.get_uint(1950518 + offset)
 	if return_joaat == true then
 		return vehicle_joaat
 	else
