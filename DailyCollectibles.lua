@@ -51,7 +51,7 @@ local all_products
 local vehicle_location
 local vehicle_index
 local vehicle_order
-local current_exotic_player_inside
+local current_vehicle_joaat_player_is_inside
 local vehicle_bitset
 local delivered_vehicles
 local exotic_reward_ready
@@ -188,7 +188,7 @@ function get_vehicle_order()
 	return globals.get_int(1950518 + vehicle_order)
 end
 
-script.register_looped("UpdateLocations", function (script)
+script.register_looped("Daily Collectables", function (script)
 	dead_drop_area = stats.get_packed_stat_int(41214)
 	dead_drop_loc = stats.get_packed_stat_int(41213)
 	stash_house_loc = stats.get_packed_stat_int(36623)
@@ -217,9 +217,6 @@ script.register_looped("UpdateLocations", function (script)
 	treasure_chest_loc[2] = stats.get_int("MPX_DAILYCOLLECTABLES_TREASURE1")
 	bruied_stash_loc[1] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH0")
 	bruied_stash_loc[2] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH1")
-end)
-
-script.register_looped("UpdateStates", function (script)
 	is_dead_drop_collected = stats.get_packed_stat_bool(36628)
 	is_stash_house_raided = stats.get_packed_stat_bool(36657)
 	safe_code = get_safe_code()
@@ -238,9 +235,6 @@ script.register_looped("UpdateStates", function (script)
 	is_treasure_chest_collected[2] = stats.get_packed_stat_bool(30308)
 	is_buried_stash_collected[1] = stats.get_packed_stat_bool(25522)
 	is_buried_stash_collected[2] = stats.get_packed_stat_bool(25523)
-end)
-
-script.register_looped("StreetDealers", function (script)
 	dealer_loc[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10))
 	dealer_loc[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10))
 	dealer_loc[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10))
@@ -262,13 +256,14 @@ script.register_looped("StreetDealers", function (script)
 	max_acid = tunables.get_int(-1171794142)
 	total_products = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
 	all_products = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-end)
-
-script.register_looped("ExoticExports", function (script)
 	vehicle_location = globals.get_int(1890378 + 287 + 1)
 	vehicle_index = globals.get_int(1890378 + 287)
 	vehicle_order = (globals.get_int(1950529 + vehicle_index + 1) + 1)
-	current_exotic_player_inside = globals.get_uint(2794162 + 6822 + 3)
+	if PED.IS_PED_IN_ANY_VEHICLE(PLAYER.PLAYER_PED_ID(), 0) then
+		current_vehicle_joaat_player_is_inside = ENTITY.GET_ENTITY_MODEL(PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID()))
+	else
+		current_vehicle_joaat_player_is_inside = 0
+	end
 	vehicle_bitset = stats.get_int("MPX_CBV_DELIVERED_BS")
 	delivered_vehicles = count_delivered_vehicles(vehicle_bitset)
 	exotic_order_cooldown = globals.get_int(1956878 + 5653)
@@ -429,7 +424,7 @@ exotic_exports_tab:add_imgui(function()
 	ImGui.Text("Today's list:")
 	
 	for i = 1, 10 do
-		if current_exotic_player_inside == get_vehicle_name(i, true) then
+		if current_vehicle_joaat_player_is_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
 			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
