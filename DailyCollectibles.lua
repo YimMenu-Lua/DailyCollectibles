@@ -1,5 +1,4 @@
 require("Coords")
-require("VehicleNames")
 
 daily_collectibles_tab = gui.get_tab("Daily Collectibles")
 
@@ -14,6 +13,7 @@ buried_stash_tab = daily_collectibles_tab:add_tab("Buried Stashes")
 exotic_exports_tab = daily_collectibles_tab:add_tab("Exotic Exports")
 time_trials_tab = daily_collectibles_tab:add_tab("Time Trials")
 
+local selected_dealer = 0
 local selected_cache = 0
 local selected_skydive = 0
 local selected_treasure = 0
@@ -36,6 +36,18 @@ local is_hidden_cache_collected = {}
 local is_treasure_chest_collected = {}
 local is_buried_stash_collected = {}
 
+local dealer_loc = {}
+local meth_unit = {}
+local weed_unit = {}
+local cocaine_unit = {}
+local acid_unit = {}
+local max_cocaine
+local max_meth
+local max_weed
+local max_acid
+local total_products
+local all_products
+
 local vehicle_location
 local vehicle_index
 local vehicle_order
@@ -43,10 +55,21 @@ local current_exotic_player_inside
 local vehicle_bitset
 local delivered_vehicles
 
+--https://stackoverflow.com/questions/10989788/format-integer-in-lua
+function format_int(number)
+  local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+  int = int:reverse():gsub("(%d%d%d)", "%1,")
+  return minus .. int:reverse():gsub("^,", "") .. fraction
+end
+
 function teleport(coords)
 	script.run_in_fiber(function (script)
 		PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
 	end)
+end
+
+function is_freemode_active()
+	return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("freemode")) ~= 0
 end
 
 function get_safe_code()
@@ -188,6 +211,30 @@ script.register_looped("UpdateStates", function (script)
 	is_buried_stash_collected[2] = stats.get_packed_stat_bool(25523)
 end)
 
+script.register_looped("StreetDealers", function (script)
+	dealer_loc[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10))
+	dealer_loc[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10))
+	dealer_loc[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10))
+	meth_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
+	meth_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
+	meth_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
+	weed_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
+	weed_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
+	weed_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
+	cocaine_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
+	cocaine_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
+	cocaine_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
+	acid_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
+	acid_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
+	acid_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
+	max_cocaine = tunables.get_int(1238316723)
+	max_meth = tunables.get_int(658190943)
+	max_weed = tunables.get_int(803541362)
+	max_acid = tunables.get_int(-1171794142)
+	total_products = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
+	all_products = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
+end)
+
 script.register_looped("ExoticExports", function (script)
 	vehicle_location = globals.get_int(1890378 + 287 + 1)
 	vehicle_index = globals.get_int(1890378 + 287)
@@ -204,7 +251,11 @@ dead_drop_tab:add_imgui(function()
 	
 	if ImGui.Button("Teleport##dead_drop") then
 		if is_dead_drop_collected == false then
-			teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
+			if is_freemode_active() then
+				teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
+			else
+				gui.show_message("Daily Collectibles", "G's Cache is not available at the moment.")
+			end
 		else
 			gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
 		end
@@ -226,7 +277,23 @@ stash_house_tab:add_imgui(function()
 end)
 
 street_dealer_tab:add_imgui(function()
+	ImGui.Text("Location: " .. dealer_loc[selected_dealer + 1])
 
+	selected_dealer = ImGui.Combo("Select Dealer", selected_dealer, { "1", "2", "3" }, 3)
+	
+	if ImGui.Button("Teleport##street_dealer") then
+		teleport(street_dealer_coords(dealer_loc[selected_dealer + 1]))
+	end
+	
+	ImGui.Text("Weed: $" .. format_int(max_weed * weed_unit[selected_dealer + 1]) .. " (" .. format_int(max_weed) .. " unit * " .. format_int(weed_unit[selected_dealer + 1]) .. ")")
+	ImGui.Text("Meth: $" .. format_int(max_meth * meth_unit[selected_dealer + 1]) .. " (" .. format_int(max_meth) .. " unit * " .. format_int(meth_unit[selected_dealer + 1]) .. ")")
+	ImGui.Text("Cocaine: $" .. format_int(max_cocaine * cocaine_unit[selected_dealer + 1]) .. " (" .. format_int(max_cocaine) .. " unit * " .. format_int(cocaine_unit[selected_dealer + 1]) .. ")")
+	ImGui.Text("Acid: $" .. format_int(max_acid * acid_unit[selected_dealer + 1]) .. " (" .. format_int(max_acid) .. " unit * " .. format_int(acid_unit[selected_dealer + 1]) .. ")")
+	ImGui.Text("Total: $" .. format_int(total_products))
+	
+	ImGui.Separator()
+	
+	ImGui.Text("All: $" .. format_int(all_products))
 end)
 
 shipwrecked_tab:add_imgui(function()
