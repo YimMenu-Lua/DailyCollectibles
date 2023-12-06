@@ -251,11 +251,7 @@ dead_drop_tab:add_imgui(function()
 	
 	if ImGui.Button("Teleport##dead_drop") then
 		if is_dead_drop_collected == false then
-			if is_freemode_active() then
-				teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
-			else
-				gui.show_message("Daily Collectibles", "G's Cache is not available at the moment.")
-			end
+			teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
 		else
 			gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
 		end
