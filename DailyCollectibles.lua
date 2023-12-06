@@ -48,6 +48,33 @@ function teleport(coords)
 	end)
 end
 
+function spawn_vehicle(vehicle_joaat)
+	script.run_in_fiber(function (script)
+		local load_counter = 0
+		while STREAMING.HAS_MODEL_LOADED(vehicle_joaat) == false do
+			STREAMING.REQUEST_MODEL(vehicle_joaat);
+			script.yield();
+			if load_counter > 100 then
+				return
+			else
+				load_counter = load_counter + 1
+			end
+		end
+		local laddie = PLAYER.PLAYER_PED_ID()
+		local location = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+		local veh = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(laddie), true, false, false)
+		STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+		DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+		local networkId = NETWORK.VEH_TO_NET(veh)
+		if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+			NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true)
+		end
+		VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+		PED.SET_PED_INTO_VEHICLE(laddie, veh, -1)
+		ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
+	end)
+end
+
 function get_safe_code()
 	code = locals.get_int("fm_content_stash_house", 3385 + 526 + 13)
 	if code == 0 then return "05-02-91"
@@ -297,7 +324,7 @@ buried_stash_tab:add_imgui(function()
 end)
 
 exotic_exports_tab:add_imgui(function()	
-	ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
+	--ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
 	ImGui.Text("Vehicles Delivered: " .. delivered_vehicles)
 
 	if ImGui.Button("Teleport to Vehicle") then
@@ -317,6 +344,10 @@ exotic_exports_tab:add_imgui(function()
 			gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
 		end
 	end
+	
+	if ImGui.Button("Spawn Next Car") then
+		spawn_vehicle(get_vehicle_name(delivered_vehicles + 1, true))
+	end
 
 	ImGui.Text("Today's list:")
 	
@@ -324,9 +355,9 @@ exotic_exports_tab:add_imgui(function()
 		if current_exotic_player_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
-			ImGui.TextColored(0, 0, 1, 1, get_vehicle_name(i, false) .. " (active)")
+			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
 		else
-			if i == (vehicle_index + 1) then
+			if i == (delivered_vehicles + 1) then
 				ImGui.Text(i .. " -")
 				ImGui.SameLine()
 				ImGui.TextColored(0, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Looking For)")
