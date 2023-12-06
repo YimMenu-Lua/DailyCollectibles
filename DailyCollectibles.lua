@@ -130,7 +130,7 @@ end
 
 function count_delivered_vehicles(delivered_bs)
     delivered_count = 0
-    for i = 0, 10 do
+    for i = 0, 9 do
         if has_bit_set(delivered_bs, i) then
             delivered_count = delivered_count + 1
         end
