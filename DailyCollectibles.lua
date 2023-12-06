@@ -54,6 +54,7 @@ local vehicle_order
 local current_exotic_player_inside
 local vehicle_bitset
 local delivered_vehicles
+local exotic_reward_ready
 
 --https://stackoverflow.com/questions/10989788/format-integer-in-lua
 function format_int(number)
@@ -71,6 +72,34 @@ end
 function is_freemode_active()
 	return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("freemode")) ~= 0
 end
+
+function spawn_vehicle(vehicle_joaat)
+	script.run_in_fiber(function (script)
+		local load_counter = 0
+		while STREAMING.HAS_MODEL_LOADED(vehicle_joaat) == false do
+			STREAMING.REQUEST_MODEL(vehicle_joaat);
+			script.yield();
+			if load_counter > 100 then
+				return
+			else
+				load_counter = load_counter + 1
+			end
+		end
+		local laddie = PLAYER.PLAYER_PED_ID()
+		local location = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+		local veh = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(laddie), true, false, false)
+		STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+		DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+		local networkId = NETWORK.VEH_TO_NET(veh)
+		if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+			NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true)
+		end
+		VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+		PED.SET_PED_INTO_VEHICLE(laddie, veh, -1)
+		ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
+	end)
+end
+
 
 function get_safe_code()
 	code = locals.get_int("fm_content_stash_house", 3385 + 526 + 13)
@@ -242,6 +271,8 @@ script.register_looped("ExoticExports", function (script)
 	current_exotic_player_inside = globals.get_uint(2794162 + 6822 + 3)
 	vehicle_bitset = stats.get_int("MPX_CBV_DELIVERED_BS")
 	delivered_vehicles = count_delivered_vehicles(vehicle_bitset)
+	exotic_order_cooldown = globals.get_int(1956878 + 5653)
+	exotic_reward_ready = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
 end)
 
 dead_drop_tab:add_imgui(function()
@@ -361,8 +392,9 @@ buried_stash_tab:add_imgui(function()
 end)
 
 exotic_exports_tab:add_imgui(function()	
-	ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
+	--ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
 	ImGui.Text("Vehicles Delivered: " .. delivered_vehicles)
+	ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
 
 	if ImGui.Button("Teleport to Vehicle") then
 		if vehicle_location ~= -1 then
@@ -375,11 +407,23 @@ exotic_exports_tab:add_imgui(function()
 	ImGui.SameLine()
 
 	if ImGui.Button("Deliver Vehicle") then
-		if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
-			teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+		if exotic_reward_ready == false then
+			gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
 		else
-			gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+			script.run_in_fiber(function (script)
+				local blip_id = HUD.GET_FIRST_BLIP_INFO_ID(780)
+				if HUD.DOES_BLIP_EXIST(blip_id) then
+					local coords = HUD.GET_BLIP_COORDS(blip_id)
+					PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
+				else
+					gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+				end
+			end)
 		end
+	end
+	
+	if ImGui.Button("Spawn Next Vehicle") then
+		spawn_vehicle(get_vehicle_name(delivered_vehicles + 1, true))
 	end
 
 	ImGui.Text("Today's list:")
@@ -388,9 +432,19 @@ exotic_exports_tab:add_imgui(function()
 		if current_exotic_player_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
-			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (active)")
+			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
 		else
-			ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			if i == (delivered_vehicles + 1) then
+				ImGui.Text(i .. " -")
+				ImGui.SameLine()
+				ImGui.TextColored(0, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Looking For)")
+			elseif i <= delivered_vehicles then
+				ImGui.Text(i .. " -")
+				ImGui.SameLine()
+				ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Completed)")
+			else
+				ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			end
 		end
 	end
 end)
