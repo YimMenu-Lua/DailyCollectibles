@@ -73,6 +73,10 @@ function is_freemode_active()
 	return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("freemode")) ~= 0
 end
 
+function has_bit_set(address, pos)
+	return (address & (1 << pos)) ~= 0
+end
+
 function spawn_vehicle(vehicle_joaat)
 	script.run_in_fiber(function (script)
 		local load_counter = 0
@@ -418,7 +422,12 @@ exotic_exports_tab:add_imgui(function()
 	end
 	
 	if ImGui.Button("Spawn Next Vehicle") then
-		spawn_vehicle(get_vehicle_name(delivered_vehicles + 1, true))
+		for i = 1, 10 do
+			if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) == false then
+				spawn_vehicle(get_vehicle_name(i, true))
+				return
+			end
+		end
 	end
 
 	ImGui.Text("Today's list:")
@@ -429,11 +438,7 @@ exotic_exports_tab:add_imgui(function()
 			ImGui.SameLine()
 			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
 		else
-			if i == (delivered_vehicles + 1) then
-				ImGui.Text(i .. " -")
-				ImGui.SameLine()
-				ImGui.TextColored(0, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Looking For)")
-			elseif i <= delivered_vehicles then
+			if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) then
 				ImGui.Text(i .. " -")
 				ImGui.SameLine()
 				ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Completed)")
