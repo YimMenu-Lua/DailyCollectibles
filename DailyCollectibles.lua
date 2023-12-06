@@ -51,9 +51,10 @@ local all_products
 local vehicle_location
 local vehicle_index
 local vehicle_order
-local current_exotic_player_inside
+local current_vehicle_joaat_player_is_inside
 local vehicle_bitset
 local delivered_vehicles
+local exotic_reward_ready
 
 --https://stackoverflow.com/questions/10989788/format-integer-in-lua
 function format_int(number)
@@ -71,6 +72,38 @@ end
 function is_freemode_active()
 	return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("freemode")) ~= 0
 end
+
+function has_bit_set(address, pos)
+	return (address & (1 << pos)) ~= 0
+end
+
+function spawn_vehicle(vehicle_joaat)
+	script.run_in_fiber(function (script)
+		local load_counter = 0
+		while STREAMING.HAS_MODEL_LOADED(vehicle_joaat) == false do
+			STREAMING.REQUEST_MODEL(vehicle_joaat);
+			script.yield();
+			if load_counter > 100 then
+				return
+			else
+				load_counter = load_counter + 1
+			end
+		end
+		local laddie = PLAYER.PLAYER_PED_ID()
+		local location = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
+		local veh = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(laddie), true, false, false)
+		STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+		DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+		local networkId = NETWORK.VEH_TO_NET(veh)
+		if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+			NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(networkId, true)
+		end
+		VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+		PED.SET_PED_INTO_VEHICLE(laddie, veh, -1)
+		ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
+	end)
+end
+
 
 function get_safe_code()
 	code = locals.get_int("fm_content_stash_house", 3385 + 526 + 13)
@@ -159,7 +192,7 @@ function get_vehicle_order()
 	return globals.get_int(1950518 + vehicle_order)
 end
 
-script.register_looped("UpdateLocations", function (script)
+script.register_looped("Daily Collectables", function (script)
 	dead_drop_area = stats.get_packed_stat_int(41214)
 	dead_drop_loc = stats.get_packed_stat_int(41213)
 	stash_house_loc = stats.get_packed_stat_int(36623)
@@ -188,9 +221,6 @@ script.register_looped("UpdateLocations", function (script)
 	treasure_chest_loc[2] = stats.get_int("MPX_DAILYCOLLECTABLES_TREASURE1")
 	bruied_stash_loc[1] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH0")
 	bruied_stash_loc[2] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH1")
-end)
-
-script.register_looped("UpdateStates", function (script)
 	is_dead_drop_collected = stats.get_packed_stat_bool(36628)
 	is_stash_house_raided = stats.get_packed_stat_bool(36657)
 	safe_code = get_safe_code()
@@ -209,9 +239,6 @@ script.register_looped("UpdateStates", function (script)
 	is_treasure_chest_collected[2] = stats.get_packed_stat_bool(30308)
 	is_buried_stash_collected[1] = stats.get_packed_stat_bool(25522)
 	is_buried_stash_collected[2] = stats.get_packed_stat_bool(25523)
-end)
-
-script.register_looped("StreetDealers", function (script)
 	dealer_loc[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10))
 	dealer_loc[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10))
 	dealer_loc[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10))
@@ -233,15 +260,18 @@ script.register_looped("StreetDealers", function (script)
 	max_acid = tunables.get_int(-1171794142)
 	total_products = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
 	all_products = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-end)
-
-script.register_looped("ExoticExports", function (script)
 	vehicle_location = globals.get_int(1890378 + 287 + 1)
 	vehicle_index = globals.get_int(1890378 + 287)
 	vehicle_order = (globals.get_int(1950529 + vehicle_index + 1) + 1)
-	current_exotic_player_inside = globals.get_uint(2794162 + 6822 + 3)
+	if PED.IS_PED_IN_ANY_VEHICLE(PLAYER.PLAYER_PED_ID(), 0) then
+		current_vehicle_joaat_player_is_inside = ENTITY.GET_ENTITY_MODEL(PED.GET_VEHICLE_PED_IS_IN(PLAYER.PLAYER_PED_ID()))
+	else
+		current_vehicle_joaat_player_is_inside = 0
+	end
 	vehicle_bitset = stats.get_int("MPX_CBV_DELIVERED_BS")
 	delivered_vehicles = count_delivered_vehicles(vehicle_bitset)
+	exotic_order_cooldown = globals.get_int(1956878 + 5653)
+	exotic_reward_ready = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
 end)
 
 dead_drop_tab:add_imgui(function()
@@ -361,8 +391,9 @@ buried_stash_tab:add_imgui(function()
 end)
 
 exotic_exports_tab:add_imgui(function()	
-	ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
+	--ImGui.Text("Vehicle Index: " .. (vehicle_index + 1))
 	ImGui.Text("Vehicles Delivered: " .. delivered_vehicles)
+	ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
 
 	if ImGui.Button("Teleport to Vehicle") then
 		if vehicle_location ~= -1 then
@@ -375,22 +406,45 @@ exotic_exports_tab:add_imgui(function()
 	ImGui.SameLine()
 
 	if ImGui.Button("Deliver Vehicle") then
-		if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
-			teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+		if exotic_reward_ready == false then
+			gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
 		else
-			gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+			script.run_in_fiber(function (script)
+				local blip_id = HUD.GET_FIRST_BLIP_INFO_ID(780)
+				if HUD.DOES_BLIP_EXIST(blip_id) then
+					local coords = HUD.GET_BLIP_COORDS(blip_id)
+					PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
+				else
+					gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+				end
+			end)
+		end
+	end
+	
+	if ImGui.Button("Spawn Next Vehicle") then
+		for i = 1, 10 do
+			if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) == false then
+				spawn_vehicle(get_vehicle_name(i, true))
+				return
+			end
 		end
 	end
 
 	ImGui.Text("Today's list:")
 	
 	for i = 1, 10 do
-		if current_exotic_player_inside == get_vehicle_name(i, true) then
+		if current_vehicle_joaat_player_is_inside == get_vehicle_name(i, true) then
 			ImGui.Text(i .. " -")
 			ImGui.SameLine()
-			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (active)")
+			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
 		else
-			ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) then
+				ImGui.Text(i .. " -")
+				ImGui.SameLine()
+				ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Completed)")
+			else
+				ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+			end
 		end
 	end
 end)
