@@ -69,10 +69,6 @@ function teleport(coords)
 	end)
 end
 
-function is_freemode_active()
-	return SCRIPT.GET_NUMBER_OF_THREADS_RUNNING_THE_SCRIPT_WITH_THIS_HASH(joaat("freemode")) ~= 0
-end
-
 function has_bit_set(address, pos)
 	return (address & (1 << pos)) ~= 0
 end
@@ -135,7 +131,7 @@ end
 function count_delivered_vehicles(delivered_bs)
     delivered_count = 0
     for i = 0, 10 do
-        if ((delivered_bs & (1 << i)) ~= 0) then
+        if has_bit_set(delivered_bs, i) then
             delivered_count = delivered_count + 1
         end
     end
