@@ -18,6 +18,7 @@ local selected_cache = 0
 local selected_skydive = 0
 local selected_treasure = 0
 local selected_stash = 0
+local selected_trial = 0
 
 local dead_drop_area
 local dead_drop_loc
@@ -26,7 +27,8 @@ local shipwrecked_loc
 local hidden_cache_loc = {}
 local junk_skydive_loc = {}
 local treasure_chest_loc = {}
-local bruied_stash_loc = {}
+local buried_stash_loc = {}
+local trial_loc = {}
 
 local is_dead_drop_collected
 local safe_code
@@ -185,7 +187,110 @@ function is_second_part(hash)
 end
 
 function get_vehicle_order()
-	return globals.get_int(1950518 + vehicle_order)
+	return globals.get_uint(1950518 + vehicle_order)
+end
+
+function get_challenge_time(skydive_location)
+	if skydive_location == 0 then return "00:40.00"
+	elseif skydive_location == 1 then return "00:40.00"
+	elseif skydive_location == 2 then return "00:45.00"
+	elseif skydive_location == 3 then return "01:25.00"
+	elseif skydive_location == 4 then return "01:45.00"
+	elseif skydive_location == 5 then return "01:35.00"
+	elseif skydive_location == 6 then return "01:10.00"
+	elseif skydive_location == 7 then return "00:40.00"
+	elseif skydive_location == 8 then return "02:50.00"
+	elseif skydive_location == 9 then return "02:50.00"
+	elseif skydive_location == 10 then return "02:00.00"
+	elseif skydive_location == 11 then return "01:55.00"
+	elseif skydive_location == 12 then return "01:25.00"
+	elseif skydive_location == 13 then return "01:20.00"
+	elseif skydive_location == 14 then return "02:15.00"
+	elseif skydive_location == 15 then return "01:30.00"
+	elseif skydive_location == 16 then return "01:30.00"
+	elseif skydive_location == 17 then return "01:47.00"
+	elseif skydive_location == 18 then return "01:40.00"
+	elseif skydive_location == 19 then return "01:50.00"
+	elseif skydive_location == 20 then return "01:50.00"
+	elseif skydive_location == 21 then return "01:35.00"
+	elseif skydive_location == 22 then return "01:55.00"
+	elseif skydive_location == 23 then return "01:50.00"
+	elseif skydive_location == 24 then return "01:25.00"
+	end
+
+	return "unavailable"
+end
+
+function get_par_time(trial_variant, trial_location)
+	if trial_variant == 0 then
+		if trial_location == 0 then return "01:43.20"
+		elseif trial_location == 1 then return "02:04.40"
+		elseif trial_location == 2 then return "02:04.90"
+		elseif trial_location == 3 then return "00:46.30"
+		elseif trial_location == 4 then return "04:09.50"
+		elseif trial_location == 5 then return "01:44.00"
+		elseif trial_location == 6 then return "00:38.50"
+		elseif trial_location == 7 then return "01:10.10"
+		elseif trial_location == 8 then return "02:15.00"
+		elseif trial_location == 9 then return "02:07.20"
+		elseif trial_location == 10 then return "01:41.30"
+		elseif trial_location == 11 then return "01:17.80"
+		elseif trial_location == 12 then return "00:58.80"
+		elseif trial_location == 13 then return "02:29.40"
+		elseif trial_location == 14 then return "01:00.00"
+		elseif trial_location == 15 then return "01:19.00"
+		elseif trial_location == 16 then return "01:43.40"
+		elseif trial_location == 17 then return "01:24.20"
+		elseif trial_location == 18 then return "02:58.80"
+		elseif trial_location == 19 then return "01:26.60"
+		elseif trial_location == 20 then return "01:16.60"
+		elseif trial_location == 21 then return "00:54.20"
+		elseif trial_location == 22 then return "01:40.00"
+		elseif trial_location == 23 then return "02:05.00"
+		elseif trial_location == 24 then return "02:00.00"
+		elseif trial_location == 25 then return "02:35.00"
+		elseif trial_location == 26 then return "01:20.00"
+		elseif trial_location == 27 then return "02:24.00"
+		elseif trial_location == 28 then return "02:16.00"
+		elseif trial_location == 29 then return "01:50.00"
+		elseif trial_location == 30 then return "01:26.00"
+		elseif trial_location == 31 then return "02:10.00"
+		end
+	elseif trial_variant == 1 then
+		if trial_location == 0 then return "01:50.00"
+		elseif trial_location == 1 then return "01:30.00"
+		elseif trial_location == 2 then return "01:20.00"
+		elseif trial_location == 3 then return "01:27.00"
+		elseif trial_location == 4 then return "01:10.00"
+		elseif trial_location == 5 then return "01:32.00"
+		elseif trial_location == 6 then return "02:05.00"
+		elseif trial_location == 7 then return "01:12.00"
+		elseif trial_location == 8 then return "01:53.00"
+		elseif trial_location == 9 then return "01:20.00"
+		elseif trial_location == 10 then return "01:23.00"
+		elseif trial_location == 11 then return "01:18.00"
+		elseif trial_location == 12 then return "01:27.00"
+		elseif trial_location == 13 then return "01:22.00"
+		end
+	elseif trial_variant == 2 then
+		if trial_location == 0 then return "02:20.00"
+		elseif trial_location == 1 then return "02:00.00"
+		elseif trial_location == 2 then return "01:55.00"
+		elseif trial_location == 3 then return "01:35.00"
+		elseif trial_location == 4 then return "02:10.00"
+		elseif trial_location == 5 then return "01:40.00"
+		elseif trial_location == 6 then return "02:00.00"
+		elseif trial_location == 7 then return "01:50.00"
+		elseif trial_location == 8 then return "01:35.00"
+		elseif trial_location == 9 then return "01:20.00"
+		elseif trial_location == 10 then return "01:50.00"
+		elseif trial_location == 11 then return "01:35.00"
+		elseif trial_location == 12 then return "02:10.00"
+		elseif trial_location == 13 then return "01:50.00"
+		end
+	end
+
+	return "unavailable"
 end
 
 script.register_looped("Daily Collectables", function (script)
@@ -215,8 +320,8 @@ script.register_looped("Daily Collectables", function (script)
 	junk_skydive_loc[10] = stats.get_int("MPX_DAILYCOLLECT_SKYDIVES9")
 	treasure_chest_loc[1] = stats.get_int("MPX_DAILYCOLLECTABLES_TREASURE0")
 	treasure_chest_loc[2] = stats.get_int("MPX_DAILYCOLLECTABLES_TREASURE1")
-	bruied_stash_loc[1] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH0")
-	bruied_stash_loc[2] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH1")
+	buried_stash_loc[1] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH0")
+	buried_stash_loc[2] = stats.get_int("MPX_DAILYCOLLECT_BURIEDSTASH1")
 	is_dead_drop_collected = stats.get_packed_stat_bool(36628)
 	is_stash_house_raided = stats.get_packed_stat_bool(36657)
 	safe_code = get_safe_code()
@@ -268,6 +373,9 @@ script.register_looped("Daily Collectables", function (script)
 	delivered_vehicles = count_delivered_vehicles(vehicle_bitset)
 	exotic_order_cooldown = globals.get_int(1956878 + 5653)
 	exotic_reward_ready = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
+	trial_loc[1] = tunables.get_int("TIMETRIALVARIATION")
+	trial_loc[2] = locals.get_int("freemode", 14109)
+	trial_loc[3] = locals.get_int("freemode", 14903 + 3)
 end)
 
 dead_drop_tab:add_imgui(function()
@@ -348,6 +456,7 @@ end)
 
 junk_skydive_tab:add_imgui(function()
 	ImGui.Text("Location: " .. junk_skydive_loc[selected_skydive + 1])
+	ImGui.Text("Challenge Time: " .. get_challenge_time(junk_skydive_loc[selected_skydive + 1]))
 	
 	selected_skydive = ImGui.Combo("Select Skydive", selected_skydive, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
 	
@@ -372,14 +481,14 @@ treasure_chest_tab:add_imgui(function()
 end)
 
 buried_stash_tab:add_imgui(function()
-	ImGui.Text("Location: " .. bruied_stash_loc[selected_stash + 1])
+	ImGui.Text("Location: " .. buried_stash_loc[selected_stash + 1])
 	ImGui.Text("Status: " .. (is_buried_stash_collected[selected_stash + 1] and "collected" or "ready"))
 	
 	selected_stash = ImGui.Combo("Select Stash", selected_stash, { "1", "2" }, 2)
 	
 	if ImGui.Button("Teleport##buried_stash") then
 		if is_buried_stash_collected[selected_stash + 1] == false then
-			teleport(buried_stash_coords(bruied_stash_loc[selected_stash + 1]))
+			teleport(buried_stash_coords(buried_stash_loc[selected_stash + 1]))
 		else
 			gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
 		end
@@ -446,5 +555,15 @@ exotic_exports_tab:add_imgui(function()
 end)
 
 time_trials_tab:add_imgui(function()
-
+	ImGui.Text("Location: " .. trial_loc[selected_trial + 1])
+	ImGui.Text("Par Time: " .. get_par_time(selected_trial, trial_loc[selected_trial + 1]))
+	
+	selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standart Time Trial", "RC Bandito Time Trial", "Junk Energy Time Trial" }, 3)
+	
+	if ImGui.Button("Teleport##trials") then
+		if selected_trial == 0 then teleport(standart_trial_coords(trial_loc[1]))
+		elseif selected_trial == 1 then teleport(rc_trial_coords(trial_loc[2]))
+		elseif selected_trial == 2 then teleport(bike_trial_coords(trial_loc[3]))
+		end
+	end
 end)
