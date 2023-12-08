@@ -473,6 +473,7 @@ function exotic_export_coords(location, part)
 		elseif location == 47 then return vec3:new(386.663, 2640.138, 43.493)
 		elseif location == 48 then return vec3:new(231.935, 1162.313, 224.464)
 		elseif location == 49 then return vec3:new(1700.445, 4937.267, 41.078)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	else
 		if location == 0 then return vec3:new(-582.454, -859.433, 25.034)
@@ -525,6 +526,7 @@ function exotic_export_coords(location, part)
 		elseif location == 47 then return vec3:new(387.275, -215.651, 55.835)
 		elseif location == 48 then return vec3:new(-1234.105, -1646.832, 3.129)
 		elseif location == 49 then return vec3:new(-1062.018, -226.736, 37.155)
+		else vec3:new(0.0, 0.0, 0.0)
 		end
 	end
 
