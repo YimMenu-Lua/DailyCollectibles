@@ -5,6 +5,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(1146.691, -703.717, 56.167)
 		elseif location == 3 then return vec3:new(1073.542, -678.236, 56.583)
 		elseif location == 4 then return vec3:new(1046.454, -722.915, 56.419)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 1 then
 		if location == 0 then return vec3:new(2064.713, 3489.88, 44.223)
@@ -12,6 +13,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(2014.72, 3551.499, 42.726)
 		elseif location == 3 then return vec3:new(1997.019, 3507.838, 39.666)
 		elseif location == 4 then return vec3:new(2045.597, 3564.346, 39.343)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 2 then
 		if location == 0 then return vec3:new(-1317.344, -1481.97, 3.923)
@@ -19,6 +21,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-1393.87, -1445.139, 3.437)
 		elseif location == 3 then return vec3:new(-1367.034, -1413.992, 2.611)
 		elseif location == 4 then return vec3:new(-1269.861, -1426.272, 3.556)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 3 then
 		if location == 0 then return vec3:new(-295.468, 2787.385, 59.864)
@@ -26,6 +29,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-329.193, 2803.404, 57.787)
 		elseif location == 3 then return vec3:new(-306.847, 2825.6, 58.219)
 		elseif location == 4 then return vec3:new(-336.046, 2829.988, 55.448)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 4 then
 		if location == 0 then return vec3:new(-1725.245, 233.946, 57.685)
@@ -33,6 +37,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-1648.48, 212.049, 59.777)
 		elseif location == 3 then return vec3:new(-1693.318, 156.665, 63.855)
 		elseif location == 4 then return vec3:new(-1699.193, 179.574, 63.185)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 5 then
 		if location == 0 then return vec3:new(-949.714, -710.658, 19.604)
@@ -40,6 +45,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-884.91, -786.863, 15.043)
 		elseif location == 3 then return vec3:new(-895.257, -729.943, 19.143)
 		elseif location == 4 then return vec3:new(-932.986, -746.452, 19.008)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 6 then
 		if location == 0 then return vec3:new(-425.948, 1213.342, 324.936)
@@ -47,6 +53,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-477.999, 1135.36, 320.123)
 		elseif location == 3 then return vec3:new(-431.822, 1119.449, 325.964)
 		elseif location == 4 then return vec3:new(-387.902, 1161.655, 324.529)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 7 then
 		if location == 0 then return vec3:new(-3381.278, 965.534, 7.426)
@@ -54,6 +61,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-3413.606, 961.845, 11.038)
 		elseif location == 3 then return vec3:new(-3419.585, 977.595, 11.167)
 		elseif location == 4 then return vec3:new(-3425.687, 961.215, 7.536)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 8 then
 		if location == 0 then return vec3:new(-688.732, 5828.4, 16.696)
@@ -61,6 +69,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(-710.348, 5769.631, 16.75)
 		elseif location == 3 then return vec3:new(-699.926, 5801.619, 16.504)
 		elseif location == 4 then return vec3:new(-660.359, 5781.733, 18.774)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 9 then
 		if location == 0 then return vec3:new(38.717, 6264.173, 32.88)
@@ -68,6 +77,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(97.17, 6288.558, 38.447)
 		elseif location == 3 then return vec3:new(14.453, 6243.932, 35.445)
 		elseif location == 4 then return vec3:new(67.52, 6261.744, 32.029)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 10 then
 		if location == 0 then return vec3:new(2954.598, 4671.458, 50.106)
@@ -75,6 +85,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(2945.212, 4624.044, 49.078)
 		elseif location == 3 then return vec3:new(2941.139, 4617.117, 52.114)
 		elseif location == 4 then return vec3:new(2895.884, 4686.396, 48.094)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 11 then
 		if location == 0 then return vec3:new(1332.319, 4271.446, 30.646)
@@ -82,6 +93,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(1337.892, 4321.563, 38.093)
 		elseif location == 3 then return vec3:new(1386.603, 4366.511, 42.236)
 		elseif location == 4 then return vec3:new(1303.193, 4313.509, 36.939)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 12 then
 		if location == 0 then return vec3:new(2720.03, 1572.762, 20.204)
@@ -89,6 +101,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(2661.482, 1641.057, 24.001)
 		elseif location == 3 then return vec3:new(2671.003, 1561.394, 23.882)
 		elseif location == 4 then return vec3:new(2660.104, 1606.54, 28.61)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 13 then
 		if location == 0 then return vec3:new(211.775, -934.269, 23.466)
@@ -96,6 +109,7 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(189.542, -919.726, 29.96)
 		elseif location == 3 then return vec3:new(169.504, -934.841, 29.228)
 		elseif location == 4 then return vec3:new(212.376, -934.807, 29.007)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	elseif area == 14 then
 		if location == 0 then return vec3:new(1330.113, -2520.754, 46.365)
@@ -103,10 +117,9 @@ function dead_drop_coords(area, location)
 		elseif location == 2 then return vec3:new(1237.506, -2572.335, 39.791)
 		elseif location == 3 then return vec3:new(1244.602, -2563.721, 42.646)
 		elseif location == 4 then return vec3:new(1278.421, -2565.117, 43.544)
+		else return vec3:new(0.0, 0.0, 0.0)
 		end
 	end
-	
-	return vec3:new(0.0, 0.0, 0.0)
 end
 
 function stash_house_coords(location)
@@ -135,9 +148,8 @@ function stash_house_coords(location)
 	elseif location == 22 then return vec3:new(1117.123, -1005.395, 43.717)
 	elseif location == 23 then return vec3:new(165.503, -2230.168, 5.033)
 	elseif location == 24 then return vec3:new(-555.422, -1797.914, 21.539)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-
-	return vec3:new(0.0, 0.0, 0.0)
 end
 
 function street_dealer_coords(location)
@@ -191,9 +203,8 @@ function street_dealer_coords(location)
 	elseif location == 47 then return vec3:new(1173.1378, -388.2896, 70.5896)
 	elseif location == 48 then return vec3:new(-1801.85, 172.49, 67.771)
 	elseif location == 49 then return vec3:new(3729.2568, 4524.872, 21.4755)
-	end
-
-	return vec3:new(0.0, 0.0, 0.0) 
+	else return vec3:new(0.0, 0.0, 0.0)
+	end 
 end
 
 function shipwrecked_coords(location)
@@ -227,9 +238,8 @@ function shipwrecked_coords(location)
 	elseif location == 27 then return vec3:new(2772.996, -1606.0311, -0.1129)
 	elseif location == 28 then return vec3:new(1818.4303, -2718.4414, 0.1797)
 	elseif location == 29 then return vec3:new(987.383, -2681.047, -0.1296)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-
-	vec3:new(0.0, 0.0, 0.0)
 end
 
 function hidden_cache_coords(location)
@@ -333,9 +343,8 @@ function hidden_cache_coords(location)
 	elseif location == 97 then return vec3:new(3406.32, -584.198, -18.545)
 	elseif location == 98 then return vec3:new(-3106.876, 2432.615, -23.172)
 	elseif location == 99 then return vec3:new(-2172.952, -3199.194, -33.315)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-		
-	vec3:new(0.0, 0.0, 0.0)
 end
 
 function junk_skydive_coords(location)
@@ -364,9 +373,8 @@ function junk_skydive_coords(location)
 	elseif location == 22 then return vec3:new(2555.3403, 301.0995, 107.4623)
 	elseif location == 23 then return vec3:new(-1143.5713, 2683.302, 17.0937)
 	elseif location == 24 then return vec3:new(-917.5775, -1155.1293, 3.7723)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-		
-	vec3:new(0.0, 0.0, 0.0)
 end
 
 function treasure_chest_coords(location)
@@ -390,9 +398,8 @@ function treasure_chest_coords(location)
 	elseif location == 17 then return vec3:new(4414.676, -4651.4575, -5.083)
 	elseif location == 18 then return vec3:new(4540.07, -4774.899, -3.9321)
 	elseif location == 19 then return vec3:new(4777.6006, -5394.6265, -5.0127)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-
-	vec3:new(0.0, 0.0, 0.0)
 end
 
 function buried_stash_coords(location)
@@ -416,9 +423,8 @@ function buried_stash_coords(location)
 	elseif location == 17 then return vec3:new(4348.7827, -4311.3193, 1.3335)
 	elseif location == 18 then return vec3:new(4235.67, -4552.0557, 4.0738)
 	elseif location == 19 then return vec3:new(3901.899, -4720.187, 3.4537)
+	else return vec3:new(0.0, 0.0, 0.0)
 	end
-
-	vec3:new(0.0, 0.0, 0.0)
 end
 
 function exotic_export_coords(location, part)
@@ -534,79 +540,78 @@ function exotic_export_coords(location, part)
 end
 
 function standart_trial_coords(location)
-		if location == 0 then return vec3:new(-1811.675, -1199.5421, 12.0174)
-		elseif location == 1 then return vec3:new(-377.166, 1250.8182, 326.4899)
-		elseif location == 2 then return vec3:new(-1253.2399, -380.457, 58.2873)
-		elseif location == 3 then return vec3:new(2702.0369, 5145.717, 42.8568)
-		elseif location == 4 then return vec3:new(1261.3533, -3278.38, 4.8335)
-		elseif location == 5 then return vec3:new(-1554.3121, 2755.0088, 16.8004)
-		elseif location == 6 then return vec3:new(637.1439, -1845.8552, 8.2676)
-		elseif location == 7 then return vec3:new(-552.626, 5042.7026, 127.9448)
-		elseif location == 8 then return vec3:new(-579.1157, 5324.664, 69.2662)
-		elseif location == 9 then return vec3:new(1067.343, -2448.2366, 28.0683)
-		elseif location == 10 then return vec3:new(1577.189, 6439.966, 23.6996)
-		elseif location == 11 then return vec3:new(-199.7486, -1973.3108, 26.6204)
-		elseif location == 12 then return vec3:new(-1504.541, 1482.4895, 116.053)
-		elseif location == 13 then return vec3:new(-1502.0471, 4940.611, 63.8034)
-		elseif location == 14 then return vec3:new(947.562, 142.6773, 79.8307)
-		elseif location == 15 then return vec3:new(1246.2249, 2685.1099, 36.5944)
-		elseif location == 16 then return vec3:new(-1021.1459, -2580.291, 33.6353)
-		elseif location == 17 then return vec3:new(231.9767, 3301.4888, 39.5627)
-		elseif location == 18 then return vec3:new(860.353, 536.8055, 124.7803)
-		elseif location == 19 then return vec3:new(2820.6514, 1642.2759, 23.668)
-		elseif location == 20 then return vec3:new(-2257.7986, 4315.927, 44.5551)
-		elseif location == 21 then return vec3:new(526.397, 5624.461, 779.3564)
-		elseif location == 22 then return vec3:new(175.2847, -3042.0754, 4.7734)
-		elseif location == 23 then return vec3:new(813.3556, 1274.9536, 359.511)
-		elseif location == 24 then return vec3:new(77.5248, 3629.9146, 38.6907)
-		elseif location == 25 then return vec3:new(1004.6567, 898.837, 209.0257)
-		elseif location == 26 then return vec3:new(104.8058, -1938.9818, 19.8037)
-		elseif location == 27 then return vec3:new(-985.2776, -2698.696, 12.8307)
-		elseif location == 28 then return vec3:new(230.6618, -1399.0258, 29.4856)
-		elseif location == 29 then return vec3:new(-546.6672, -2857.9282, 5.0004)
-		elseif location == 30 then return vec3:new(-172.8944, 1034.8262, 231.2332)
-		elseif location == 31 then return vec3:new(1691.4703, -1458.6351, 111.7033)
-		end
+	if location == 0 then return vec3:new(-1811.675, -1199.5421, 12.0174)
+	elseif location == 1 then return vec3:new(-377.166, 1250.8182, 326.4899)
+	elseif location == 2 then return vec3:new(-1253.2399, -380.457, 58.2873)
+	elseif location == 3 then return vec3:new(2702.0369, 5145.717, 42.8568)
+	elseif location == 4 then return vec3:new(1261.3533, -3278.38, 4.8335)
+	elseif location == 5 then return vec3:new(-1554.3121, 2755.0088, 16.8004)
+	elseif location == 6 then return vec3:new(637.1439, -1845.8552, 8.2676)
+	elseif location == 7 then return vec3:new(-552.626, 5042.7026, 127.9448)
+	elseif location == 8 then return vec3:new(-579.1157, 5324.664, 69.2662)
+	elseif location == 9 then return vec3:new(1067.343, -2448.2366, 28.0683)
+	elseif location == 10 then return vec3:new(1577.189, 6439.966, 23.6996)
+	elseif location == 11 then return vec3:new(-199.7486, -1973.3108, 26.6204)
+	elseif location == 12 then return vec3:new(-1504.541, 1482.4895, 116.053)
+	elseif location == 13 then return vec3:new(-1502.0471, 4940.611, 63.8034)
+	elseif location == 14 then return vec3:new(947.562, 142.6773, 79.8307)
+	elseif location == 15 then return vec3:new(1246.2249, 2685.1099, 36.5944)
+	elseif location == 16 then return vec3:new(-1021.1459, -2580.291, 33.6353)
+	elseif location == 17 then return vec3:new(231.9767, 3301.4888, 39.5627)
+	elseif location == 18 then return vec3:new(860.353, 536.8055, 124.7803)
+	elseif location == 19 then return vec3:new(2820.6514, 1642.2759, 23.668)
+	elseif location == 20 then return vec3:new(-2257.7986, 4315.927, 44.5551)
+	elseif location == 21 then return vec3:new(526.397, 5624.461, 779.3564)
+	elseif location == 22 then return vec3:new(175.2847, -3042.0754, 4.7734)
+	elseif location == 23 then return vec3:new(813.3556, 1274.9536, 359.511)
+	elseif location == 24 then return vec3:new(77.5248, 3629.9146, 38.6907)
+	elseif location == 25 then return vec3:new(1004.6567, 898.837, 209.0257)
+	elseif location == 26 then return vec3:new(104.8058, -1938.9818, 19.8037)
+	elseif location == 27 then return vec3:new(-985.2776, -2698.696, 12.8307)
+	elseif location == 28 then return vec3:new(230.6618, -1399.0258, 29.4856)
+	elseif location == 29 then return vec3:new(-546.6672, -2857.9282, 5.0004)
+	elseif location == 30 then return vec3:new(-172.8944, 1034.8262, 231.2332)
+	elseif location == 31 then return vec3:new(1691.4703, -1458.6351, 111.7033)
+	else return vec3:new(0.0, 0.0, 0.0)
+	end
 
 	vec3:new(0.0, 0.0, 0.0)
 end
 
 function rc_trial_coords(location)
-		if location == 0 then return vec3:new(-486.1165, -916.59, 22.964)
-		elseif location == 1 then return vec3:new(854.8221, -2189.789, 29.679604)
-		elseif location == 2 then return vec3:new(-1730.7411, -188.57533, 57.337273)
-		elseif location == 3 then return vec3:new(1409.3899, 1084.5609, 113.33391)
-		elseif location == 4 then return vec3:new(-901.63, -779.377, 14.859)
-		elseif location == 5 then return vec3:new(2562.03, 2707.7473, 41.071)
-		elseif location == 6 then return vec3:new(-1194.2417, -1456.5526, 3.379667)
-		elseif location == 7 then return vec3:new(-216.2158, -1109.7155, 21.9008)
-		elseif location == 8 then return vec3:new(-889.356, -1071.848, 1.163)
-		elseif location == 9 then return vec3:new(885.3417, -255.1916, 68.4006)
-		elseif location == 10 then return vec3:new(-948.3436, -491.1428, 35.8333)
-		elseif location == 11 then return vec3:new(750.3155, 597.0025, 124.9241)
-		elseif location == 12 then return vec3:new(-402.4602, -1701.4429, 17.8213)
-		elseif location == 13 then return vec3:new(-601.3092, 5295.396, 69.2145)
-		end
-
-	vec3:new(0.0, 0.0, 0.0)
+	if location == 0 then return vec3:new(-486.1165, -916.59, 22.964)
+	elseif location == 1 then return vec3:new(854.8221, -2189.789, 29.679604)
+	elseif location == 2 then return vec3:new(-1730.7411, -188.57533, 57.337273)
+	elseif location == 3 then return vec3:new(1409.3899, 1084.5609, 113.33391)
+	elseif location == 4 then return vec3:new(-901.63, -779.377, 14.859)
+	elseif location == 5 then return vec3:new(2562.03, 2707.7473, 41.071)
+	elseif location == 6 then return vec3:new(-1194.2417, -1456.5526, 3.379667)
+	elseif location == 7 then return vec3:new(-216.2158, -1109.7155, 21.9008)
+	elseif location == 8 then return vec3:new(-889.356, -1071.848, 1.163)
+	elseif location == 9 then return vec3:new(885.3417, -255.1916, 68.4006)
+	elseif location == 10 then return vec3:new(-948.3436, -491.1428, 35.8333)
+	elseif location == 11 then return vec3:new(750.3155, 597.0025, 124.9241)
+	elseif location == 12 then return vec3:new(-402.4602, -1701.4429, 17.8213)
+	elseif location == 13 then return vec3:new(-601.3092, 5295.396, 69.2145)
+	else return vec3:new(0.0, 0.0, 0.0)
+	end
 end
 
 function bike_trial_coords(location)
-		if location == 0 then return vec3:new(501.6576, 5598.3604, 795.1221)
-		elseif location == 1 then return vec3:new(493.7987, 5528.249, 777.3241)
-		elseif location == 2 then return vec3:new(2820.5623, 5972.031, 349.5339)
-		elseif location == 3 then return vec3:new(-1031.3934, 4721.9556, 235.3456)
-		elseif location == 4 then return vec3:new(-1932.808, 1782.2681, 172.2726)
-		elseif location == 5 then return vec3:new(-182.0154, 319.3242, 96.7999)
-		elseif location == 6 then return vec3:new(1100.4553, -264.2758, 68.268)
-		elseif location == 7 then return vec3:new(736.0028, 2574.1477, 74.2793)
-		elseif location == 8 then return vec3:new(1746.0431, -1474.762, 111.8385)
-		elseif location == 9 then return vec3:new(30.5142, 197.473, 104.6073)
-		elseif location == 10 then return vec3:new(145.0902, -605.9424, 46.0762)
-		elseif location == 11 then return vec3:new(-447.3499, 1600.9911, 357.3483)
-		elseif location == 12 then return vec3:new(-2205.15, 199.7418, 173.6018)
-		elseif location == 13 then return vec3:new(1321.0515, -505.2507, 70.4208)
-		end
-
-	vec3:new(0.0, 0.0, 0.0)
+	if location == 0 then return vec3:new(501.6576, 5598.3604, 795.1221)
+	elseif location == 1 then return vec3:new(493.7987, 5528.249, 777.3241)
+	elseif location == 2 then return vec3:new(2820.5623, 5972.031, 349.5339)
+	elseif location == 3 then return vec3:new(-1031.3934, 4721.9556, 235.3456)
+	elseif location == 4 then return vec3:new(-1932.808, 1782.2681, 172.2726)
+	elseif location == 5 then return vec3:new(-182.0154, 319.3242, 96.7999)
+	elseif location == 6 then return vec3:new(1100.4553, -264.2758, 68.268)
+	elseif location == 7 then return vec3:new(736.0028, 2574.1477, 74.2793)
+	elseif location == 8 then return vec3:new(1746.0431, -1474.762, 111.8385)
+	elseif location == 9 then return vec3:new(30.5142, 197.473, 104.6073)
+	elseif location == 10 then return vec3:new(145.0902, -605.9424, 46.0762)
+	elseif location == 11 then return vec3:new(-447.3499, 1600.9911, 357.3483)
+	elseif location == 12 then return vec3:new(-2205.15, 199.7418, 173.6018)
+	elseif location == 13 then return vec3:new(1321.0515, -505.2507, 70.4208)
+	else return vec3:new(0.0, 0.0, 0.0)
+	end
 end
