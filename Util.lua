@@ -46,6 +46,10 @@ function spawn_vehicle(vehicle_joaat)
 end
 
 function get_zone_name(zone_coords)
+	if zone_coords == nil then
+		zone_coords = vec3:new(0.0, 0.0, 0.0)
+	end
+	
 	local zone = ZONE.GET_NAME_OF_ZONE(zone_coords.x, zone_coords.y, zone_coords.z)
 	for i = 1, #zone_names do
 		if joaat(zone) == joaat(zone_names[i]) then
