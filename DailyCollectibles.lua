@@ -205,11 +205,15 @@ stash_house_tab:add_imgui(function()
 	ImGui.Text("Status: " .. (is_stash_house_raided and "raided" or "ready"))
 	
 	if ImGui.Button("Teleport##stash_house") then
-		if is_stash_house_raided == false then
-			teleport(stash_house_coords(stash_house_loc))
-		else
-			gui.show_message("Daily Collectibles", "Stash House has already been raided.")
-		end
+		script.run_in_fiber(function (script)
+			local stash_house_blip = HUD.GET_FIRST_BLIP_INFO_ID(845)
+			if HUD.DOES_BLIP_EXIST(stash_house_blip) then
+				local coords = HUD.GET_BLIP_COORDS(stash_house_blip)
+				PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
+			else
+				gui.show_message("Daily Collectibles", "Stash House has already been raided.")
+			end
+		end)
 	end
 end)
 
