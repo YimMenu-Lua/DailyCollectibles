@@ -63,9 +63,9 @@ function get_safe_code()
 	local combination_retn = ""
 	for i = 0, 2, 1 do
 		if i == 2 then 
-			combination_retn = combination_retn .. tostring(locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1))
+			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1))
 		else
-			combination_retn = combination_retn .. tostring(locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)) .. "-"
+			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)) .. "-"
 		end
 	end
 	return combination_retn
