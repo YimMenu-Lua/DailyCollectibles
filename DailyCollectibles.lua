@@ -198,7 +198,9 @@ end)
 
 stash_house_tab:add_imgui(function()
 	ImGui.Text("Location: " .. stash_house_zone)
-	ImGui.Text("Safe Code: " .. safe_code)
+	if is_stash_house_raided == false then
+		ImGui.Text("Safe Code: " .. safe_code)
+	end
 	ImGui.Text("Status: " .. (is_stash_house_raided and "raided" or "ready"))
 	
 	if ImGui.Button("Teleport##stash_house") then
