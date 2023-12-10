@@ -60,20 +60,15 @@ function get_zone_name(zone_coords)
 end
 
 function get_safe_code()
-	code = locals.get_int("fm_content_stash_house", 3385 + 526 + 13)
-	if code == 0 then return "05-02-91"
-	elseif code == 1 then return "28-03-98"
-	elseif code == 2 then return "24-10-81"
-	elseif code == 3 then return "02-12-87"
-	elseif code == 4 then return "01-23-45"
-	elseif code == 5 then return "28-11-97"
-	elseif code == 6 then return "77-79-73"
-	elseif code == 7 then return "73-27-38"
-	elseif code == 8 then return "44-23-37"
-	elseif code == 9 then return "72-68-83"
+	local combination_retn = ""
+	for i = 0, 2, 1 do
+		if i == 2 then 
+			combination_retn = combination_retn .. tostring(locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1))
+		else
+			combination_retn = combination_retn .. tostring(locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)) .. "-"
+		end
 	end
-
-	return "unavailable"
+	return combination_retn
 end
 
 function get_vehicle_name(index, return_joaat)
