@@ -147,9 +147,6 @@ script.register_looped("Daily Collectables", function (script)
 	trial_loc[1] = tunables.get_int("TIMETRIALVARIATION")
 	trial_loc[2] = locals.get_int("freemode", 14109)
 	trial_loc[3] = locals.get_int("freemode", 14903 + 3)
-end)
-
-script.register_looped("Zone Names", function (script)
 	dead_drop_zone = get_zone_name(dead_drop_coords(dead_drop_area, dead_drop_loc))
 	stash_house_zone = get_zone_name(stash_house_coords(stash_house_loc))
 	dealer_zone[1] = get_zone_name(street_dealer_coords(dealer_loc[1]))
@@ -201,7 +198,9 @@ end)
 
 stash_house_tab:add_imgui(function()
 	ImGui.Text("Location: " .. stash_house_zone)
-	ImGui.Text("Safe Code: " .. safe_code)
+	if is_stash_house_raided == false then
+		ImGui.Text("Safe Code: " .. safe_code)
+	end
 	ImGui.Text("Status: " .. (is_stash_house_raided and "raided" or "ready"))
 	
 	if ImGui.Button("Teleport##stash_house") then
@@ -210,6 +209,15 @@ stash_house_tab:add_imgui(function()
 		else
 			gui.show_message("Daily Collectibles", "Stash House has already been raided.")
 		end
+	end
+	
+	if ImGui.Button("Enter Safe Combination") then
+		script.run_in_fiber(function (script)
+			for i = 0, 2, 1 do
+				local safe_combination = locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)
+				locals.set_float("fm_content_stash_house", 115 + 22 + (1 + (i * 2)), safe_combination)
+			end
+		end)
 	end
 end)
 
