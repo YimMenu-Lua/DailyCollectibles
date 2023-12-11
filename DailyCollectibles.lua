@@ -205,7 +205,11 @@ stash_house_tab:add_imgui(function()
 	
 	if ImGui.Button("Teleport##stash_house") then
 		if is_stash_house_raided == false then
-			teleport(stash_house_coords(stash_house_loc))
+			script.run_in_fiber(function (script)
+				if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
+					teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
+				end				
+			end)
 		else
 			gui.show_message("Daily Collectibles", "Stash House has already been raided.")
 		end
@@ -329,18 +333,20 @@ exotic_exports_tab:add_imgui(function()
 	ImGui.SameLine()
 
 	if ImGui.Button("Deliver Vehicle") then
-		if exotic_reward_ready == false then
-			gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
+		if vehicle_bitset ~= 1023 then
+			if exotic_reward_ready == false then
+				gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
+			else
+				script.run_in_fiber(function (script)
+					if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
+						teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+					else
+						gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+					end		
+				end)
+			end
 		else
-			script.run_in_fiber(function (script)
-				local blip_id = HUD.GET_FIRST_BLIP_INFO_ID(780)
-				if HUD.DOES_BLIP_EXIST(blip_id) then
-					local coords = HUD.GET_BLIP_COORDS(blip_id)
-					PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
-				else
-					gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
-				end
-			end)
+			gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
 		end
 	end
 	
