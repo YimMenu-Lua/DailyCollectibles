@@ -23,7 +23,7 @@ function spawn_vehicle(vehicle_joaat)
 		local load_counter = 0
 		while STREAMING.HAS_MODEL_LOADED(vehicle_joaat) == false do
 			STREAMING.REQUEST_MODEL(vehicle_joaat);
-			script.yield();
+			script:yield();
 			if load_counter > 100 then
 				return
 			else
