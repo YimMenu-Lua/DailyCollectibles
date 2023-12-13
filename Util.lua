@@ -63,17 +63,17 @@ function get_safe_code()
 	local combination_retn = ""
 	for i = 0, 2, 1 do
 		if i == 2 then 
-			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1))
+			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1))
 		else
-			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)) .. "-"
+			combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) .. "-"
 		end
 	end
 	return combination_retn
 end
 
 function get_vehicle_name(index, return_joaat)
-    local offset = globals.get_int(1950529 + index) + 1
-	local vehicle_joaat = globals.get_uint(1950518 + offset)
+    local offset = globals.get_int(1942466 + index) + 1
+	local vehicle_joaat = globals.get_uint(1942455 + offset)
 	if return_joaat == true then
 		return vehicle_joaat
 	else
