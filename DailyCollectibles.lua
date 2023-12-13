@@ -116,33 +116,33 @@ script.register_looped("Daily Collectables", function (script)
 	is_treasure_chest_collected[2] = stats.get_packed_stat_bool(30308)
 	is_buried_stash_collected[1] = stats.get_packed_stat_bool(25522)
 	is_buried_stash_collected[2] = stats.get_packed_stat_bool(25523)
-	dealer_loc[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10))
-	dealer_loc[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10))
-	dealer_loc[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10))
-	meth_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
-	meth_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
-	meth_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
-	weed_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
-	weed_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
-	weed_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
-	cocaine_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
-	cocaine_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
-	cocaine_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
-	acid_unit[1] = globals.get_int(2794162 + 6751 + 1 + (0 * 10) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
-	acid_unit[2] = globals.get_int(2794162 + 6751 + 1 + (1 * 10) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
-	acid_unit[3] = globals.get_int(2794162 + 6751 + 1 + (2 * 10) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
+	dealer_loc[1] = globals.get_int(2738587 + 6776 + 1 + (0 * 10))
+	dealer_loc[2] = globals.get_int(2738587 + 6776 + 1 + (1 * 10))
+	dealer_loc[3] = globals.get_int(2738587 + 6776 + 1 + (2 * 10))
+	meth_unit[1] = globals.get_int(2738587 + 6776 + 1 + (0 * 10) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
+	meth_unit[2] = globals.get_int(2738587 + 6776 + 1 + (1 * 10) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
+	meth_unit[3] = globals.get_int(2738587 + 6776 + 1 + (2 * 10) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
+	weed_unit[1] = globals.get_int(2738587 + 6776 + 1 + (0 * 10) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
+	weed_unit[2] = globals.get_int(2738587 + 6776 + 1 + (1 * 10) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
+	weed_unit[3] = globals.get_int(2738587 + 6776 + 1 + (2 * 10) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
+	cocaine_unit[1] = globals.get_int(2738587 + 6776 + 1 + (0 * 10) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
+	cocaine_unit[2] = globals.get_int(2738587 + 6776 + 1 + (1 * 10) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
+	cocaine_unit[3] = globals.get_int(2738587 + 6776 + 1 + (2 * 10) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
+	acid_unit[1] = globals.get_int(2738587 + 6776 + 1 + (0 * 10) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
+	acid_unit[2] = globals.get_int(2738587 + 6776 + 1 + (1 * 10) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
+	acid_unit[3] = globals.get_int(2738587 + 6776 + 1 + (2 * 10) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
 	max_cocaine = tunables.get_int(1238316723)
 	max_meth = tunables.get_int(658190943)
 	max_weed = tunables.get_int(803541362)
 	max_acid = tunables.get_int(-1171794142)
 	total_products = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
 	all_products = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-	vehicle_location = globals.get_int(1890378 + 287 + 1)
-	vehicle_index = globals.get_int(1890378 + 287)
-	vehicle_order = (globals.get_int(1950529 + vehicle_index + 1) + 1)
-	active_vehicle = globals.get_uint(2794162 + 6822 + 3)
+	vehicle_location = globals.get_int(1882037 + 302 + 1)
+	vehicle_index = globals.get_int(1882037 + 302)
+	vehicle_order = (globals.get_int(1942466 + vehicle_index + 1) + 1)
+	active_vehicle = globals.get_uint(2738587 + 6860 + 3)
 	vehicle_bitset = stats.get_int("MPX_CBV_DELIVERED_BS")
-	exotic_order_cooldown = globals.get_int(1956878 + 5653)
+	exotic_order_cooldown = globals.get_int(1948923 + 5839)
 	exotic_reward_ready = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
 	trial_loc[1] = tunables.get_int("TIMETRIALVARIATION")
 	trial_loc[2] = locals.get_int("freemode", 14109)
@@ -177,7 +177,7 @@ script.register_looped("Daily Collectables", function (script)
 	treasure_chest_zone[2] = get_zone_name(treasure_chest_coords(treasure_chest_loc[2]))
 	buried_stash_zone[1] = get_zone_name(buried_stash_coords(buried_stash_loc[1]))
 	buried_stash_zone[2] = get_zone_name(buried_stash_coords(buried_stash_loc[1]))
-	exotic_zone = get_zone_name(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1950518 + vehicle_order)))) -- may return the wrong zone while the script generates the random number
+	exotic_zone = get_zone_name(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order)))) -- may return the wrong zone while the script generates the random number
 	trial_zone[1] = get_zone_name(standart_trial_coords(trial_loc[1]))
 	trial_zone[2] = get_zone_name(rc_trial_coords(trial_loc[2]))
 	trial_zone[3] = get_zone_name(bike_trial_coords(trial_loc[3]))
@@ -218,8 +218,8 @@ stash_house_tab:add_imgui(function()
 	if ImGui.Button("Enter Safe Combination") then
 		script.run_in_fiber(function (script)
 			for i = 0, 2, 1 do
-				local safe_combination = locals.get_int("fm_content_stash_house", 115 + 22 + (1 + (i * 2)) + 1)
-				locals.set_float("fm_content_stash_house", 115 + 22 + (1 + (i * 2)), safe_combination)
+				local safe_combination = locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)
+				locals.set_float("fm_content_stash_house", 117 + 22 + (1 + (i * 2)), safe_combination)
 			end
 		end)
 	end
@@ -321,7 +321,7 @@ exotic_exports_tab:add_imgui(function()
 	if ImGui.Button("Teleport to Vehicle") then
 		if vehicle_bitset ~= 1023 then
 			if vehicle_location ~= -1 then
-				teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1950518 + vehicle_order))))
+				teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order))))
 			else
 				gui.show_message("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
 			end
@@ -353,7 +353,7 @@ exotic_exports_tab:add_imgui(function()
 	if ImGui.Button("Spawn Next Vehicle") then
 		if vehicle_bitset ~= 1023 then
 			for i = 1, 10 do
-				if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) == false then
+				if has_bit_set(vehicle_bitset, globals.get_int(1942466 + i)) == false then
 					spawn_vehicle(get_vehicle_name(i, true))
 					return
 				end
@@ -371,7 +371,7 @@ exotic_exports_tab:add_imgui(function()
 			ImGui.SameLine()
 			ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
 		else
-			if has_bit_set(vehicle_bitset, globals.get_int(1950529 + i)) then
+			if has_bit_set(vehicle_bitset, globals.get_int(1942466 + i)) then
 				ImGui.Text(i .. " -")
 				ImGui.SameLine()
 				ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Completed)")
