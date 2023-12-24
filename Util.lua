@@ -1,11 +1,29 @@
-zone_names = { "airp", "alamo", "alta", "armyb", "banhamc", "banning", "beach", "bhamca", "bradp", "bradt", "burton", "calafb", "canny", "ccreak", "chamh", "chil", "chu", "cmsw", "cypre", "davis", "delbe", "delpe", "delsol", "desrt", "downt", "dtvine", "east_v", "eburo", "elgorl", "elysian", "galfish", "golf", "grapes", "greatc", "harmo", "hawick", "hors", "humlab", "jail", "koreat", "lact", "lago", "ldam", "legsqu", "lmesa", "lospuer", "mirr", "morn", "movie", "mtchil", "mtgordo", "mtjose", "murri", "nchu", "noose", "oceana", "palcov", "paleto", "palfor", "palhigh", "palmpow", "pbluff", "pbox", "procob", "rancho", "rglen", "richm", "rockf", "rtrak", "sanand", "sanchia", "sandy", "skid", "slab", "stad", "straw", "tatamo", "termina", "texti", "tongvah", "tongvav", "vcana", "vesp", "vine", "windf", "wvine", "zancudo", "zp_ort", "zq_uar", "isheist" }
-zone_display_names = { "Los Santos International Airport", "Alamo Sea", "Alta", "Fort Zancudo", "Banham Canyon Dr", "Banning", "Vespucci Beach", "Banham Canyon", "Braddock Pass", "Braddock Tunnel", "Burton", "Calafia Bridge", "Raton Canyon", "Cassidy Creek", "Chamberlain Hills", "Vinewood Hills", "Chumash", "Chiliad Mountain State Wilderness", "Cypress Flats", "Davis", "Del Perro Beach", "Del Perro", "La Puerta", "Grand Senora Desert", "Downtown", "Downtown Vinewood", "East Vinewood", "El Burro Heights", "El Gordo Lighthouse", "Elysian Island", "Galilee", "GWC and Golfing Society", "Grapeseed", "Great Chaparral", "Harmony", "Hawick", "Vinewood Racetrack", "Humane Labs and Research", "Bolingbroke Penitentiary", "Little Seoul", "Land Act Reservoir", "Lago Zancudo", "Land Act Dam", "Legion Square", "La Mesa", "La Puerta", "Mirror Park", "Morningwood", "Richards Majestic", "Mount Chiliad", "Mount Gordo", "Mount Josiah", "Murrieta Heights", "North Chumash", "N.O.O.S.E", "Pacific Ocean", "Paleto Cove", "Paleto Bay", "Paleto Forest", "Palomino Highlands", "Palmer-Taylor Power Station", "Pacific Bluffs", "Pillbox Hill", "Procopio Beach", "Rancho", "Richman Glen", "Richman", "Rockford Hills", "Redwood Lights Track", "San Andreas", "San Chianski Mountain Range", "Sandy Shores", "Mission Row", "Stab City", "Maze Bank Arena", "Strawberry", "Tataviam Mountains", "Terminal", "Textile City", "Tongva Hills", "Tongva Valley", "Vespucci Canals", "Vespucci", "Vinewood", "Ron Alternates Wind Farm", "West Vinewood", "Zancudo River", "Port of South Los Santos", "Davis Quartz", "Cayo Perico" }
-
 --https://stackoverflow.com/questions/10989788/format-integer-in-lua
 function format_int(number)
   local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
   int = int:reverse():gsub("(%d%d%d)", "%1,")
   return minus .. int:reverse():gsub("^,", "") .. fraction
+end
+
+function help_marker(text)
+    ImGui.TextDisabled("(?)")
+    if ImGui.IsItemHovered() then
+        ImGui.BeginTooltip()
+        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35)
+        ImGui.TextUnformatted(text)
+        ImGui.PopTextWrapPos()
+        ImGui.EndTooltip()
+	end
+end
+
+function get_daily_reset_time(target_time)
+	local current_utc = os.date("!*t")
+
+	local hours_left = (24 - current_utc.hour + target_time) % 24
+	local mins_left = 60 - current_utc.min
+	local secs_left = 60 - current_utc.sec
+	
+	return hours_left, mins_left, secs_left
 end
 
 function teleport(coords)
