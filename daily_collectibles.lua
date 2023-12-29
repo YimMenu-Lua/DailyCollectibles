@@ -204,7 +204,6 @@ daily_collectibles_tab:add_imgui(function()
 	ImGui.Text("- Shipwreck")
 	ImGui.Text("- Buried Stashes")
 	ImGui.Text("- Junk Energy Skydives")
-	ImGui.Text("- G's Cache")
 	
 	ImGui.Separator()
 	
@@ -231,15 +230,16 @@ challenges_tab:add_imgui(function()
 		ImGui.Text("Override: " .. weekly_obj_override)
 		ImGui.SameLine()
 		help_marker("This means the amount in the challenge above is set to this value instead of the default.")
+		ImGui.TreePop()
 	end
 	
 	if ImGui.Button("Complete all Challenges") then
 	    for i = 0, 2 do
-            local objective = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (i * 3)))
-            globals.set_int(1574743 + 1 + (1 + (i * 1)), objective)
-        end
-        globals.set_int(1574743, 1)
-        globals.set_int(2737646 + (1 + (0 * 6)) + 1, globals.get_int(2737646 + (1 + (0 * 6)) + 2))
+	        local objective = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (i * 3)))
+	        globals.set_int(1574743 + 1 + (1 + (i * 1)), objective)
+	    end
+	    globals.set_int(1574743, 1)
+	    globals.set_int(2737646 + (1 + (0 * 6)) + 1, globals.get_int(2737646 + (1 + (0 * 6)) + 2))
 	end
 end)
 
