@@ -1554,15 +1554,14 @@ exotic_exports_tab:add_imgui(function()
 end)
 
 time_trials_tab:add_imgui(function()
-	ImGui.Text("Location: " .. trial_zone[selected_trial + 1])
-	ImGui.Text("Par Time: " .. get_par_time(selected_trial, trial_loc[selected_trial + 1]))
+	ImGui.Text("Par Time: " .. get_par_time(selected_trial, time_trial_loc[selected_trial + 1]))
 	
 	selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standart Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
 	
 	if ImGui.Button("Teleport##trials") then
-		if selected_trial == 0 then teleport(standart_trial_coords(trial_loc[1]))
-		elseif selected_trial == 1 then teleport(rc_trial_coords(trial_loc[2]))
-		elseif selected_trial == 2 then teleport(bike_trial_coords(trial_loc[3]))
+		if selected_trial == 0 then teleport(standart_trial_coords(time_trial_loc[1]))
+		elseif selected_trial == 1 then teleport(rc_trial_coords(time_trial_loc[2]))
+		elseif selected_trial == 2 then teleport(bike_trial_coords(time_trial_loc[3]))
 		end
 	end
 end)
