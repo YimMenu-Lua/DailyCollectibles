@@ -1250,11 +1250,11 @@ local function draw_text(location, text)
 	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(screen_x, screen_y, 0)
 end
 
-script.register_looped("Draw ESP", function()
+local function draw_esp()
 	if esp_gs_cache then
 		if not dead_drop_collected then
 			drop_coords = dead_drop_coords(dead_drop_area, dead_drop_loc)
-            draw_text(drop_coords, "G's Cache")
+            draw_text(drop_coords, "G Dead Drop")
 		end
 	end
 
@@ -1278,33 +1278,40 @@ script.register_looped("Draw ESP", function()
 	end
 
     if esp_treasure_chest then
-        chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
-		draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
+        if not treasure_chest_collected[selected_treasure + 1] then
+            chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
+		    draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
+        end
 	end
 
     if esp_buried_stash then
-    	stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
-        draw_text(stash_coords, "Buried Stash " .. selected_stash + 1)
+        if not buried_stash_collected[selected_stash + 1] then
+    	    stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
+            draw_text(stash_coords, "Buried Stash " .. selected_stash + 1)
+        end
     end
 
     if esp_stash_house then
         if not stash_house_raided then
-		    house_coords = stash_house_coords(stash_house_loc[selected_house + 1])
-		    draw_text(house_coords, "Stash House " .. selected_house + 1)
+            if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
+		        house_coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
+		        draw_text(house_coords, "Stash House")
+            end
         end
 	end
 
     if esp_exotic_vehicle then
         if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
-    			vehicle_coords = exotic_export_coords(vehicle_location, second_part(globals.get_uint(1942455 + vehicle_order)))
+    			vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order)))
 		        draw_text(vehicle_coords, "Exotic Vehicle")
 		    end
         end
     end
-end)
+end
 
 script.register_looped("Daily Collectibles", function()
+    draw_esp()
     daily_obj[1]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (0 * 3)))
     daily_obj[2]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (1 * 3)))
     daily_obj[3]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (2 * 3)))
@@ -1589,7 +1596,7 @@ exotic_exports_tab:add_imgui(function()
     if ImGui.Button("Teleport to Vehicle") then
     	if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
-    			teleport(exotic_export_coords(vehicle_location, second_part(globals.get_uint(1942455 + vehicle_order))))
+    			teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order))))
     		else
     			gui.show_message("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
     		end
