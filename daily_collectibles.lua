@@ -382,6 +382,16 @@ local weed_unit                = {}
 local cocaine_unit             = {}
 local acid_unit                = {}
 
+local esp_gs_cache          = false
+local esp_stash_house       = false
+local esp_street_dealers    = false
+local esp_shipwreck 	    = false
+local esp_hidden_caches     = false
+local esp_treasure_chest    = false
+local esp_buried_stash      = false
+local esp_exotic_vehicle    = false
+
+
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
     int = int:reverse():gsub("(%d%d%d)", "%1,")
@@ -1227,6 +1237,73 @@ local function bike_trial_coords(location)
     end
 end
 
+local function draw_text(location, text)
+	_, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
+	
+	HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING")
+	HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
+	HUD.SET_TEXT_RENDER_ID(1)
+    HUD.SET_TEXT_OUTLINE()
+	HUD.SET_TEXT_CENTRE(true)
+	HUD.SET_TEXT_SCALE(0, 0.25)
+	HUD.SET_TEXT_FONT(2)
+	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(screen_x, screen_y, 0)
+end
+
+script.register_looped("Draw ESP", function()
+	if esp_gs_cache then
+		if not dead_drop_collected then
+			drop_coords = dead_drop_coords(dead_drop_area, dead_drop_loc)
+            draw_text(drop_coords, "G's Cache")
+		end
+	end
+
+	if esp_street_dealers then
+		dealer_coords = street_dealer_coords(street_dealer_loc[selected_dealer + 1])
+        draw_text(dealer_coords, "Street Dealer " .. selected_dealer + 1)
+	end
+
+    if esp_shipwreck then
+		if not shipwrecked_collected then
+		    shipwreck_coords = shipwrecked_coords(shipwrecked_loc)
+		    draw_text(shipwreck_coords, "Shipwreck")
+		end
+    end
+
+    if esp_hidden_cache then
+        if not hidden_cache_collected[selected_cache + 1] then
+		    cache_coords = hidden_cache_coords(hidden_cache_loc[selected_cache + 1])
+		    draw_text(cache_coords, "Hidden Cache " .. selected_cache + 1)
+        end
+	end
+
+    if esp_treasure_chest then
+        chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
+		draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
+	end
+
+    if esp_buried_stash then
+    	stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
+        draw_text(stash_coords, "Buried Stash " .. selected_stash + 1)
+    end
+
+    if esp_stash_house then
+        if not stash_house_raided then
+		    house_coords = stash_house_coords(stash_house_loc[selected_house + 1])
+		    draw_text(house_coords, "Stash House " .. selected_house + 1)
+        end
+	end
+
+    if esp_exotic_vehicle then
+        if vehicle_bitset ~= 1023 then
+    		if vehicle_location ~= -1 then
+    			vehicle_coords = exotic_export_coords(vehicle_location, second_part(globals.get_uint(1942455 + vehicle_order)))
+		        draw_text(vehicle_coords, "Exotic Vehicle")
+		    end
+        end
+    end
+end)
+
 script.register_looped("Daily Collectibles", function()
     daily_obj[1]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (0 * 3)))
     daily_obj[2]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (1 * 3)))
@@ -1372,6 +1449,9 @@ dead_drop_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
     	end
     end
+	
+	ImGui.SameLine()
+	esp_gs_cache = ImGui.Checkbox("Draw ESP", esp_gs_cache)
 end)
 
 stash_house_tab:add_imgui(function()
@@ -1393,6 +1473,7 @@ stash_house_tab:add_imgui(function()
     end
     
     ImGui.SameLine()
+	esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
     
     if ImGui.Button("Enter Safe Combination") then
     	script.run_in_fiber(function (script)
@@ -1410,6 +1491,10 @@ street_dealer_tab:add_imgui(function()
     if ImGui.Button("Teleport") then
     	teleport(street_dealer_coords(street_dealer_loc[selected_dealer + 1]))
     end
+	
+	ImGui.SameLine()
+	
+	esp_street_dealers = ImGui.Checkbox("Draw ESP", esp_street_dealers)
     
     ImGui.Text("Weed: $" .. format_int(max_weed * weed_unit[selected_dealer + 1]) .. " (" .. format_int(max_weed) .. " unit * " .. format_int(weed_unit[selected_dealer + 1]) .. ")")
     ImGui.Text("Meth: $" .. format_int(max_meth * meth_unit[selected_dealer + 1]) .. " (" .. format_int(max_meth) .. " unit * " .. format_int(meth_unit[selected_dealer + 1]) .. ")")
@@ -1432,6 +1517,9 @@ shipwrecked_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
     	end
     end
+
+    ImGui.SameLine()
+    esp_shipwreck = ImGui.Checkbox("Draw ESP", esp_shipwreck)
 end)
 
 hidden_cache_tab:add_imgui(function()
@@ -1446,6 +1534,9 @@ hidden_cache_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
     	end
     end
+
+    ImGui.SameLine()
+	esp_hidden_cache = ImGui.Checkbox("Draw ESP", esp_hidden_cache)
 end)
 
 junk_skydive_tab:add_imgui(function()
@@ -1470,6 +1561,9 @@ treasure_chest_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "Treasure Chest has already been collected.")
     	end
     end
+
+	ImGui.SameLine()
+	esp_treasure_chest = ImGui.Checkbox("Draw ESP", esp_treasure_chest)
 end)
 
 buried_stash_tab:add_imgui(function()
@@ -1484,11 +1578,14 @@ buried_stash_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
     	end
     end
+
+    ImGui.SameLine()
+	esp_buried_stash = ImGui.Checkbox("Draw ESP", esp_buried_stash)
 end)
 
 exotic_exports_tab:add_imgui(function()
     ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
-    
+    	
     if ImGui.Button("Teleport to Vehicle") then
     	if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
@@ -1500,8 +1597,9 @@ exotic_exports_tab:add_imgui(function()
     		gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
     	end
     end
-    
+
     ImGui.SameLine()
+	esp_exotic_vehicle = ImGui.Checkbox("Draw ESP", esp_exotic_vehicle)
     
     if ImGui.Button("Deliver Vehicle") then
     	if vehicle_bitset ~= 1023 then
