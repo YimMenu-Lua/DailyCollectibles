@@ -338,12 +338,20 @@ local weekly_challenges = {
   "Kill your clone in Clone Slasher."
 }
 
-local selected_dealer   = 0
-local selected_cache    = 0
-local selected_skydive  = 0
-local selected_treasure = 0
-local selected_stash    = 0
-local selected_trial    = 0
+local selected_dealer    = 0
+local selected_cache     = 0
+local selected_skydive   = 0
+local selected_treasure  = 0
+local selected_stash     = 0
+local selected_trial     = 0
+local esp_gs_cache       = false
+local esp_stash_house    = false
+local esp_street_dealers = false
+local esp_shipwreck      = false
+local esp_hidden_caches  = false
+local esp_treasure_chest = false
+local esp_buried_stash   = false
+local esp_exotic_vehicle = false
 
 local weekly_obj_id            = 0
 local weekly_obj_override      = 0
@@ -381,246 +389,6 @@ local meth_unit                = {}
 local weed_unit                = {}
 local cocaine_unit             = {}
 local acid_unit                = {}
-
-local esp_gs_cache          = false
-local esp_stash_house       = false
-local esp_street_dealers    = false
-local esp_shipwreck 	    = false
-local esp_hidden_caches     = false
-local esp_treasure_chest    = false
-local esp_buried_stash      = false
-local esp_exotic_vehicle    = false
-
-
-local function format_int(number)
-    local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
-    int = int:reverse():gsub("(%d%d%d)", "%1,")
-    return minus .. int:reverse():gsub("^,", "") .. fraction
-end
-
-local function help_marker(text)
-    ImGui.TextDisabled("(?)")
-    if ImGui.IsItemHovered() then
-        ImGui.BeginTooltip()
-        ImGui.PushTextWrapPos(ImGui.GetFontSize() * 35)
-        ImGui.TextUnformatted(text)
-        ImGui.PopTextWrapPos()
-        ImGui.EndTooltip()
-    end
-end
-
-local function get_daily_reset_time(target_time)
-    local current_utc = os.date("!*t")
-    local hours_left  = (24 - current_utc.hour + target_time) % 24
-    local mins_left   = 60 - current_utc.min
-    local secs_left   = 60 - current_utc.sec
-    return hours_left, mins_left, secs_left
-end
-
-local function teleport(coords)
-    script.run_in_fiber(function()
-        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
-    end)
-end
-
-local function has_bit_set(address, pos)
-    return (address & (1 << pos)) ~= 0
-end
-
-local function spawn_vehicle(vehicle_joaat)
-    script.run_in_fiber(function(script)
-        local load_counter = 0
-    	while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
-    		STREAMING.REQUEST_MODEL(vehicle_joaat);
-    		script:yield();
-    		if load_counter > 100 then
-    			return
-    		else
-    			load_counter = load_counter + 1
-    		end
-    	end
-    	local laddie   = PLAYER.PLAYER_PED_ID()
-    	local location = ENTITY.GET_ENTITY_COORDS(PLAYER.PLAYER_PED_ID(), false)
-    	local veh      = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(laddie), true, false, false)
-    	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
-    	DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
-    	local network_id = NETWORK.VEH_TO_NET(veh)
-    	if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
-    		NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, true)
-    	end
-    	VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
-    	PED.SET_PED_INTO_VEHICLE(laddie, veh, -1)
-    	ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
-    end)
-end
-
-local function get_safe_code()
-    local combination_retn = ""
-    for i = 0, 2, 1 do
-    	if i == 2 then
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1))
-    	else
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) .. "-"
-    	end
-    end
-    return combination_retn
-end
-
-local function get_vehicle_name(index, return_joaat)
-    local offset        = globals.get_int(1942466 + index) + 1
-    local vehicle_joaat = globals.get_uint(1942455 + offset)
-    if return_joaat == true then
-    	return vehicle_joaat
-    else
-    	return vehicles.get_vehicle_display_name(vehicle_joaat)
-    end
-end
-
-local function is_second_part(hash)
-    if hash == joaat("asbo") then return false
-    elseif hash == joaat("brioso") then return false
-    elseif hash == joaat("buccaneer2") then return false
-    elseif hash == joaat("dominator3") then return false
-    elseif hash == joaat("elegy") then return false
-    elseif hash == joaat("brawler") then return false
-    elseif hash == joaat("flashgt") then return false
-    elseif hash == joaat("gauntlet4") then return false
-    elseif hash == joaat("issi3") then return false
-    elseif hash == joaat("jugular") then return false
-    elseif hash == joaat("kamacho") then return false
-    elseif hash == joaat("komoda") then return false
-    elseif hash == joaat("nightshade") then return false
-    elseif hash == joaat("peyote3") then return false
-    elseif hash == joaat("phoenix") then return false
-    elseif hash == joaat("raiden") then return false
-    elseif hash == joaat("retinue") then return false
-    elseif hash == joaat("rocoto") then return false
-    elseif hash == joaat("ruiner") then return false
-    elseif hash == joaat("sabregt2") then return false
-    elseif hash == joaat("savestra") then return false
-    elseif hash == joaat("chino2") then return false
-    elseif hash == joaat("cheburek") then return false
-    elseif hash == joaat("cavalcade") then return false
-    elseif hash == joaat("buffalo2") then return false
-    elseif hash == joaat("alpha") then return false
-    elseif hash == joaat("kanjo") then return false
-    elseif hash == joaat("kuruma") then return false
-    elseif hash == joaat("sentinel3") then return false
-    elseif hash == joaat("sultan2") then return false
-    elseif hash == joaat("yosemite2") then return false
-    elseif hash == joaat("z190") then return false
-    elseif hash == joaat("jackal") then return false
-    elseif hash == joaat("vstr") then return false
-    elseif hash == joaat("vagrant") then return false
-    elseif hash == joaat("vamos") then return false
-    elseif hash == joaat("tampa2") then return false
-    elseif hash == joaat("tornado5") then return false
-    elseif hash == joaat("tropos") then return false
-    elseif hash == joaat("tulip") then return false
-    end
-    return true
-end
-
-local function get_challenge_time(skydive_location)
-    if skydive_location == 0 then return "00:40.00"
-    elseif skydive_location == 1 then return "00:40.00"
-    elseif skydive_location == 2 then return "00:45.00"
-    elseif skydive_location == 3 then return "01:25.00"
-    elseif skydive_location == 4 then return "01:45.00"
-    elseif skydive_location == 5 then return "01:35.00"
-    elseif skydive_location == 6 then return "01:10.00"
-    elseif skydive_location == 7 then return "00:40.00"
-    elseif skydive_location == 8 then return "02:50.00"
-    elseif skydive_location == 9 then return "02:50.00"
-    elseif skydive_location == 10 then return "02:00.00"
-    elseif skydive_location == 11 then return "01:55.00"
-    elseif skydive_location == 12 then return "01:25.00"
-    elseif skydive_location == 13 then return "01:20.00"
-    elseif skydive_location == 14 then return "02:15.00"
-    elseif skydive_location == 15 then return "01:30.00"
-    elseif skydive_location == 16 then return "01:30.00"
-    elseif skydive_location == 17 then return "01:47.00"
-    elseif skydive_location == 18 then return "01:40.00"
-    elseif skydive_location == 19 then return "01:50.00"
-    elseif skydive_location == 20 then return "01:50.00"
-    elseif skydive_location == 21 then return "01:35.00"
-    elseif skydive_location == 22 then return "01:55.00"
-    elseif skydive_location == 23 then return "01:50.00"
-    elseif skydive_location == 24 then return "01:25.00"
-    end
-    return "unavailable"
-end
-
-local function get_par_time(trial_variant, trial_location)
-    if trial_variant == 0 then
-    	if trial_location == 0 then return "01:43.20"
-    	elseif trial_location == 1 then return "02:04.40"
-    	elseif trial_location == 2 then return "02:04.90"
-    	elseif trial_location == 3 then return "00:46.30"
-    	elseif trial_location == 4 then return "04:09.50"
-    	elseif trial_location == 5 then return "01:44.00"
-    	elseif trial_location == 6 then return "00:38.50"
-    	elseif trial_location == 7 then return "01:10.10"
-    	elseif trial_location == 8 then return "02:15.00"
-    	elseif trial_location == 9 then return "02:07.20"
-    	elseif trial_location == 10 then return "01:41.30"
-    	elseif trial_location == 11 then return "01:17.80"
-    	elseif trial_location == 12 then return "00:58.80"
-    	elseif trial_location == 13 then return "02:29.40"
-    	elseif trial_location == 14 then return "01:00.00"
-    	elseif trial_location == 15 then return "01:19.00"
-    	elseif trial_location == 16 then return "01:43.40"
-    	elseif trial_location == 17 then return "01:24.20"
-    	elseif trial_location == 18 then return "02:58.80"
-    	elseif trial_location == 19 then return "01:26.60"
-    	elseif trial_location == 20 then return "01:16.60"
-    	elseif trial_location == 21 then return "00:54.20"
-    	elseif trial_location == 22 then return "01:40.00"
-    	elseif trial_location == 23 then return "02:05.00"
-    	elseif trial_location == 24 then return "02:00.00"
-    	elseif trial_location == 25 then return "02:35.00"
-    	elseif trial_location == 26 then return "01:20.00"
-    	elseif trial_location == 27 then return "02:24.00"
-    	elseif trial_location == 28 then return "02:16.00"
-    	elseif trial_location == 29 then return "01:50.00"
-    	elseif trial_location == 30 then return "01:26.00"
-    	elseif trial_location == 31 then return "02:10.00"
-    	end
-    elseif trial_variant == 1 then
-    	if trial_location == 0 then return "01:50.00"
-    	elseif trial_location == 1 then return "01:30.00"
-    	elseif trial_location == 2 then return "01:20.00"
-    	elseif trial_location == 3 then return "01:27.00"
-    	elseif trial_location == 4 then return "01:10.00"
-    	elseif trial_location == 5 then return "01:32.00"
-    	elseif trial_location == 6 then return "02:05.00"
-    	elseif trial_location == 7 then return "01:12.00"
-    	elseif trial_location == 8 then return "01:53.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:23.00"
-    	elseif trial_location == 11 then return "01:18.00"
-    	elseif trial_location == 12 then return "01:27.00"
-    	elseif trial_location == 13 then return "01:22.00"
-    	end
-    elseif trial_variant == 2 then
-    	if trial_location == 0 then return "02:20.00"
-    	elseif trial_location == 1 then return "02:00.00"
-    	elseif trial_location == 2 then return "01:55.00"
-    	elseif trial_location == 3 then return "01:35.00"
-    	elseif trial_location == 4 then return "02:10.00"
-    	elseif trial_location == 5 then return "01:40.00"
-    	elseif trial_location == 6 then return "02:00.00"
-    	elseif trial_location == 7 then return "01:50.00"
-    	elseif trial_location == 8 then return "01:35.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:50.00"
-    	elseif trial_location == 11 then return "01:35.00"
-    	elseif trial_location == 12 then return "02:10.00"
-    	elseif trial_location == 13 then return "01:50.00"
-    	end
-    end
-    return "unavailable"
-end
 
 local function dead_drop_coords(area, location)
     if area == 0 then
@@ -743,36 +511,6 @@ local function dead_drop_coords(area, location)
     	elseif location == 4 then return vec3:new(1278.421, -2565.117, 43.544)
     	else return vec3:new(0.0, 0.0, 0.0)
     	end
-    else return vec3:new(0.0, 0.0, 0.0)
-    end
-end
-
-local function stash_house_coords(location)
-    if location == 0 then return vec3:new(-156.345, 6292.5244, 30.6833)
-    elseif location == 1 then return vec3:new(-1101.3784, 4940.878, 217.3541)
-    elseif location == 2 then return vec3:new(2258.4717, 5165.8105, 58.1167)
-    elseif location == 3 then return vec3:new(2881.7866, 4511.734, 46.9993)
-    elseif location == 4 then return vec3:new(1335.4141, 4306.677, 37.0984)
-    elseif location == 5 then return vec3:new(1857.9542, 3854.2195, 32.0891)
-    elseif location == 6 then return vec3:new(905.7146, 3586.9836, 32.3914)
-    elseif location == 7 then return vec3:new(2404.0786, 3127.706, 47.1533)
-    elseif location == 8 then return vec3:new(550.6724, 2655.782, 41.223)
-    elseif location == 9 then return vec3:new(-1100.8274, 2722.5867, 17.8004)
-    elseif location == 10 then return vec3:new(-125.9821, 1896.2302, 196.3329)
-    elseif location == 11 then return vec3:new(1546.2168, 2166.431, 77.7258)
-    elseif location == 12 then return vec3:new(-3169.8516, 1034.2666, 19.8417)
-    elseif location == 13 then return vec3:new(121.2199, 318.9121, 111.1516)
-    elseif location == 14 then return vec3:new(-583.559, 195.3448, 70.4433)
-    elseif location == 15 then return vec3:new(-1308.2467, -168.6344, 43.132)
-    elseif location == 16 then return vec3:new(99.3476, -240.9664, 50.3995)
-    elseif location == 17 then return vec3:new(1152.2288, -431.8629, 66.0115)
-    elseif location == 18 then return vec3:new(-546.0123, -873.7389, 26.1988)
-    elseif location == 19 then return vec3:new(-1293.3013, -1259.5853, 3.2025)
-    elseif location == 20 then return vec3:new(161.7004, -1306.8784, 28.3547)
-    elseif location == 21 then return vec3:new(979.653, -1981.9202, 29.6675)
-    elseif location == 22 then return vec3:new(1124.7676, -1010.5512, 43.6728)
-    elseif location == 23 then return vec3:new(167.95, -2222.4854, 6.2361)
-    elseif location == 24 then return vec3:new(-559.2866, -1803.9038, 21.6104)
     else return vec3:new(0.0, 0.0, 0.0)
     end
 end
@@ -1162,7 +900,7 @@ local function exotic_export_coords(location, part)
     end
 end
 
-local function standart_trial_coords(location)
+local function standard_trial_coords(location)
     if location == 0 then return vec3:new(-1811.675, -1199.5421, 12.0174)
     elseif location == 1 then return vec3:new(-377.166, 1250.8182, 326.4899)
     elseif location == 2 then return vec3:new(-1253.2399, -380.457, 58.2873)
@@ -1237,81 +975,300 @@ local function bike_trial_coords(location)
     end
 end
 
+local function format_int(number)
+    local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+    int = int:reverse():gsub("(%d%d%d)", "%1,")
+    return minus .. int:reverse():gsub("^,", "") .. fraction
+end
+
+local function get_daily_reset_time(target_time)
+    local current_utc = os.date("!*t")
+    local hours_left  = (24 - current_utc.hour + target_time) % 24
+    local mins_left   = 60 - current_utc.min
+    local secs_left   = 60 - current_utc.sec
+    return hours_left, mins_left, secs_left
+end
+
+local function teleport(coords)
+    script.run_in_fiber(function()
+        PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
+    end)
+end
+
+local function has_bit_set(address, pos)
+    return (address & (1 << pos)) ~= 0
+end
+
+local function spawn_vehicle(vehicle_joaat)
+    script.run_in_fiber(function(script)
+        local load_counter = 0
+    	while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
+    		STREAMING.REQUEST_MODEL(vehicle_joaat);
+    		script:yield();
+    		if load_counter > 100 then
+    			return
+    		else
+    			load_counter = load_counter + 1
+    		end
+    	end
+    	local location = ENTITY.GET_ENTITY_COORDS(self.get_ped(), false)
+    	local veh      = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(self.get_ped()), true, false, false)
+    	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+    	DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+    	local network_id = NETWORK.VEH_TO_NET(veh)
+    	if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+    		NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, true)
+    	end
+    	VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+    	PED.SET_PED_INTO_VEHICLE(self.get_ped(), veh, -1)
+    	ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
+    end)
+end
+
+local function get_safe_code()
+    local combination_retn = ""
+    for i = 0, 2, 1 do
+    	if i == 2 then
+    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1))
+    	else
+    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) .. "-"
+    	end
+    end
+    return combination_retn
+end
+
+local function get_vehicle_name(index, return_joaat)
+    local offset        = globals.get_int(1942466 + index) + 1
+    local vehicle_joaat = globals.get_uint(1942455 + offset)
+    if return_joaat == true then
+    	return vehicle_joaat
+    else
+    	return vehicles.get_vehicle_display_name(vehicle_joaat)
+    end
+end
+
+local function is_second_part(hash)
+    if hash == joaat("asbo") then return false
+    elseif hash == joaat("brioso") then return false
+    elseif hash == joaat("buccaneer2") then return false
+    elseif hash == joaat("dominator3") then return false
+    elseif hash == joaat("elegy") then return false
+    elseif hash == joaat("brawler") then return false
+    elseif hash == joaat("flashgt") then return false
+    elseif hash == joaat("gauntlet4") then return false
+    elseif hash == joaat("issi3") then return false
+    elseif hash == joaat("jugular") then return false
+    elseif hash == joaat("kamacho") then return false
+    elseif hash == joaat("komoda") then return false
+    elseif hash == joaat("nightshade") then return false
+    elseif hash == joaat("peyote3") then return false
+    elseif hash == joaat("phoenix") then return false
+    elseif hash == joaat("raiden") then return false
+    elseif hash == joaat("retinue") then return false
+    elseif hash == joaat("rocoto") then return false
+    elseif hash == joaat("ruiner") then return false
+    elseif hash == joaat("sabregt2") then return false
+    elseif hash == joaat("savestra") then return false
+    elseif hash == joaat("chino2") then return false
+    elseif hash == joaat("cheburek") then return false
+    elseif hash == joaat("cavalcade") then return false
+    elseif hash == joaat("buffalo2") then return false
+    elseif hash == joaat("alpha") then return false
+    elseif hash == joaat("kanjo") then return false
+    elseif hash == joaat("kuruma") then return false
+    elseif hash == joaat("sentinel3") then return false
+    elseif hash == joaat("sultan2") then return false
+    elseif hash == joaat("yosemite2") then return false
+    elseif hash == joaat("z190") then return false
+    elseif hash == joaat("jackal") then return false
+    elseif hash == joaat("vstr") then return false
+    elseif hash == joaat("vagrant") then return false
+    elseif hash == joaat("vamos") then return false
+    elseif hash == joaat("tampa2") then return false
+    elseif hash == joaat("tornado5") then return false
+    elseif hash == joaat("tropos") then return false
+    elseif hash == joaat("tulip") then return false
+    end
+    return true
+end
+
+local function get_challenge_time(skydive_location)
+    if skydive_location == 0 then return "00:40.00"
+    elseif skydive_location == 1 then return "00:40.00"
+    elseif skydive_location == 2 then return "00:45.00"
+    elseif skydive_location == 3 then return "01:25.00"
+    elseif skydive_location == 4 then return "01:45.00"
+    elseif skydive_location == 5 then return "01:35.00"
+    elseif skydive_location == 6 then return "01:10.00"
+    elseif skydive_location == 7 then return "00:40.00"
+    elseif skydive_location == 8 then return "02:50.00"
+    elseif skydive_location == 9 then return "02:50.00"
+    elseif skydive_location == 10 then return "02:00.00"
+    elseif skydive_location == 11 then return "01:55.00"
+    elseif skydive_location == 12 then return "01:25.00"
+    elseif skydive_location == 13 then return "01:20.00"
+    elseif skydive_location == 14 then return "02:15.00"
+    elseif skydive_location == 15 then return "01:30.00"
+    elseif skydive_location == 16 then return "01:30.00"
+    elseif skydive_location == 17 then return "01:47.00"
+    elseif skydive_location == 18 then return "01:40.00"
+    elseif skydive_location == 19 then return "01:50.00"
+    elseif skydive_location == 20 then return "01:50.00"
+    elseif skydive_location == 21 then return "01:35.00"
+    elseif skydive_location == 22 then return "01:55.00"
+    elseif skydive_location == 23 then return "01:50.00"
+    elseif skydive_location == 24 then return "01:25.00"
+    end
+    return "unavailable"
+end
+
+local function get_par_time(trial_variant, trial_location)
+    if trial_variant == 0 then
+    	if trial_location == 0 then return "01:43.20"
+    	elseif trial_location == 1 then return "02:04.40"
+    	elseif trial_location == 2 then return "02:04.90"
+    	elseif trial_location == 3 then return "00:46.30"
+    	elseif trial_location == 4 then return "04:09.50"
+    	elseif trial_location == 5 then return "01:44.00"
+    	elseif trial_location == 6 then return "00:38.50"
+    	elseif trial_location == 7 then return "01:10.10"
+    	elseif trial_location == 8 then return "02:15.00"
+    	elseif trial_location == 9 then return "02:07.20"
+    	elseif trial_location == 10 then return "01:41.30"
+    	elseif trial_location == 11 then return "01:17.80"
+    	elseif trial_location == 12 then return "00:58.80"
+    	elseif trial_location == 13 then return "02:29.40"
+    	elseif trial_location == 14 then return "01:00.00"
+    	elseif trial_location == 15 then return "01:19.00"
+    	elseif trial_location == 16 then return "01:43.40"
+    	elseif trial_location == 17 then return "01:24.20"
+    	elseif trial_location == 18 then return "02:58.80"
+    	elseif trial_location == 19 then return "01:26.60"
+    	elseif trial_location == 20 then return "01:16.60"
+    	elseif trial_location == 21 then return "00:54.20"
+    	elseif trial_location == 22 then return "01:40.00"
+    	elseif trial_location == 23 then return "02:05.00"
+    	elseif trial_location == 24 then return "02:00.00"
+    	elseif trial_location == 25 then return "02:35.00"
+    	elseif trial_location == 26 then return "01:20.00"
+    	elseif trial_location == 27 then return "02:24.00"
+    	elseif trial_location == 28 then return "02:16.00"
+    	elseif trial_location == 29 then return "01:50.00"
+    	elseif trial_location == 30 then return "01:26.00"
+    	elseif trial_location == 31 then return "02:10.00"
+    	end
+    elseif trial_variant == 1 then
+    	if trial_location == 0 then return "01:50.00"
+    	elseif trial_location == 1 then return "01:30.00"
+    	elseif trial_location == 2 then return "01:20.00"
+    	elseif trial_location == 3 then return "01:27.00"
+    	elseif trial_location == 4 then return "01:10.00"
+    	elseif trial_location == 5 then return "01:32.00"
+    	elseif trial_location == 6 then return "02:05.00"
+    	elseif trial_location == 7 then return "01:12.00"
+    	elseif trial_location == 8 then return "01:53.00"
+    	elseif trial_location == 9 then return "01:20.00"
+    	elseif trial_location == 10 then return "01:23.00"
+    	elseif trial_location == 11 then return "01:18.00"
+    	elseif trial_location == 12 then return "01:27.00"
+    	elseif trial_location == 13 then return "01:22.00"
+    	end
+    elseif trial_variant == 2 then
+    	if trial_location == 0 then return "02:20.00"
+    	elseif trial_location == 1 then return "02:00.00"
+    	elseif trial_location == 2 then return "01:55.00"
+    	elseif trial_location == 3 then return "01:35.00"
+    	elseif trial_location == 4 then return "02:10.00"
+    	elseif trial_location == 5 then return "01:40.00"
+    	elseif trial_location == 6 then return "02:00.00"
+    	elseif trial_location == 7 then return "01:50.00"
+    	elseif trial_location == 8 then return "01:35.00"
+    	elseif trial_location == 9 then return "01:20.00"
+    	elseif trial_location == 10 then return "01:50.00"
+    	elseif trial_location == 11 then return "01:35.00"
+    	elseif trial_location == 12 then return "02:10.00"
+    	elseif trial_location == 13 then return "01:50.00"
+    	end
+    end
+    return "unavailable"
+end
+
 local function draw_text(location, text)
-	_, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
+    local _, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
 	
-	HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING")
-	HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
-	HUD.SET_TEXT_RENDER_ID(1)
+    HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING")
+    HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
+    HUD.SET_TEXT_RENDER_ID(1)
     HUD.SET_TEXT_OUTLINE()
-	HUD.SET_TEXT_CENTRE(true)
-	HUD.SET_TEXT_SCALE(0, 0.25)
-	HUD.SET_TEXT_FONT(2)
-	HUD.END_TEXT_COMMAND_DISPLAY_TEXT(screen_x, screen_y, 0)
+    HUD.SET_TEXT_CENTRE(true)
+    HUD.SET_TEXT_DROP_SHADOW()
+    HUD.SET_TEXT_SCALE(0, 0.3)
+    HUD.SET_TEXT_FONT(4)
+    HUD.SET_TEXT_COLOUR(255, 255, 255, 240)
+    HUD.END_TEXT_COMMAND_DISPLAY_TEXT(screen_x, screen_y, 0)
 end
 
 local function draw_esp()
-	if esp_gs_cache then
-		if not dead_drop_collected then
-			drop_coords = dead_drop_coords(dead_drop_area, dead_drop_loc)
-            draw_text(drop_coords, "G Dead Drop")
-		end
-	end
-
-	if esp_street_dealers then
-		dealer_coords = street_dealer_coords(street_dealer_loc[selected_dealer + 1])
-        draw_text(dealer_coords, "Street Dealer " .. selected_dealer + 1)
-	end
-
-    if esp_shipwreck then
-		if not shipwrecked_collected then
-		    shipwreck_coords = shipwrecked_coords(shipwrecked_loc)
-		    draw_text(shipwreck_coords, "Shipwreck")
-		end
+    if esp_gs_cache then
+    	if not dead_drop_collected then
+            local drop_coords = dead_drop_coords(dead_drop_area, dead_drop_loc)
+            draw_text(drop_coords, "G's Cache")
+    	end
     end
-
+    
+    if esp_street_dealers then
+    	local dealer_coords = street_dealer_coords(street_dealer_loc[selected_dealer + 1])
+        draw_text(dealer_coords, "Street Dealer " .. selected_dealer + 1)
+    end
+    
+    if esp_shipwreck then
+    	if not shipwrecked_collected then
+    	    local shipwreck_coords = shipwrecked_coords(shipwrecked_loc)
+    	    draw_text(shipwreck_coords, "Shipwreck")
+    	end
+    end
+    
     if esp_hidden_cache then
         if not hidden_cache_collected[selected_cache + 1] then
-		    cache_coords = hidden_cache_coords(hidden_cache_loc[selected_cache + 1])
-		    draw_text(cache_coords, "Hidden Cache " .. selected_cache + 1)
+    	    local cache_coords = hidden_cache_coords(hidden_cache_loc[selected_cache + 1])
+    	    draw_text(cache_coords, "Hidden Cache " .. selected_cache + 1)
         end
-	end
-
+    end
+    
     if esp_treasure_chest then
         if not treasure_chest_collected[selected_treasure + 1] then
-            chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
-		    draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
+            local chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
+    	    draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
         end
-	end
-
+    end
+    
     if esp_buried_stash then
         if not buried_stash_collected[selected_stash + 1] then
-    	    stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
+    	    local stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
             draw_text(stash_coords, "Buried Stash " .. selected_stash + 1)
         end
     end
-
+    
     if esp_stash_house then
         if not stash_house_raided then
             if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
-		        house_coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
-		        draw_text(house_coords, "Stash House")
+    	        local house_coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
+    	        draw_text(house_coords, "Stash House")
             end
         end
-	end
-
+    end
+    
     if esp_exotic_vehicle then
         if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
-    			vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order)))
-		        draw_text(vehicle_coords, "Exotic Vehicle")
-		    end
+                local vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order)))
+    	        draw_text(vehicle_coords, "Exotic Exports Vehicle")
+    	    end
         end
     end
 end
 
 script.register_looped("Daily Collectibles", function()
-    draw_esp()
     daily_obj[1]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (0 * 3)))
     daily_obj[2]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (1 * 3)))
     daily_obj[3]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (2 * 3)))
@@ -1394,6 +1351,7 @@ script.register_looped("Daily Collectibles", function()
     exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
     total_products              = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
     all_products                = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
+	draw_esp()
 end)
 
 daily_collectibles_tab:add_imgui(function()
@@ -1431,8 +1389,6 @@ challenges_tab:add_imgui(function()
     if ImGui.TreeNode("Weekly Challenge") then
     	ImGui.Text(weekly_challenges[weekly_obj_id + 1])
     	ImGui.Text("Override: " .. weekly_obj_override)
-    	ImGui.SameLine()
-    	help_marker("This means the amount in the challenge above is set to this value instead of the default.")
     	ImGui.TreePop()
     end
     
@@ -1483,12 +1439,10 @@ stash_house_tab:add_imgui(function()
 	esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
     
     if ImGui.Button("Enter Safe Combination") then
-    	script.run_in_fiber(function (script)
-    		for i = 0, 2, 1 do
-    			local safe_combination = locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)
-    			locals.set_float("fm_content_stash_house", 117 + 22 + (1 + (i * 2)), safe_combination)
-    		end
-    	end)
+        for i = 0, 2, 1 do
+        	local safe_combination = locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)
+        	locals.set_float("fm_content_stash_house", 117 + 22 + (1 + (i * 2)), safe_combination)
+        end
     end
 end)
 
@@ -1661,10 +1615,10 @@ end)
 time_trials_tab:add_imgui(function()
 	ImGui.Text("Par Time: " .. get_par_time(selected_trial, time_trial_loc[selected_trial + 1]))
 	
-	selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standart Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
+	selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
 	
 	if ImGui.Button("Teleport##trials") then
-		if selected_trial == 0 then teleport(standart_trial_coords(time_trial_loc[1]))
+		if selected_trial == 0 then teleport(standard_trial_coords(time_trial_loc[1]))
 		elseif selected_trial == 1 then teleport(rc_trial_coords(time_trial_loc[2]))
 		elseif selected_trial == 2 then teleport(bike_trial_coords(time_trial_loc[3]))
 		end
