@@ -12,6 +12,22 @@ local buried_stash_tab   = daily_collectibles_tab:add_tab("Buried Stashes")
 local exotic_exports_tab = daily_collectibles_tab:add_tab("Exotic Exports")
 local time_trials_tab    = daily_collectibles_tab:add_tab("Time Trials")
 
+local global_one = 1943205
+local global_two = 1943194
+local global_three = 2738934
+local global_three_offset = 6813
+local global_four = 1882037
+local global_five = 1948923
+local global_five_offset = 5839
+
+local freemode_local_one = 14436
+local freemode_local_two = 15239
+
+local current_objectives_global = 2359296
+local current_objectives_global_offset = 5570
+local weekly_objectives_global = 2737992
+local objectives_state_global = 1574744
+
 -- Credit to Senexis: https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/daily_objectives.json https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/weekly_objectives.json
 local daily_challenges = {
   "Participate in a Land Race.",
@@ -1038,8 +1054,8 @@ local function get_safe_code()
 end
 
 local function get_vehicle_name(index, return_joaat)
-    local offset        = globals.get_int(1942466 + index) + 1
-    local vehicle_joaat = globals.get_uint(1942455 + offset)
+    local offset        = globals.get_int(global_one + index) + 1
+    local vehicle_joaat = globals.get_uint(global_two + offset)
     if return_joaat == true then
     	return vehicle_joaat
     else
@@ -1261,7 +1277,7 @@ local function draw_esp()
     if esp_exotic_vehicle then
         if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
-                local vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order)))
+                local vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(global_two + vehicle_order)))
     	        draw_text(vehicle_coords, "Exotic Exports Vehicle")
     	    end
         end
@@ -1269,31 +1285,31 @@ local function draw_esp()
 end
 
 script.register_looped("Daily Collectibles", function()
-    daily_obj[1]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (0 * 3)))
-    daily_obj[2]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (1 * 3)))
-    daily_obj[3]                = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (2 * 3)))
-    street_dealer_loc[1]        = globals.get_int(2738587 + 6776 + 1 + (0 * 11))
-    street_dealer_loc[2]        = globals.get_int(2738587 + 6776 + 1 + (1 * 11))
-    street_dealer_loc[3]        = globals.get_int(2738587 + 6776 + 1 + (2 * 11))
-    meth_unit[1]                = globals.get_int(2738587 + 6776 + 1 + (0 * 11) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
-    meth_unit[2]                = globals.get_int(2738587 + 6776 + 1 + (1 * 11) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
-    meth_unit[3]                = globals.get_int(2738587 + 6776 + 1 + (2 * 11) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
-    weed_unit[1]                = globals.get_int(2738587 + 6776 + 1 + (0 * 11) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
-    weed_unit[2]                = globals.get_int(2738587 + 6776 + 1 + (1 * 11) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
-    weed_unit[3]                = globals.get_int(2738587 + 6776 + 1 + (2 * 11) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
-    cocaine_unit[1]             = globals.get_int(2738587 + 6776 + 1 + (0 * 11) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
-    cocaine_unit[2]             = globals.get_int(2738587 + 6776 + 1 + (1 * 11) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
-    cocaine_unit[3]             = globals.get_int(2738587 + 6776 + 1 + (2 * 11) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
-    acid_unit[1]                = globals.get_int(2738587 + 6776 + 1 + (0 * 11) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
-    acid_unit[2]                = globals.get_int(2738587 + 6776 + 1 + (1 * 11) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
-    acid_unit[3]                = globals.get_int(2738587 + 6776 + 1 + (2 * 11) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
-    vehicle_location            = globals.get_int(1882037 + 302 + 1)
-    vehicle_index               = globals.get_int(1882037 + 302)
-    vehicle_order               = (globals.get_int(1942466 + vehicle_index + 1) + 1)
-    active_vehicle              = globals.get_uint(2738587 + 6860 + 3)
-    exotic_order_cooldown       = globals.get_int(1948923 + 5839)
-    time_trial_loc[2]           = locals.get_int("freemode", 14282)
-    time_trial_loc[3]           = locals.get_int("freemode", 15076 + 3)
+    daily_obj[1]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (0 * 3)))
+    daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (1 * 3)))
+    daily_obj[3]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (2 * 3)))
+    street_dealer_loc[1]        = globals.get_int(global_three + global_three_offset + 1 + (0 * 7))
+    street_dealer_loc[2]        = globals.get_int(global_three + global_three_offset + 1 + (1 * 7))
+    street_dealer_loc[3]        = globals.get_int(global_three + global_three_offset + 1 + (2 * 7))
+    meth_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
+    meth_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
+    meth_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
+    weed_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
+    weed_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
+    weed_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
+    cocaine_unit[1]             = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
+    cocaine_unit[2]             = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
+    cocaine_unit[3]             = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
+    acid_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
+    acid_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
+    acid_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
+    vehicle_location            = globals.get_int(global_four + 302 + 1)
+    vehicle_index               = globals.get_int(global_four + 302)
+    vehicle_order               = (globals.get_int(global_one + vehicle_index + 1) + 1)
+    active_vehicle              = globals.get_uint(global_three + global_three_offset + 3)
+    exotic_order_cooldown       = globals.get_int(global_five + global_five_offset)
+    time_trial_loc[2]           = locals.get_int("freemode", freemode_local_one)
+    time_trial_loc[3]           = locals.get_int("freemode", freemode_local_two + 3)
     shipwrecked_loc             = stats.get_int("MPX_DAILYCOLLECT_SHIPWRECKED0")
     hidden_cache_loc[1]         = stats.get_int("MPX_DAILYCOLLECTABLES_HIDECACH0")
     hidden_cache_loc[2]         = stats.get_int("MPX_DAILYCOLLECTABLES_HIDECACH1")
@@ -1393,12 +1409,12 @@ challenges_tab:add_imgui(function()
     end
     
     if ImGui.Button("Complete all Challenges") then
-        for i = 0, 2 do
-            local objective = globals.get_int(2359296 + (1 + (0 * 5569)) + 681 + 4243 + (1 + (i * 3)))
-            globals.set_int(1574743 + 1 + (1 + (i * 1)), objective)
+		for i = 0, 2 do --Unlock all daily rewards.
+            local objective = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (i * 3)))
+            globals.set_int(objectives_state_global + 1 + (1 + (i * 1)), objective)
         end
-        globals.set_int(1574743, 1)
-        globals.set_int(2737646 + (1 + (0 * 6)) + 1, globals.get_int(2737646 + (1 + (0 * 6)) + 2))
+        globals.set_int(objectives_state_global, 1)
+        globals.set_int(weekly_objectives_global + (1 + (0 * 6)) + 1, globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 2)) --Unlock Weekly Objective
     end
 end)
 
@@ -1550,7 +1566,7 @@ exotic_exports_tab:add_imgui(function()
     if ImGui.Button("Teleport to Vehicle") then
     	if vehicle_bitset ~= 1023 then
     		if vehicle_location ~= -1 then
-    			teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(1942455 + vehicle_order))))
+    			teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(global_two + vehicle_order))))
     		else
     			gui.show_message("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
     		end
@@ -1583,7 +1599,7 @@ exotic_exports_tab:add_imgui(function()
     if ImGui.Button("Spawn Next Vehicle") then
     	if vehicle_bitset ~= 1023 then
     		for i = 1, 10 do
-    			if not has_bit_set(vehicle_bitset, globals.get_int(1942466 + i)) then
+    			if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
     				spawn_vehicle(get_vehicle_name(i, true))
     				return
     			end
@@ -1601,7 +1617,7 @@ exotic_exports_tab:add_imgui(function()
     		ImGui.SameLine()
     		ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
     	else
-    		if has_bit_set(vehicle_bitset, globals.get_int(1942466 + i)) then
+    		if has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
     			ImGui.Text(i .. " -")
     			ImGui.SameLine()
     			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Delivered)")
