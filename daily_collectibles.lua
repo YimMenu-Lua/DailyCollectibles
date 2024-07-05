@@ -11,22 +11,25 @@ local treasure_chest_tab = daily_collectibles_tab:add_tab("Treasure Chests")
 local buried_stash_tab   = daily_collectibles_tab:add_tab("Buried Stashes")
 local exotic_exports_tab = daily_collectibles_tab:add_tab("Exotic Exports")
 local time_trials_tab    = daily_collectibles_tab:add_tab("Time Trials")
+local ls_tags_tab        = daily_collectibles_tab:add_tab("LS Tags")
+local madrazo_hits_tab   = daily_collectibles_tab:add_tab("Madrazo Hits")
 
-local global_one = 1943205
-local global_two = 1943194
-local global_three = 2738934
-local global_three_offset = 6813
-local global_four = 1882037
-local global_five = 1948923
-local global_five_offset = 5839
+local global_one          = 1943205
+local global_two          = 1943194
+local global_three        = 2738934
+local global_three_offset = 6898
+local global_four         = 1882247
+local global_five         = 1949771
+local global_five_offset  = 5878
 
-local freemode_local_one = 14436
-local freemode_local_two = 15239
+local freemode_local_one    = 14436
+local freemode_local_two    = 15239
+local stash_house_local_one = 119
 
-local current_objectives_global = 2359296
+local current_objectives_global        = 2359296
 local current_objectives_global_offset = 5570
-local weekly_objectives_global = 2737992
-local objectives_state_global = 1574744
+local weekly_objectives_global         = 2737992
+local objectives_state_global          = 1574744
 
 -- Credit to Senexis: https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/daily_objectives.json https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/weekly_objectives.json
 local daily_challenges = {
@@ -360,6 +363,7 @@ local selected_skydive   = 0
 local selected_treasure  = 0
 local selected_stash     = 0
 local selected_trial     = 0
+local selected_tag       = 0
 local esp_gs_cache       = false
 local esp_stash_house    = false
 local esp_street_dealers = false
@@ -368,6 +372,8 @@ local esp_hidden_caches  = false
 local esp_treasure_chest = false
 local esp_buried_stash   = false
 local esp_exotic_vehicle = false
+local esp_ls_tag         = false
+local esp_madrazo_hit    = false
 
 local weekly_obj_id            = 0
 local weekly_obj_override      = 0
@@ -375,6 +381,7 @@ local dead_drop_area           = 0
 local dead_drop_loc            = 0
 local stash_house_loc          = 0
 local shipwrecked_loc          = 0
+local hit_loc                  = 0
 local max_cocaine              = 0
 local max_meth                 = 0
 local max_weed                 = 0
@@ -389,6 +396,7 @@ local vehicle_bitset           = 0
 local dead_drop_collected      = false
 local stash_house_raided       = false
 local shipwrecked_collected    = false
+local hit_completed            = false
 local exotic_reward_ready      = false
 local safe_code                = ""
 local daily_obj                = {}
@@ -398,9 +406,11 @@ local junk_skydive_loc         = {}
 local treasure_chest_loc       = {}
 local buried_stash_loc         = {}
 local time_trial_loc           = {}
+local ls_tag_loc               = {}
 local hidden_cache_collected   = {}
 local treasure_chest_collected = {}
 local buried_stash_collected   = {}
+local ls_tag_sprayed           = {}
 local meth_unit                = {}
 local weed_unit                = {}
 local cocaine_unit             = {}
@@ -991,6 +1001,61 @@ local function bike_trial_coords(location)
     end
 end
 
+local function ls_tag_coords(location)
+    if location == 0 then return vec3:new(-977.6928, -2639.573, 16.474)
+    elseif location == 1 then return vec3:new(819.4288, -2227.2385, 32.6184)
+    elseif location == 2 then return vec3:new(37.9683, -1469.2217, 32.235)
+    elseif location == 3 then return vec3:new(-768.9666, -1321.6681, 7.1244)
+    elseif location == 4 then return vec3:new(1209.1267, -1505.5887, 36.4654)
+    elseif location == 5 then return vec3:new(845.3231, -1203.0039, 27.46)
+    elseif location == 6 then return vec3:new(188.2855, -1843.3844, 29.2995)
+    elseif location == 7 then return vec3:new(182.0389, -941.2879, 32.2661)
+    elseif location == 8 then return vec3:new(-501.2574, -684.436, 35.186)
+    elseif location == 9 then return vec3:new(-1636.3019, -1063.8951, 15.1266)
+    elseif location == 10 then return vec3:new(1165.2151, -314.1255, 71.217)
+    elseif location == 11 then return vec3:new(369.5584, -326.8165, 49.145)
+    elseif location == 12 then return vec3:new(-942.4161, -343.455, 40.765)
+    elseif location == 13 then return vec3:new(-2066, -345.2393, 15.761)
+    elseif location == 14 then return vec3:new(-359.6902, 141.5108, 68.5588)
+    elseif location == 15 then return vec3:new(2581.005, 487.5057, 110.868)
+    elseif location == 16 then return vec3:new(760.227, 583.9885, 128.3567)
+    elseif location == 17 then return vec3:new(-481.0848, 1112.5974, 322.24)
+    elseif location == 18 then return vec3:new(-1834.4456, 788.6052, 140.539)
+    elseif location == 19 then return vec3:new(-3195.2385, 1318.3502, 11.5263)
+    elseif location == 20 then return vec3:new(-2557.941, 2302.0186, 34.956)
+    elseif location == 21 then return vec3:new(-2219.9644, 4222.4917, 49.078)
+    elseif location == 22 then return vec3:new(2469.77, 4082.911, 39.8446)
+    elseif location == 23 then return vec3:new(575.3076, 2676.81, 43.712)
+    elseif location == 24 then return vec3:new(2741.5925, 3453.4548, 58.443)
+    elseif location == 25 then return vec3:new(1928.9758, 3736.5696, 34.514)
+    elseif location == 26 then return vec3:new(1723.0552, 4790.159, 43.9136)
+    elseif location == 27 then return vec3:new(-756.7117, 5600.3823, 38.6646)
+    elseif location == 28 then return vec3:new(1.7607, 6410.2383, 33.779)
+    elseif location == 29 then return vec3:new(1411.0867, 3608.7688, 37.0159)
+    else return vec3:new(0.0, 0.0, 0.0)
+    end	
+end
+
+local function madrazo_hit_coords(location)
+    if location == 0 then return vec3:new(1355.1779, 3600.6501, 33.9761)
+    elseif location == 1 then return vec3:new(2258.5862, 3146.8416, 47.7513)
+    elseif location == 2 then return vec3:new(2414.5872, 4850.1777, 37.2357)
+    elseif location == 3 then return vec3:new(-306.0638, 6248.7246, 30.4665)
+    elseif location == 4 then return vec3:new(924.7427, -2066.5093, 29.5178)
+    elseif location == 5 then return vec3:new(302.9755, -1860.7911, 25.7811)
+    elseif location == 6 then return vec3:new(-592.9996, -882.7405, 24.918)
+    elseif location == 7 then return vec3:new(-140.1684, -1534.7019, 33.2548)
+    elseif location == 8 then return vec3:new(1317.918, -1614.6876, 51.3666)
+    elseif location == 9 then return vec3:new(650.728, -2872.411, 5.057)
+    elseif location == 10 then return vec3:new(-3137.5437, 1055.0897, 19.3245)
+    elseif location == 11 then return vec3:new(-965.4027, -2608.117, 12.981)
+    elseif location == 12 then return vec3:new(219.8501, 284.7484, 104.4699)
+    elseif location == 13 then return vec3:new(116.2243, 3401.1082, 36.7988)
+    elseif location == 14 then return vec3:new(-559.1921, 175.2093, 67.6451)
+	else return vec3:new(0.0, 0.0, 0.0)
+	end
+end
+
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
     int = int:reverse():gsub("(%d%d%d)", "%1,")
@@ -1045,9 +1110,9 @@ local function get_safe_code()
     local combination_retn = ""
     for i = 0, 2, 1 do
     	if i == 2 then
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1))
+    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1))
     	else
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)) .. "-"
+    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)) .. "-"
     	end
     end
     return combination_retn
@@ -1282,6 +1347,20 @@ local function draw_esp()
     	    end
         end
     end
+	
+    if esp_ls_tag then
+        if not ls_tag_sprayed[selected_tag + 1] then
+    	    local tag_coords = buried_stash_coords(ls_tag_loc[selected_tag + 1])
+            draw_text(tag_coords, "LS Tag " .. selected_tag + 1)
+        end
+    end	
+	
+    if esp_madrazo_hit then
+    	if not hit_completed then
+            local hit_coords = madrazo_hit_coords(hit_loc)
+            draw_text(hit_coords, "Madrazo Hit")
+    	end
+    end
 end
 
 script.register_looped("Daily Collectibles", function()
@@ -1303,6 +1382,7 @@ script.register_looped("Daily Collectibles", function()
     acid_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
     acid_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
     acid_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
+    hit_loc                     = globals.get_int(global_three + 6838)
     vehicle_location            = globals.get_int(global_four + 302 + 1)
     vehicle_index               = globals.get_int(global_four + 302)
     vehicle_order               = (globals.get_int(global_one + vehicle_index + 1) + 1)
@@ -1339,6 +1419,11 @@ script.register_looped("Daily Collectibles", function()
     dead_drop_area              = stats.get_packed_stat_int(41214)
     dead_drop_loc               = stats.get_packed_stat_int(41213)
     stash_house_loc             = stats.get_packed_stat_int(36623)
+    ls_tag_loc[1]               = stats.get_packed_stat_int(51546)
+    ls_tag_loc[2]               = stats.get_packed_stat_int(51547)
+    ls_tag_loc[3]               = stats.get_packed_stat_int(51548)
+    ls_tag_loc[4]               = stats.get_packed_stat_int(51549)
+    ls_tag_loc[5]               = stats.get_packed_stat_int(51550)
     dead_drop_collected         = stats.get_packed_stat_bool(36628)
     stash_house_raided          = stats.get_packed_stat_bool(36657)
     shipwrecked_collected       = stats.get_packed_stat_bool(31734)
@@ -1356,6 +1441,12 @@ script.register_looped("Daily Collectibles", function()
     treasure_chest_collected[2] = stats.get_packed_stat_bool(30308)
     buried_stash_collected[1]   = stats.get_packed_stat_bool(25522)
     buried_stash_collected[2]   = stats.get_packed_stat_bool(25523)
+    ls_tag_sprayed[1]           = stats.get_packed_stat_bool(42252)
+    ls_tag_sprayed[2]           = stats.get_packed_stat_bool(42253)
+    ls_tag_sprayed[3]           = stats.get_packed_stat_bool(42254)
+    ls_tag_sprayed[4]           = stats.get_packed_stat_bool(42255)
+    ls_tag_sprayed[5]           = stats.get_packed_stat_bool(42256)
+    hit_completed               = stats.get_packed_stat_bool(42269)
     weekly_obj_id               = tunables.get_int("MP_WEEKLY_OBJECTIVE_ID_OVERRIDE")
     weekly_obj_override         = tunables.get_int("MP_WEEKLY_OBJECTIVE_COUNT_OVERRIDE")
     time_trial_loc[1]           = tunables.get_int("TIMETRIALVARIATION")
@@ -1367,7 +1458,10 @@ script.register_looped("Daily Collectibles", function()
     exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
     total_products              = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
     all_products                = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-	draw_esp()
+    -- TO-DO: Remove these when LS Tags & Madrazo Hits are officially released
+    tunables.set_bool(-2022924242, true)
+    tunables.set_bool(-676725789, true)    
+    draw_esp()
 end)
 
 daily_collectibles_tab:add_imgui(function()
@@ -1456,8 +1550,8 @@ stash_house_tab:add_imgui(function()
     
     if ImGui.Button("Enter Safe Combination") then
         for i = 0, 2, 1 do
-        	local safe_combination = locals.get_int("fm_content_stash_house", 117 + 22 + (1 + (i * 2)) + 1)
-        	locals.set_float("fm_content_stash_house", 117 + 22 + (1 + (i * 2)), safe_combination)
+        	local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)
+        	locals.set_float("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)), safe_combination)
         end
     end
 end)
@@ -1639,4 +1733,36 @@ time_trials_tab:add_imgui(function()
 		elseif selected_trial == 2 then teleport(bike_trial_coords(time_trial_loc[3]))
 		end
 	end
+end)
+
+ls_tags_tab:add_imgui(function()
+    ImGui.Text("Status: " .. (ls_tag_sprayed[selected_tag + 1] and "sprayed" or "ready"))
+    
+    selected_tag = ImGui.Combo("Select Tag", selected_tag, { "1", "2", "3", "4", "5" }, 5)
+    
+    if ImGui.Button("Teleport") then
+    	if not ls_tag_sprayed[selected_tag + 1] then
+    		teleport(ls_tag_coords(ls_tag_loc[selected_tag + 1]))
+    	else
+    		gui.show_message("Daily Collectibles", "LS Tag has already been sprayed.")
+    	end
+    end
+	
+    ImGui.SameLine()
+    esp_ls_tag = ImGui.Checkbox("Draw ESP", esp_ls_tag)	
+end)
+
+madrazo_hits_tab:add_imgui(function()
+    ImGui.Text("Status: " .. (hit_completed and "completed" or "ready"))
+    
+    if ImGui.Button("Teleport") then
+    	if not hit_completed then
+    		teleport(madrazo_hit_coords(hit_loc))
+    	else
+    		gui.show_message("Daily Collectibles", "Madrazo Hit has already been completed.")
+    	end
+    end
+
+    ImGui.SameLine()
+    esp_madrazo_hit = ImGui.Checkbox("Draw ESP", esp_madrazo_hit)	
 end)
