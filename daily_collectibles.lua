@@ -18,6 +18,7 @@ local global_one          = 1943205
 local global_two          = 1943194
 local global_three        = 2738934
 local global_three_offset = 6898
+local global_four_offset  = 6813
 local global_four         = 1882247
 local global_five         = 1949771
 local global_five_offset  = 5878
@@ -418,125 +419,125 @@ local acid_unit                = {}
 
 local function dead_drop_coords(area, location)
     if area == 0 then
-    	if location == 0 then return vec3:new(1113.557, -645.957, 56.091)
-    	elseif location == 1 then return vec3:new(1142.874, -662.951, 57.135)
-    	elseif location == 2 then return vec3:new(1146.691, -703.717, 56.167)
-    	elseif location == 3 then return vec3:new(1073.542, -678.236, 56.583)
-    	elseif location == 4 then return vec3:new(1046.454, -722.915, 56.419)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(1113.557, -645.957, 56.091)
+        elseif location == 1 then return vec3:new(1142.874, -662.951, 57.135)
+        elseif location == 2 then return vec3:new(1146.691, -703.717, 56.167)
+        elseif location == 3 then return vec3:new(1073.542, -678.236, 56.583)
+        elseif location == 4 then return vec3:new(1046.454, -722.915, 56.419)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 1 then
-    	if location == 0 then return vec3:new(2064.713, 3489.88, 44.223)
-    	elseif location == 1 then return vec3:new(2081.859, 3553.254, 42.157)
-    	elseif location == 2 then return vec3:new(2014.72, 3551.499, 42.726)
-    	elseif location == 3 then return vec3:new(1997.019, 3507.838, 39.666)
-    	elseif location == 4 then return vec3:new(2045.597, 3564.346, 39.343)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(2064.713, 3489.88, 44.223)
+        elseif location == 1 then return vec3:new(2081.859, 3553.254, 42.157)
+        elseif location == 2 then return vec3:new(2014.72, 3551.499, 42.726)
+        elseif location == 3 then return vec3:new(1997.019, 3507.838, 39.666)
+        elseif location == 4 then return vec3:new(2045.597, 3564.346, 39.343)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 2 then
-    	if location == 0 then return vec3:new(-1317.344, -1481.97, 3.923)
-    	elseif location == 1 then return vec3:new(-1350.041, -1478.273, 4.567)
-    	elseif location == 2 then return vec3:new(-1393.87, -1445.139, 3.437)
-    	elseif location == 3 then return vec3:new(-1367.034, -1413.992, 2.611)
-    	elseif location == 4 then return vec3:new(-1269.861, -1426.272, 3.556)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-1317.344, -1481.97, 3.923)
+        elseif location == 1 then return vec3:new(-1350.041, -1478.273, 4.567)
+        elseif location == 2 then return vec3:new(-1393.87, -1445.139, 3.437)
+        elseif location == 3 then return vec3:new(-1367.034, -1413.992, 2.611)
+        elseif location == 4 then return vec3:new(-1269.861, -1426.272, 3.556)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 3 then
-    	if location == 0 then return vec3:new(-295.468, 2787.385, 59.864)
-    	elseif location == 1 then return vec3:new(-284.69, 2848.234, 53.266)
-    	elseif location == 2 then return vec3:new(-329.193, 2803.404, 57.787)
-    	elseif location == 3 then return vec3:new(-306.847, 2825.6, 58.219)
-    	elseif location == 4 then return vec3:new(-336.046, 2829.988, 55.448)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-295.468, 2787.385, 59.864)
+        elseif location == 1 then return vec3:new(-284.69, 2848.234, 53.266)
+        elseif location == 2 then return vec3:new(-329.193, 2803.404, 57.787)
+        elseif location == 3 then return vec3:new(-306.847, 2825.6, 58.219)
+        elseif location == 4 then return vec3:new(-336.046, 2829.988, 55.448)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 4 then
-    	if location == 0 then return vec3:new(-1725.245, 233.946, 57.685)
-    	elseif location == 1 then return vec3:new(-1639.892, 225.521, 60.336)
-    	elseif location == 2 then return vec3:new(-1648.48, 212.049, 59.777)
-    	elseif location == 3 then return vec3:new(-1693.318, 156.665, 63.855)
-    	elseif location == 4 then return vec3:new(-1699.193, 179.574, 63.185)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-1725.245, 233.946, 57.685)
+        elseif location == 1 then return vec3:new(-1639.892, 225.521, 60.336)
+        elseif location == 2 then return vec3:new(-1648.48, 212.049, 59.777)
+        elseif location == 3 then return vec3:new(-1693.318, 156.665, 63.855)
+        elseif location == 4 then return vec3:new(-1699.193, 179.574, 63.185)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 5 then
-    	if location == 0 then return vec3:new(-949.714, -710.658, 19.604)
-    	elseif location == 1 then return vec3:new(-938.774, -781.817, 19.657)
-    	elseif location == 2 then return vec3:new(-884.91, -786.863, 15.043)
-    	elseif location == 3 then return vec3:new(-895.257, -729.943, 19.143)
-    	elseif location == 4 then return vec3:new(-932.986, -746.452, 19.008)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-949.714, -710.658, 19.604)
+        elseif location == 1 then return vec3:new(-938.774, -781.817, 19.657)
+        elseif location == 2 then return vec3:new(-884.91, -786.863, 15.043)
+        elseif location == 3 then return vec3:new(-895.257, -729.943, 19.143)
+        elseif location == 4 then return vec3:new(-932.986, -746.452, 19.008)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 6 then
-    	if location == 0 then return vec3:new(-425.948, 1213.342, 324.936)
-    	elseif location == 1 then return vec3:new(-387.267, 1137.65, 321.704)
-    	elseif location == 2 then return vec3:new(-477.999, 1135.36, 320.123)
-    	elseif location == 3 then return vec3:new(-431.822, 1119.449, 325.964)
-    	elseif location == 4 then return vec3:new(-387.902, 1161.655, 324.529)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-425.948, 1213.342, 324.936)
+        elseif location == 1 then return vec3:new(-387.267, 1137.65, 321.704)
+        elseif location == 2 then return vec3:new(-477.999, 1135.36, 320.123)
+        elseif location == 3 then return vec3:new(-431.822, 1119.449, 325.964)
+        elseif location == 4 then return vec3:new(-387.902, 1161.655, 324.529)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 7 then
-    	if location == 0 then return vec3:new(-3381.278, 965.534, 7.426)
-    	elseif location == 1 then return vec3:new(-3427.724, 979.944, 7.526)
-    	elseif location == 2 then return vec3:new(-3413.606, 961.845, 11.038)
-    	elseif location == 3 then return vec3:new(-3419.585, 977.595, 11.167)
-    	elseif location == 4 then return vec3:new(-3425.687, 961.215, 7.536)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-3381.278, 965.534, 7.426)
+        elseif location == 1 then return vec3:new(-3427.724, 979.944, 7.526)
+        elseif location == 2 then return vec3:new(-3413.606, 961.845, 11.038)
+        elseif location == 3 then return vec3:new(-3419.585, 977.595, 11.167)
+        elseif location == 4 then return vec3:new(-3425.687, 961.215, 7.536)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 8 then
-    	if location == 0 then return vec3:new(-688.732, 5828.4, 16.696)
-    	elseif location == 1 then return vec3:new(-673.425, 5799.744, 16.467)
-    	elseif location == 2 then return vec3:new(-710.348, 5769.631, 16.75)
-    	elseif location == 3 then return vec3:new(-699.926, 5801.619, 16.504)
-    	elseif location == 4 then return vec3:new(-660.359, 5781.733, 18.774)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-688.732, 5828.4, 16.696)
+        elseif location == 1 then return vec3:new(-673.425, 5799.744, 16.467)
+        elseif location == 2 then return vec3:new(-710.348, 5769.631, 16.75)
+        elseif location == 3 then return vec3:new(-699.926, 5801.619, 16.504)
+        elseif location == 4 then return vec3:new(-660.359, 5781.733, 18.774)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 9 then
-    	if location == 0 then return vec3:new(38.717, 6264.173, 32.88)
-    	elseif location == 1 then return vec3:new(84.67, 6292.286, 30.731)
-    	elseif location == 2 then return vec3:new(97.17, 6288.558, 38.447)
-    	elseif location == 3 then return vec3:new(14.453, 6243.932, 35.445)
-    	elseif location == 4 then return vec3:new(67.52, 6261.744, 32.029)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(38.717, 6264.173, 32.88)
+        elseif location == 1 then return vec3:new(84.67, 6292.286, 30.731)
+        elseif location == 2 then return vec3:new(97.17, 6288.558, 38.447)
+        elseif location == 3 then return vec3:new(14.453, 6243.932, 35.445)
+        elseif location == 4 then return vec3:new(67.52, 6261.744, 32.029)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 10 then
-    	if location == 0 then return vec3:new(2954.598, 4671.458, 50.106)
-    	elseif location == 1 then return vec3:new(2911.146, 4637.608, 49.3)
-    	elseif location == 2 then return vec3:new(2945.212, 4624.044, 49.078)
-    	elseif location == 3 then return vec3:new(2941.139, 4617.117, 52.114)
-    	elseif location == 4 then return vec3:new(2895.884, 4686.396, 48.094)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(2954.598, 4671.458, 50.106)
+        elseif location == 1 then return vec3:new(2911.146, 4637.608, 49.3)
+        elseif location == 2 then return vec3:new(2945.212, 4624.044, 49.078)
+        elseif location == 3 then return vec3:new(2941.139, 4617.117, 52.114)
+        elseif location == 4 then return vec3:new(2895.884, 4686.396, 48.094)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 11 then
-    	if location == 0 then return vec3:new(1332.319, 4271.446, 30.646)
-    	elseif location == 1 then return vec3:new(1353.332, 4387.911, 43.541)
-    	elseif location == 2 then return vec3:new(1337.892, 4321.563, 38.093)
-    	elseif location == 3 then return vec3:new(1386.603, 4366.511, 42.236)
-    	elseif location == 4 then return vec3:new(1303.193, 4313.509, 36.939)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(1332.319, 4271.446, 30.646)
+        elseif location == 1 then return vec3:new(1353.332, 4387.911, 43.541)
+        elseif location == 2 then return vec3:new(1337.892, 4321.563, 38.093)
+        elseif location == 3 then return vec3:new(1386.603, 4366.511, 42.236)
+        elseif location == 4 then return vec3:new(1303.193, 4313.509, 36.939)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 12 then
-    	if location == 0 then return vec3:new(2720.03, 1572.762, 20.204)
-    	elseif location == 1 then return vec3:new(2663.161, 1581.395, 24.418)
-    	elseif location == 2 then return vec3:new(2661.482, 1641.057, 24.001)
-    	elseif location == 3 then return vec3:new(2671.003, 1561.394, 23.882)
-    	elseif location == 4 then return vec3:new(2660.104, 1606.54, 28.61)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(2720.03, 1572.762, 20.204)
+        elseif location == 1 then return vec3:new(2663.161, 1581.395, 24.418)
+        elseif location == 2 then return vec3:new(2661.482, 1641.057, 24.001)
+        elseif location == 3 then return vec3:new(2671.003, 1561.394, 23.882)
+        elseif location == 4 then return vec3:new(2660.104, 1606.54, 28.61)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 13 then
-    	if location == 0 then return vec3:new(211.775, -934.269, 23.466)
-    	elseif location == 1 then return vec3:new(198.265, -884.039, 30.696)
-    	elseif location == 2 then return vec3:new(189.542, -919.726, 29.96)
-    	elseif location == 3 then return vec3:new(169.504, -934.841, 29.228)
-    	elseif location == 4 then return vec3:new(212.376, -934.807, 29.007)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(211.775, -934.269, 23.466)
+        elseif location == 1 then return vec3:new(198.265, -884.039, 30.696)
+        elseif location == 2 then return vec3:new(189.542, -919.726, 29.96)
+        elseif location == 3 then return vec3:new(169.504, -934.841, 29.228)
+        elseif location == 4 then return vec3:new(212.376, -934.807, 29.007)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     elseif area == 14 then
-    	if location == 0 then return vec3:new(1330.113, -2520.754, 46.365)
-    	elseif location == 1 then return vec3:new(1328.954, -2538.302, 46.976)
-    	elseif location == 2 then return vec3:new(1237.506, -2572.335, 39.791)
-    	elseif location == 3 then return vec3:new(1244.602, -2563.721, 42.646)
-    	elseif location == 4 then return vec3:new(1278.421, -2565.117, 43.544)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(1330.113, -2520.754, 46.365)
+        elseif location == 1 then return vec3:new(1328.954, -2538.302, 46.976)
+        elseif location == 2 then return vec3:new(1237.506, -2572.335, 39.791)
+        elseif location == 3 then return vec3:new(1244.602, -2563.721, 42.646)
+        elseif location == 4 then return vec3:new(1278.421, -2565.117, 43.544)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     else return vec3:new(0.0, 0.0, 0.0)
     end
 end
@@ -818,111 +819,111 @@ end
 
 local function exotic_export_coords(location, part)
     if part then
-    	if location == 0 then return vec3:new(-1297.199, 252.495, 61.813)
-    	elseif location == 1 then return vec3:new(-1114.101, 479.205, 81.161)
-    	elseif location == 2 then return vec3:new(-345.267, 662.299, 168.587)
-    	elseif location == 3 then return vec3:new(-72.605, 902.579, 234.631)
-    	elseif location == 4 then return vec3:new(-161.232, 274.911, 92.534)
-    	elseif location == 5 then return vec3:new(-504.323, 424.21, 96.287)
-    	elseif location == 6 then return vec3:new(-1451.916, 533.495, 118.177)
-    	elseif location == 7 then return vec3:new(-1979.252, 586.078, 116.479)
-    	elseif location == 8 then return vec3:new(-1405.117, 81.983, 52.099)
-    	elseif location == 9 then return vec3:new(-1299.92, -228.464, 59.654)
-    	elseif location == 10 then return vec3:new(-1409.08, -590.823, 29.317)
-    	elseif location == 11 then return vec3:new(-1085.162, -476.529, 35.636)
-    	elseif location == 12 then return vec3:new(-817.325, -1201.59, 5.935)
-    	elseif location == 13 then return vec3:new(-1873.598, -343.933, 48.26)
-    	elseif location == 14 then return vec3:new(-1334.625, -1008.972, 6.867)
-    	elseif location == 15 then return vec3:new(-1043.008, -1010.464, 1.15)
-    	elseif location == 16 then return vec3:new(-489.189, -596.899, 30.174)
-    	elseif location == 17 then return vec3:new(-187.144, -175.854, 42.624)
-    	elseif location == 18 then return vec3:new(871.548, -75.386, 77.764)
-    	elseif location == 19 then return vec3:new(443.542, 253.197, 102.21)
-    	elseif location == 20 then return vec3:new(185.595, -1016.005, 28.3)
-    	elseif location == 21 then return vec3:new(110.261, -714.605, 32.133)
-    	elseif location == 22 then return vec3:new(-220.102, -590.273, 33.264)
-    	elseif location == 23 then return vec3:new(-74.575, -619.874, 35.173)
-    	elseif location == 24 then return vec3:new(283.769, -342.644, 43.92)
-    	elseif location == 25 then return vec3:new(-237.521, -2059.951, 26.62)
-    	elseif location == 26 then return vec3:new(-1044.016, -2608.022, 19.775)
-    	elseif location == 27 then return vec3:new(-801.566, -1313.922, 4.0)
-    	elseif location == 28 then return vec3:new(-972.578, -1464.273, 4.013)
-    	elseif location == 29 then return vec3:new(1309.942, -530.154, 70.312)
-    	elseif location == 30 then return vec3:new(1566.097, -1683.172, 87.205)
-    	elseif location == 31 then return vec3:new(339.481, 159.143, 102.146)
-    	elseif location == 32 then return vec3:new(-2316.493, 280.86, 168.467)
-    	elseif location == 33 then return vec3:new(-3036.574, 105.31, 10.593)
-    	elseif location == 34 then return vec3:new(-3071.87, 658.171, 9.918)
-    	elseif location == 35 then return vec3:new(-1534.826, 889.731, 180.803)
-    	elseif location == 36 then return vec3:new(140.945, 6606.513, 30.845)
-    	elseif location == 37 then return vec3:new(1362.672, 1178.352, 111.609)
-    	elseif location == 38 then return vec3:new(1869.749, 2622.154, 44.672)
-    	elseif location == 39 then return vec3:new(2673.478, 1678.569, 23.488)
-    	elseif location == 40 then return vec3:new(2593.022, 364.349, 107.457)
-    	elseif location == 41 then return vec3:new(-1886.248, 2016.572, 139.951)
-    	elseif location == 42 then return vec3:new(2537.084, -390.048, 91.993)
-    	elseif location == 43 then return vec3:new(3511.653, 3783.877, 28.925)
-    	elseif location == 44 then return vec3:new(2002.724, 3769.429, 31.181)
-    	elseif location == 45 then return vec3:new(-771.927, 5566.46, 32.486)
-    	elseif location == 46 then return vec3:new(1697.817, 6414.365, 31.73)
-    	elseif location == 47 then return vec3:new(386.663, 2640.138, 43.493)
-    	elseif location == 48 then return vec3:new(231.935, 1162.313, 224.464)
-    	elseif location == 49 then return vec3:new(1700.445, 4937.267, 41.078)
-    	else return vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-1297.199, 252.495, 61.813)
+        elseif location == 1 then return vec3:new(-1114.101, 479.205, 81.161)
+        elseif location == 2 then return vec3:new(-345.267, 662.299, 168.587)
+        elseif location == 3 then return vec3:new(-72.605, 902.579, 234.631)
+        elseif location == 4 then return vec3:new(-161.232, 274.911, 92.534)
+        elseif location == 5 then return vec3:new(-504.323, 424.21, 96.287)
+        elseif location == 6 then return vec3:new(-1451.916, 533.495, 118.177)
+        elseif location == 7 then return vec3:new(-1979.252, 586.078, 116.479)
+        elseif location == 8 then return vec3:new(-1405.117, 81.983, 52.099)
+        elseif location == 9 then return vec3:new(-1299.92, -228.464, 59.654)
+        elseif location == 10 then return vec3:new(-1409.08, -590.823, 29.317)
+        elseif location == 11 then return vec3:new(-1085.162, -476.529, 35.636)
+        elseif location == 12 then return vec3:new(-817.325, -1201.59, 5.935)
+        elseif location == 13 then return vec3:new(-1873.598, -343.933, 48.26)
+        elseif location == 14 then return vec3:new(-1334.625, -1008.972, 6.867)
+        elseif location == 15 then return vec3:new(-1043.008, -1010.464, 1.15)
+        elseif location == 16 then return vec3:new(-489.189, -596.899, 30.174)
+        elseif location == 17 then return vec3:new(-187.144, -175.854, 42.624)
+        elseif location == 18 then return vec3:new(871.548, -75.386, 77.764)
+        elseif location == 19 then return vec3:new(443.542, 253.197, 102.21)
+        elseif location == 20 then return vec3:new(185.595, -1016.005, 28.3)
+        elseif location == 21 then return vec3:new(110.261, -714.605, 32.133)
+        elseif location == 22 then return vec3:new(-220.102, -590.273, 33.264)
+        elseif location == 23 then return vec3:new(-74.575, -619.874, 35.173)
+        elseif location == 24 then return vec3:new(283.769, -342.644, 43.92)
+        elseif location == 25 then return vec3:new(-237.521, -2059.951, 26.62)
+        elseif location == 26 then return vec3:new(-1044.016, -2608.022, 19.775)
+        elseif location == 27 then return vec3:new(-801.566, -1313.922, 4.0)
+        elseif location == 28 then return vec3:new(-972.578, -1464.273, 4.013)
+        elseif location == 29 then return vec3:new(1309.942, -530.154, 70.312)
+        elseif location == 30 then return vec3:new(1566.097, -1683.172, 87.205)
+        elseif location == 31 then return vec3:new(339.481, 159.143, 102.146)
+        elseif location == 32 then return vec3:new(-2316.493, 280.86, 168.467)
+        elseif location == 33 then return vec3:new(-3036.574, 105.31, 10.593)
+        elseif location == 34 then return vec3:new(-3071.87, 658.171, 9.918)
+        elseif location == 35 then return vec3:new(-1534.826, 889.731, 180.803)
+        elseif location == 36 then return vec3:new(140.945, 6606.513, 30.845)
+        elseif location == 37 then return vec3:new(1362.672, 1178.352, 111.609)
+        elseif location == 38 then return vec3:new(1869.749, 2622.154, 44.672)
+        elseif location == 39 then return vec3:new(2673.478, 1678.569, 23.488)
+        elseif location == 40 then return vec3:new(2593.022, 364.349, 107.457)
+        elseif location == 41 then return vec3:new(-1886.248, 2016.572, 139.951)
+        elseif location == 42 then return vec3:new(2537.084, -390.048, 91.993)
+        elseif location == 43 then return vec3:new(3511.653, 3783.877, 28.925)
+        elseif location == 44 then return vec3:new(2002.724, 3769.429, 31.181)
+        elseif location == 45 then return vec3:new(-771.927, 5566.46, 32.486)
+        elseif location == 46 then return vec3:new(1697.817, 6414.365, 31.73)
+        elseif location == 47 then return vec3:new(386.663, 2640.138, 43.493)
+        elseif location == 48 then return vec3:new(231.935, 1162.313, 224.464)
+        elseif location == 49 then return vec3:new(1700.445, 4937.267, 41.078)
+        else return vec3:new(0.0, 0.0, 0.0)
+        end
     else
-    	if location == 0 then return vec3:new(-582.454, -859.433, 25.034)
-    	elseif location == 1 then return vec3:new(-604.458, -1218.292, 13.507)
-    	elseif location == 2 then return vec3:new(-229.587, -1483.435, 30.352)
-    	elseif location == 3 then return vec3:new(28.385, -1707.341, 28.298)
-    	elseif location == 4 then return vec3:new(-22.296, -1851.577, 24.108)
-    	elseif location == 5 then return vec3:new(321.798, -1948.141, 23.627)
-    	elseif location == 6 then return vec3:new(455.602, -1695.263, 28.289)
-    	elseif location == 7 then return vec3:new(934.148, -1812.944, 29.812)
-    	elseif location == 8 then return vec3:new(1228.548, -1605.649, 50.736)
-    	elseif location == 9 then return vec3:new(-329.7, -700.958, 31.912)
-    	elseif location == 10 then return vec3:new(238.339, -35.01, 68.728)
-    	elseif location == 11 then return vec3:new(393.61, -649.557, 27.5)
-    	elseif location == 12 then return vec3:new(246.847, -1162.082, 28.16)
-    	elseif location == 13 then return vec3:new(124.231, -1472.496, 28.142)
-    	elseif location == 14 then return vec3:new(1136.156, -773.997, 56.632)
-    	elseif location == 15 then return vec3:new(1156.682, -1474.145, 33.693)
-    	elseif location == 16 then return vec3:new(1028.898, -2405.952, 28.494)
-    	elseif location == 17 then return vec3:new(-936.334, -2692.07, 15.611)
-    	elseif location == 18 then return vec3:new(-532.351, -2134.219, 4.992)
-    	elseif location == 19 then return vec3:new(-1530.625, -993.47, 12.017)
-    	elseif location == 20 then return vec3:new(-1528.444, -427.05, 34.447)
-    	elseif location == 21 then return vec3:new(-1640.424, -202.879, 54.146)
-    	elseif location == 22 then return vec3:new(-552.673, 309.154, 82.191)
-    	elseif location == 23 then return vec3:new(642.042, 587.747, 127.911)
-    	elseif location == 24 then return vec3:new(-1804.769, 804.137, 137.514)
-    	elseif location == 25 then return vec3:new(839.097, 2202.196, 50.46)
-    	elseif location == 26 then return vec3:new(756.539, 2525.957, 72.161)
-    	elseif location == 27 then return vec3:new(1205.454, 2658.357, 36.824)
-    	elseif location == 28 then return vec3:new(1991.707, 3078.063, 46.016)
-    	elseif location == 29 then return vec3:new(1977.207, 3837.1, 30.997)
-    	elseif location == 30 then return vec3:new(1350.173, 3601.249, 33.899)
-    	elseif location == 31 then return vec3:new(1819.042, 4592.234, 35.316)
-    	elseif location == 32 then return vec3:new(2905.354, 4419.682, 47.541)
-    	elseif location == 33 then return vec3:new(-472.038, 6034.981, 30.341)
-    	elseif location == 34 then return vec3:new(-165.839, 6454.25, 30.495)
-    	elseif location == 35 then return vec3:new(-2221.144, 4232.757, 46.132)
-    	elseif location == 36 then return vec3:new(-3138.864, 1086.83, 19.669)
-    	elseif location == 37 then return vec3:new(1546.591, 3781.791, 33.06)
-    	elseif location == 38 then return vec3:new(2717.772, 1391.725, 23.535)
-    	elseif location == 39 then return vec3:new(-1144.001, 2666.28, 17.094)
-    	elseif location == 40 then return vec3:new(-2555.512, 2322.827, 32.06)
-    	elseif location == 41 then return vec3:new(-2340.763, 296.197, 168.467)
-    	elseif location == 42 then return vec3:new(1122.086, 267.125, 79.856)
-    	elseif location == 43 then return vec3:new(629.014, 196.173, 96.128)
-    	elseif location == 44 then return vec3:new(1150.161, -991.569, 44.528)
-    	elseif location == 45 then return vec3:new(244.916, -860.606, 28.5)
-    	elseif location == 46 then return vec3:new(-340.099, -876.452, 30.071)
-    	elseif location == 47 then return vec3:new(387.275, -215.651, 55.835)
-    	elseif location == 48 then return vec3:new(-1234.105, -1646.832, 3.129)
-    	elseif location == 49 then return vec3:new(-1062.018, -226.736, 37.155)
-    	else vec3:new(0.0, 0.0, 0.0)
-    	end
+        if location == 0 then return vec3:new(-582.454, -859.433, 25.034)
+        elseif location == 1 then return vec3:new(-604.458, -1218.292, 13.507)
+        elseif location == 2 then return vec3:new(-229.587, -1483.435, 30.352)
+        elseif location == 3 then return vec3:new(28.385, -1707.341, 28.298)
+        elseif location == 4 then return vec3:new(-22.296, -1851.577, 24.108)
+        elseif location == 5 then return vec3:new(321.798, -1948.141, 23.627)
+        elseif location == 6 then return vec3:new(455.602, -1695.263, 28.289)
+        elseif location == 7 then return vec3:new(934.148, -1812.944, 29.812)
+        elseif location == 8 then return vec3:new(1228.548, -1605.649, 50.736)
+        elseif location == 9 then return vec3:new(-329.7, -700.958, 31.912)
+        elseif location == 10 then return vec3:new(238.339, -35.01, 68.728)
+        elseif location == 11 then return vec3:new(393.61, -649.557, 27.5)
+        elseif location == 12 then return vec3:new(246.847, -1162.082, 28.16)
+        elseif location == 13 then return vec3:new(124.231, -1472.496, 28.142)
+        elseif location == 14 then return vec3:new(1136.156, -773.997, 56.632)
+        elseif location == 15 then return vec3:new(1156.682, -1474.145, 33.693)
+        elseif location == 16 then return vec3:new(1028.898, -2405.952, 28.494)
+        elseif location == 17 then return vec3:new(-936.334, -2692.07, 15.611)
+        elseif location == 18 then return vec3:new(-532.351, -2134.219, 4.992)
+        elseif location == 19 then return vec3:new(-1530.625, -993.47, 12.017)
+        elseif location == 20 then return vec3:new(-1528.444, -427.05, 34.447)
+        elseif location == 21 then return vec3:new(-1640.424, -202.879, 54.146)
+        elseif location == 22 then return vec3:new(-552.673, 309.154, 82.191)
+        elseif location == 23 then return vec3:new(642.042, 587.747, 127.911)
+        elseif location == 24 then return vec3:new(-1804.769, 804.137, 137.514)
+        elseif location == 25 then return vec3:new(839.097, 2202.196, 50.46)
+        elseif location == 26 then return vec3:new(756.539, 2525.957, 72.161)
+        elseif location == 27 then return vec3:new(1205.454, 2658.357, 36.824)
+        elseif location == 28 then return vec3:new(1991.707, 3078.063, 46.016)
+        elseif location == 29 then return vec3:new(1977.207, 3837.1, 30.997)
+        elseif location == 30 then return vec3:new(1350.173, 3601.249, 33.899)
+        elseif location == 31 then return vec3:new(1819.042, 4592.234, 35.316)
+        elseif location == 32 then return vec3:new(2905.354, 4419.682, 47.541)
+        elseif location == 33 then return vec3:new(-472.038, 6034.981, 30.341)
+        elseif location == 34 then return vec3:new(-165.839, 6454.25, 30.495)
+        elseif location == 35 then return vec3:new(-2221.144, 4232.757, 46.132)
+        elseif location == 36 then return vec3:new(-3138.864, 1086.83, 19.669)
+        elseif location == 37 then return vec3:new(1546.591, 3781.791, 33.06)
+        elseif location == 38 then return vec3:new(2717.772, 1391.725, 23.535)
+        elseif location == 39 then return vec3:new(-1144.001, 2666.28, 17.094)
+        elseif location == 40 then return vec3:new(-2555.512, 2322.827, 32.06)
+        elseif location == 41 then return vec3:new(-2340.763, 296.197, 168.467)
+        elseif location == 42 then return vec3:new(1122.086, 267.125, 79.856)
+        elseif location == 43 then return vec3:new(629.014, 196.173, 96.128)
+        elseif location == 44 then return vec3:new(1150.161, -991.569, 44.528)
+        elseif location == 45 then return vec3:new(244.916, -860.606, 28.5)
+        elseif location == 46 then return vec3:new(-340.099, -876.452, 30.071)
+        elseif location == 47 then return vec3:new(387.275, -215.651, 55.835)
+        elseif location == 48 then return vec3:new(-1234.105, -1646.832, 3.129)
+        elseif location == 49 then return vec3:new(-1062.018, -226.736, 37.155)
+        else vec3:new(0.0, 0.0, 0.0)
+        end
     end
 end
 
@@ -1033,7 +1034,7 @@ local function ls_tag_coords(location)
     elseif location == 28 then return vec3:new(1.7607, 6410.2383, 33.779)
     elseif location == 29 then return vec3:new(1411.0867, 3608.7688, 37.0159)
     else return vec3:new(0.0, 0.0, 0.0)
-    end	
+    end 
 end
 
 local function madrazo_hit_coords(location)
@@ -1052,8 +1053,8 @@ local function madrazo_hit_coords(location)
     elseif location == 12 then return vec3:new(219.8501, 284.7484, 104.4699)
     elseif location == 13 then return vec3:new(116.2243, 3401.1082, 36.7988)
     elseif location == 14 then return vec3:new(-559.1921, 175.2093, 67.6451)
-	else return vec3:new(0.0, 0.0, 0.0)
-	end
+    else return vec3:new(0.0, 0.0, 0.0)
+    end
 end
 
 local function format_int(number)
@@ -1083,37 +1084,37 @@ end
 local function spawn_vehicle(vehicle_joaat)
     script.run_in_fiber(function(script)
         local load_counter = 0
-    	while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
-    		STREAMING.REQUEST_MODEL(vehicle_joaat);
-    		script:yield();
-    		if load_counter > 100 then
-    			return
-    		else
-    			load_counter = load_counter + 1
-    		end
-    	end
-    	local location = ENTITY.GET_ENTITY_COORDS(self.get_ped(), false)
-    	local veh      = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(self.get_ped()), true, false, false)
-    	STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
-    	DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
-    	local network_id = NETWORK.VEH_TO_NET(veh)
-    	if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
-    		NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, true)
-    	end
-    	VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
-    	PED.SET_PED_INTO_VEHICLE(self.get_ped(), veh, -1)
-    	ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
+        while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
+            STREAMING.REQUEST_MODEL(vehicle_joaat);
+            script:yield();
+            if load_counter > 100 then
+                return
+            else
+                load_counter = load_counter + 1
+            end
+        end
+        local location = ENTITY.GET_ENTITY_COORDS(self.get_ped(), false)
+        local veh      = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(self.get_ped()), true, false, false)
+        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+        DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+        local network_id = NETWORK.VEH_TO_NET(veh)
+        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+            NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, true)
+        end
+        VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+        PED.SET_PED_INTO_VEHICLE(self.get_ped(), veh, -1)
+        ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
     end)
 end
 
 local function get_safe_code()
     local combination_retn = ""
     for i = 0, 2, 1 do
-    	if i == 2 then
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1))
-    	else
-    		combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)) .. "-"
-    	end
+        if i == 2 then
+            combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1))
+        else
+            combination_retn = combination_retn .. string.format("%02d",locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)) .. "-"
+        end
     end
     return combination_retn
 end
@@ -1122,9 +1123,9 @@ local function get_vehicle_name(index, return_joaat)
     local offset        = globals.get_int(global_one + index) + 1
     local vehicle_joaat = globals.get_uint(global_two + offset)
     if return_joaat == true then
-    	return vehicle_joaat
+        return vehicle_joaat
     else
-    	return vehicles.get_vehicle_display_name(vehicle_joaat)
+        return vehicles.get_vehicle_display_name(vehicle_joaat)
     end
 end
 
@@ -1205,78 +1206,78 @@ end
 
 local function get_par_time(trial_variant, trial_location)
     if trial_variant == 0 then
-    	if trial_location == 0 then return "01:43.20"
-    	elseif trial_location == 1 then return "02:04.40"
-    	elseif trial_location == 2 then return "02:04.90"
-    	elseif trial_location == 3 then return "00:46.30"
-    	elseif trial_location == 4 then return "04:09.50"
-    	elseif trial_location == 5 then return "01:44.00"
-    	elseif trial_location == 6 then return "00:38.50"
-    	elseif trial_location == 7 then return "01:10.10"
-    	elseif trial_location == 8 then return "02:15.00"
-    	elseif trial_location == 9 then return "02:07.20"
-    	elseif trial_location == 10 then return "01:41.30"
-    	elseif trial_location == 11 then return "01:17.80"
-    	elseif trial_location == 12 then return "00:58.80"
-    	elseif trial_location == 13 then return "02:29.40"
-    	elseif trial_location == 14 then return "01:00.00"
-    	elseif trial_location == 15 then return "01:19.00"
-    	elseif trial_location == 16 then return "01:43.40"
-    	elseif trial_location == 17 then return "01:24.20"
-    	elseif trial_location == 18 then return "02:58.80"
-    	elseif trial_location == 19 then return "01:26.60"
-    	elseif trial_location == 20 then return "01:16.60"
-    	elseif trial_location == 21 then return "00:54.20"
-    	elseif trial_location == 22 then return "01:40.00"
-    	elseif trial_location == 23 then return "02:05.00"
-    	elseif trial_location == 24 then return "02:00.00"
-    	elseif trial_location == 25 then return "02:35.00"
-    	elseif trial_location == 26 then return "01:20.00"
-    	elseif trial_location == 27 then return "02:24.00"
-    	elseif trial_location == 28 then return "02:16.00"
-    	elseif trial_location == 29 then return "01:50.00"
-    	elseif trial_location == 30 then return "01:26.00"
-    	elseif trial_location == 31 then return "02:10.00"
-    	end
+        if trial_location == 0 then return "01:43.20"
+        elseif trial_location == 1 then return "02:04.40"
+        elseif trial_location == 2 then return "02:04.90"
+        elseif trial_location == 3 then return "00:46.30"
+        elseif trial_location == 4 then return "04:09.50"
+        elseif trial_location == 5 then return "01:44.00"
+        elseif trial_location == 6 then return "00:38.50"
+        elseif trial_location == 7 then return "01:10.10"
+        elseif trial_location == 8 then return "02:15.00"
+        elseif trial_location == 9 then return "02:07.20"
+        elseif trial_location == 10 then return "01:41.30"
+        elseif trial_location == 11 then return "01:17.80"
+        elseif trial_location == 12 then return "00:58.80"
+        elseif trial_location == 13 then return "02:29.40"
+        elseif trial_location == 14 then return "01:00.00"
+        elseif trial_location == 15 then return "01:19.00"
+        elseif trial_location == 16 then return "01:43.40"
+        elseif trial_location == 17 then return "01:24.20"
+        elseif trial_location == 18 then return "02:58.80"
+        elseif trial_location == 19 then return "01:26.60"
+        elseif trial_location == 20 then return "01:16.60"
+        elseif trial_location == 21 then return "00:54.20"
+        elseif trial_location == 22 then return "01:40.00"
+        elseif trial_location == 23 then return "02:05.00"
+        elseif trial_location == 24 then return "02:00.00"
+        elseif trial_location == 25 then return "02:35.00"
+        elseif trial_location == 26 then return "01:20.00"
+        elseif trial_location == 27 then return "02:24.00"
+        elseif trial_location == 28 then return "02:16.00"
+        elseif trial_location == 29 then return "01:50.00"
+        elseif trial_location == 30 then return "01:26.00"
+        elseif trial_location == 31 then return "02:10.00"
+        end
     elseif trial_variant == 1 then
-    	if trial_location == 0 then return "01:50.00"
-    	elseif trial_location == 1 then return "01:30.00"
-    	elseif trial_location == 2 then return "01:20.00"
-    	elseif trial_location == 3 then return "01:27.00"
-    	elseif trial_location == 4 then return "01:10.00"
-    	elseif trial_location == 5 then return "01:32.00"
-    	elseif trial_location == 6 then return "02:05.00"
-    	elseif trial_location == 7 then return "01:12.00"
-    	elseif trial_location == 8 then return "01:53.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:23.00"
-    	elseif trial_location == 11 then return "01:18.00"
-    	elseif trial_location == 12 then return "01:27.00"
-    	elseif trial_location == 13 then return "01:22.00"
-    	end
+        if trial_location == 0 then return "01:50.00"
+        elseif trial_location == 1 then return "01:30.00"
+        elseif trial_location == 2 then return "01:20.00"
+        elseif trial_location == 3 then return "01:27.00"
+        elseif trial_location == 4 then return "01:10.00"
+        elseif trial_location == 5 then return "01:32.00"
+        elseif trial_location == 6 then return "02:05.00"
+        elseif trial_location == 7 then return "01:12.00"
+        elseif trial_location == 8 then return "01:53.00"
+        elseif trial_location == 9 then return "01:20.00"
+        elseif trial_location == 10 then return "01:23.00"
+        elseif trial_location == 11 then return "01:18.00"
+        elseif trial_location == 12 then return "01:27.00"
+        elseif trial_location == 13 then return "01:22.00"
+        end
     elseif trial_variant == 2 then
-    	if trial_location == 0 then return "02:20.00"
-    	elseif trial_location == 1 then return "02:00.00"
-    	elseif trial_location == 2 then return "01:55.00"
-    	elseif trial_location == 3 then return "01:35.00"
-    	elseif trial_location == 4 then return "02:10.00"
-    	elseif trial_location == 5 then return "01:40.00"
-    	elseif trial_location == 6 then return "02:00.00"
-    	elseif trial_location == 7 then return "01:50.00"
-    	elseif trial_location == 8 then return "01:35.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:50.00"
-    	elseif trial_location == 11 then return "01:35.00"
-    	elseif trial_location == 12 then return "02:10.00"
-    	elseif trial_location == 13 then return "01:50.00"
-    	end
+        if trial_location == 0 then return "02:20.00"
+        elseif trial_location == 1 then return "02:00.00"
+        elseif trial_location == 2 then return "01:55.00"
+        elseif trial_location == 3 then return "01:35.00"
+        elseif trial_location == 4 then return "02:10.00"
+        elseif trial_location == 5 then return "01:40.00"
+        elseif trial_location == 6 then return "02:00.00"
+        elseif trial_location == 7 then return "01:50.00"
+        elseif trial_location == 8 then return "01:35.00"
+        elseif trial_location == 9 then return "01:20.00"
+        elseif trial_location == 10 then return "01:50.00"
+        elseif trial_location == 11 then return "01:35.00"
+        elseif trial_location == 12 then return "02:10.00"
+        elseif trial_location == 13 then return "01:50.00"
+        end
     end
     return "unavailable"
 end
 
 local function draw_text(location, text)
     local _, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
-	
+    
     HUD.BEGIN_TEXT_COMMAND_DISPLAY_TEXT("STRING")
     HUD.ADD_TEXT_COMPONENT_SUBSTRING_PLAYER_NAME(text)
     HUD.SET_TEXT_RENDER_ID(1)
@@ -1291,41 +1292,41 @@ end
 
 local function draw_esp()
     if esp_gs_cache then
-    	if not dead_drop_collected then
+        if not dead_drop_collected then
             local drop_coords = dead_drop_coords(dead_drop_area, dead_drop_loc)
             draw_text(drop_coords, "G's Cache")
-    	end
+        end
     end
     
     if esp_street_dealers then
-    	local dealer_coords = street_dealer_coords(street_dealer_loc[selected_dealer + 1])
+        local dealer_coords = street_dealer_coords(street_dealer_loc[selected_dealer + 1])
         draw_text(dealer_coords, "Street Dealer " .. selected_dealer + 1)
     end
     
     if esp_shipwreck then
-    	if not shipwrecked_collected then
-    	    local shipwreck_coords = shipwrecked_coords(shipwrecked_loc)
-    	    draw_text(shipwreck_coords, "Shipwreck")
-    	end
+        if not shipwrecked_collected then
+            local shipwreck_coords = shipwrecked_coords(shipwrecked_loc)
+            draw_text(shipwreck_coords, "Shipwreck")
+        end
     end
     
     if esp_hidden_cache then
         if not hidden_cache_collected[selected_cache + 1] then
-    	    local cache_coords = hidden_cache_coords(hidden_cache_loc[selected_cache + 1])
-    	    draw_text(cache_coords, "Hidden Cache " .. selected_cache + 1)
+            local cache_coords = hidden_cache_coords(hidden_cache_loc[selected_cache + 1])
+            draw_text(cache_coords, "Hidden Cache " .. selected_cache + 1)
         end
     end
     
     if esp_treasure_chest then
         if not treasure_chest_collected[selected_treasure + 1] then
             local chest_coords = treasure_chest_coords(treasure_chest_loc[selected_treasure + 1])
-    	    draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
+            draw_text(chest_coords, "Treasure Chest " .. selected_treasure + 1)
         end
     end
     
     if esp_buried_stash then
         if not buried_stash_collected[selected_stash + 1] then
-    	    local stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
+            local stash_coords = buried_stash_coords(buried_stash_loc[selected_stash + 1])
             draw_text(stash_coords, "Buried Stash " .. selected_stash + 1)
         end
     end
@@ -1333,33 +1334,33 @@ local function draw_esp()
     if esp_stash_house then
         if not stash_house_raided then
             if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
-    	        local house_coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
-    	        draw_text(house_coords, "Stash House")
+                local house_coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
+                draw_text(house_coords, "Stash House")
             end
         end
     end
     
     if esp_exotic_vehicle then
         if vehicle_bitset ~= 1023 then
-    		if vehicle_location ~= -1 then
+            if vehicle_location ~= -1 then
                 local vehicle_coords = exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(global_two + vehicle_order)))
-    	        draw_text(vehicle_coords, "Exotic Exports Vehicle")
-    	    end
+                draw_text(vehicle_coords, "Exotic Exports Vehicle")
+            end
         end
     end
-	
+    
     if esp_ls_tag then
         if not ls_tag_sprayed[selected_tag + 1] then
-    	    local tag_coords = buried_stash_coords(ls_tag_loc[selected_tag + 1])
+            local tag_coords = buried_stash_coords(ls_tag_loc[selected_tag + 1])
             draw_text(tag_coords, "LS Tag " .. selected_tag + 1)
         end
-    end	
-	
+    end 
+    
     if esp_madrazo_hit then
-    	if not hit_completed then
+        if not hit_completed then
             local hit_coords = madrazo_hit_coords(hit_loc)
             draw_text(hit_coords, "Madrazo Hit")
-    	end
+        end
     end
 end
 
@@ -1367,21 +1368,21 @@ script.register_looped("Daily Collectibles", function()
     daily_obj[1]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (0 * 3)))
     daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (1 * 3)))
     daily_obj[3]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (2 * 3)))
-    street_dealer_loc[1]        = globals.get_int(global_three + global_three_offset + 1 + (0 * 7))
-    street_dealer_loc[2]        = globals.get_int(global_three + global_three_offset + 1 + (1 * 7))
-    street_dealer_loc[3]        = globals.get_int(global_three + global_three_offset + 1 + (2 * 7))
-    meth_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
-    meth_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
-    meth_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
-    weed_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
-    weed_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
-    weed_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
-    cocaine_unit[1]             = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
-    cocaine_unit[2]             = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
-    cocaine_unit[3]             = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
-    acid_unit[1]                = globals.get_int(global_three + global_three_offset + 1 + (0 * 7) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
-    acid_unit[2]                = globals.get_int(global_three + global_three_offset + 1 + (1 * 7) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
-    acid_unit[3]                = globals.get_int(global_three + global_three_offset + 1 + (2 * 7) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
+    street_dealer_loc[1]        = globals.get_int(global_three + global_four_offset + 1 + (0 * 7))
+    street_dealer_loc[2]        = globals.get_int(global_three + global_four_offset + 1 + (1 * 7))
+    street_dealer_loc[3]        = globals.get_int(global_three + global_four_offset + 1 + (2 * 7))
+    meth_unit[1]                = globals.get_int(global_three + global_four_offset + 1 + (0 * 7) + 3) -- MPX_STREET_DEALER_0_METH_PRICE
+    meth_unit[2]                = globals.get_int(global_three + global_four_offset + 1 + (1 * 7) + 3) -- MPX_STREET_DEALER_1_METH_PRICE
+    meth_unit[3]                = globals.get_int(global_three + global_four_offset + 1 + (2 * 7) + 3) -- MPX_STREET_DEALER_2_METH_PRICE
+    weed_unit[1]                = globals.get_int(global_three + global_four_offset + 1 + (0 * 7) + 4) -- MPX_STREET_DEALER_0_WEED_PRICE
+    weed_unit[2]                = globals.get_int(global_three + global_four_offset + 1 + (1 * 7) + 4) -- MPX_STREET_DEALER_1_WEED_PRICE
+    weed_unit[3]                = globals.get_int(global_three + global_four_offset + 1 + (2 * 7) + 4) -- MPX_STREET_DEALER_2_WEED_PRICE
+    cocaine_unit[1]             = globals.get_int(global_three + global_four_offset + 1 + (0 * 7) + 2) -- MPX_STREET_DEALER_0_COKE_PRICE
+    cocaine_unit[2]             = globals.get_int(global_three + global_four_offset + 1 + (1 * 7) + 2) -- MPX_STREET_DEALER_1_COKE_PRICE
+    cocaine_unit[3]             = globals.get_int(global_three + global_four_offset + 1 + (2 * 7) + 2) -- MPX_STREET_DEALER_2_COKE_PRICE
+    acid_unit[1]                = globals.get_int(global_three + global_four_offset + 1 + (0 * 7) + 5) -- MPX_STREET_DEALER_0_ACID_PRICE
+    acid_unit[2]                = globals.get_int(global_three + global_four_offset + 1 + (1 * 7) + 5) -- MPX_STREET_DEALER_1_ACID_PRICE
+    acid_unit[3]                = globals.get_int(global_three + global_four_offset + 1 + (2 * 7) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
     hit_loc                     = globals.get_int(global_three + 6838)
     vehicle_location            = globals.get_int(global_four + 302 + 1)
     vehicle_index               = globals.get_int(global_four + 302)
@@ -1490,20 +1491,20 @@ end)
 
 challenges_tab:add_imgui(function()
     if ImGui.TreeNode("Daily Challenges") then
-    	ImGui.Text(daily_challenges[daily_obj[1] + 1])
-    	ImGui.Text(daily_challenges[daily_obj[2] + 1])
-    	ImGui.Text(daily_challenges[daily_obj[3] + 1])
-    	ImGui.TreePop()
+        ImGui.Text(daily_challenges[daily_obj[1] + 1])
+        ImGui.Text(daily_challenges[daily_obj[2] + 1])
+        ImGui.Text(daily_challenges[daily_obj[3] + 1])
+        ImGui.TreePop()
     end
     
     if ImGui.TreeNode("Weekly Challenge") then
-    	ImGui.Text(weekly_challenges[weekly_obj_id + 1])
-    	ImGui.Text("Override: " .. weekly_obj_override)
-    	ImGui.TreePop()
+        ImGui.Text(weekly_challenges[weekly_obj_id + 1])
+        ImGui.Text("Override: " .. weekly_obj_override)
+        ImGui.TreePop()
     end
     
     if ImGui.Button("Complete all Challenges") then
-		for i = 0, 2 do --Unlock all daily rewards.
+        for i = 0, 2 do --Unlock all daily rewards.
             local objective = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (i * 3)))
             globals.set_int(objectives_state_global + 1 + (1 + (i * 1)), objective)
         end
@@ -1516,42 +1517,42 @@ dead_drop_tab:add_imgui(function()
     ImGui.Text("Status: " .. (dead_drop_collected and "collected" or "ready"))
     
     if ImGui.Button("Teleport") then
-    	if not dead_drop_collected then
-    		teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
-    	else
-    		gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
-    	end
+        if not dead_drop_collected then
+            teleport(dead_drop_coords(dead_drop_area, dead_drop_loc))
+        else
+            gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
+        end
     end
-	
-	ImGui.SameLine()
-	esp_gs_cache = ImGui.Checkbox("Draw ESP", esp_gs_cache)
+    
+    ImGui.SameLine()
+    esp_gs_cache = ImGui.Checkbox("Draw ESP", esp_gs_cache)
 end)
 
 stash_house_tab:add_imgui(function()
     if not stash_house_raided then
-    	ImGui.Text("Safe Code: " .. safe_code)
+        ImGui.Text("Safe Code: " .. safe_code)
     end
     ImGui.Text("Status: " .. (stash_house_raided and "raided" or "ready"))
     
     if ImGui.Button("Teleport") then
-    	if not stash_house_raided then
-    		script.run_in_fiber(function (script)
-    			if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
-    				teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
-    			end
-    		end)
-    	else
-    		gui.show_message("Daily Collectibles", "Stash House has already been raided.")
-    	end
+        if not stash_house_raided then
+            script.run_in_fiber(function (script)
+                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
+                    teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
+                end
+            end)
+        else
+            gui.show_message("Daily Collectibles", "Stash House has already been raided.")
+        end
     end
     
     ImGui.SameLine()
-	esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
+    esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
     
     if ImGui.Button("Enter Safe Combination") then
         for i = 0, 2, 1 do
-        	local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)
-        	locals.set_float("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)), safe_combination)
+            local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)) + 1)
+            locals.set_float("fm_content_stash_house", stash_house_local_one + 22 + (1 + (i * 2)), safe_combination)
         end
     end
 end)
@@ -1560,12 +1561,12 @@ street_dealer_tab:add_imgui(function()
     selected_dealer = ImGui.Combo("Select Dealer", selected_dealer, { "1", "2", "3" }, 3)
     
     if ImGui.Button("Teleport") then
-    	teleport(street_dealer_coords(street_dealer_loc[selected_dealer + 1]))
+        teleport(street_dealer_coords(street_dealer_loc[selected_dealer + 1]))
     end
-	
-	ImGui.SameLine()
-	
-	esp_street_dealers = ImGui.Checkbox("Draw ESP", esp_street_dealers)
+    
+    ImGui.SameLine()
+    
+    esp_street_dealers = ImGui.Checkbox("Draw ESP", esp_street_dealers)
     
     ImGui.Text("Weed: $" .. format_int(max_weed * weed_unit[selected_dealer + 1]) .. " (" .. format_int(max_weed) .. " unit * " .. format_int(weed_unit[selected_dealer + 1]) .. ")")
     ImGui.Text("Meth: $" .. format_int(max_meth * meth_unit[selected_dealer + 1]) .. " (" .. format_int(max_meth) .. " unit * " .. format_int(meth_unit[selected_dealer + 1]) .. ")")
@@ -1582,11 +1583,11 @@ shipwrecked_tab:add_imgui(function()
     ImGui.Text("Status: " .. (shipwrecked_collected and "collected" or "ready"))
     
     if ImGui.Button("Teleport") then
-    	if not shipwrecked_collected then
-    		teleport(shipwrecked_coords(shipwrecked_loc))
-    	else
-    		gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
-    	end
+        if not shipwrecked_collected then
+            teleport(shipwrecked_coords(shipwrecked_loc))
+        else
+            gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
+        end
     end
 
     ImGui.SameLine()
@@ -1599,15 +1600,15 @@ hidden_cache_tab:add_imgui(function()
     selected_cache = ImGui.Combo("Select Cache", selected_cache, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
     
     if ImGui.Button("Teleport") then
-    	if not hidden_cache_collected[selected_cache + 1] then
-    		teleport(hidden_cache_coords(hidden_cache_loc[selected_cache + 1]))
-    	else
-    		gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
-    	end
+        if not hidden_cache_collected[selected_cache + 1] then
+            teleport(hidden_cache_coords(hidden_cache_loc[selected_cache + 1]))
+        else
+            gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
+        end
     end
 
     ImGui.SameLine()
-	esp_hidden_cache = ImGui.Checkbox("Draw ESP", esp_hidden_cache)
+    esp_hidden_cache = ImGui.Checkbox("Draw ESP", esp_hidden_cache)
 end)
 
 junk_skydive_tab:add_imgui(function()
@@ -1616,7 +1617,7 @@ junk_skydive_tab:add_imgui(function()
     selected_skydive = ImGui.Combo("Select Skydive", selected_skydive, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
     
     if ImGui.Button("Teleport") then
-    	teleport(junk_skydive_coords(junk_skydive_loc[selected_skydive + 1]))
+        teleport(junk_skydive_coords(junk_skydive_loc[selected_skydive + 1]))
     end
 end)
 
@@ -1626,15 +1627,15 @@ treasure_chest_tab:add_imgui(function()
     selected_treasure = ImGui.Combo("Select Treasure", selected_treasure, { "1", "2" }, 2)
     
     if ImGui.Button("Teleport") then
-    	if not treasure_chest_collected[selected_treasure + 1] then
-    		teleport(treasure_chest_coords(treasure_chest_loc[selected_treasure + 1]))
-    	else
-    		gui.show_message("Daily Collectibles", "Treasure Chest has already been collected.")
-    	end
+        if not treasure_chest_collected[selected_treasure + 1] then
+            teleport(treasure_chest_coords(treasure_chest_loc[selected_treasure + 1]))
+        else
+            gui.show_message("Daily Collectibles", "Treasure Chest has already been collected.")
+        end
     end
 
-	ImGui.SameLine()
-	esp_treasure_chest = ImGui.Checkbox("Draw ESP", esp_treasure_chest)
+    ImGui.SameLine()
+    esp_treasure_chest = ImGui.Checkbox("Draw ESP", esp_treasure_chest)
 end)
 
 buried_stash_tab:add_imgui(function()
@@ -1643,96 +1644,96 @@ buried_stash_tab:add_imgui(function()
     selected_stash = ImGui.Combo("Select Stash", selected_stash, { "1", "2" }, 2)
     
     if ImGui.Button("Teleport") then
-    	if not buried_stash_collected[selected_stash + 1] then
-    		teleport(buried_stash_coords(buried_stash_loc[selected_stash + 1]))
-    	else
-    		gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
-    	end
+        if not buried_stash_collected[selected_stash + 1] then
+            teleport(buried_stash_coords(buried_stash_loc[selected_stash + 1]))
+        else
+            gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
+        end
     end
 
     ImGui.SameLine()
-	esp_buried_stash = ImGui.Checkbox("Draw ESP", esp_buried_stash)
+    esp_buried_stash = ImGui.Checkbox("Draw ESP", esp_buried_stash)
 end)
 
 exotic_exports_tab:add_imgui(function()
     ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
-    	
+        
     if ImGui.Button("Teleport to Vehicle") then
-    	if vehicle_bitset ~= 1023 then
-    		if vehicle_location ~= -1 then
-    			teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(global_two + vehicle_order))))
-    		else
-    			gui.show_message("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
-    		end
-    	else
-    		gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
-    	end
+        if vehicle_bitset ~= 1023 then
+            if vehicle_location ~= -1 then
+                teleport(exotic_export_coords(vehicle_location, is_second_part(globals.get_uint(global_two + vehicle_order))))
+            else
+                gui.show_message("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
+            end
+        else
+            gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
+        end
     end
 
     ImGui.SameLine()
-	esp_exotic_vehicle = ImGui.Checkbox("Draw ESP", esp_exotic_vehicle)
+    esp_exotic_vehicle = ImGui.Checkbox("Draw ESP", esp_exotic_vehicle)
     
     if ImGui.Button("Deliver Vehicle") then
-    	if vehicle_bitset ~= 1023 then
-    		if not exotic_reward_ready then
-    			gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
-    		else
-    			script.run_in_fiber(function()
-    				if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
-    					teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
-    				else
-    					gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
-    				end
-    			end)
-    		end
-    	else
-    		gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
-    	end
+        if vehicle_bitset ~= 1023 then
+            if not exotic_reward_ready then
+                gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
+            else
+                script.run_in_fiber(function()
+                    if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
+                        teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+                    else
+                        gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+                    end
+                end)
+            end
+        else
+            gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
+        end
     end
     
     if ImGui.Button("Spawn Next Vehicle") then
-    	if vehicle_bitset ~= 1023 then
-    		for i = 1, 10 do
-    			if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
-    				spawn_vehicle(get_vehicle_name(i, true))
-    				return
-    			end
-    		end
-    	else
-    		gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
-    	end
+        if vehicle_bitset ~= 1023 then
+            for i = 1, 10 do
+                if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
+                    spawn_vehicle(get_vehicle_name(i, true))
+                    return
+                end
+            end
+        else
+            gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
+        end
     end
     
     ImGui.Text("Today's List:")
     
     for i = 1, 10 do
-    	if active_vehicle == get_vehicle_name(i, true) then
-    		ImGui.Text(i .. " -")
-    		ImGui.SameLine()
-    		ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
-    	else
-    		if has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
-    			ImGui.Text(i .. " -")
-    			ImGui.SameLine()
-    			ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Delivered)")
-    		else
-    			ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
-    		end
-    	end
+        if active_vehicle == get_vehicle_name(i, true) then
+            ImGui.Text(i .. " -")
+            ImGui.SameLine()
+            ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
+        else
+            if has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
+                ImGui.Text(i .. " -")
+                ImGui.SameLine()
+                ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Delivered)")
+            else
+                ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+            end
+        end
     end
 end)
 
 time_trials_tab:add_imgui(function()
-	ImGui.Text("Par Time: " .. get_par_time(selected_trial, time_trial_loc[selected_trial + 1]))
-	
-	selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
-	
-	if ImGui.Button("Teleport##trials") then
-		if selected_trial == 0 then teleport(standard_trial_coords(time_trial_loc[1]))
-		elseif selected_trial == 1 then teleport(rc_trial_coords(time_trial_loc[2]))
-		elseif selected_trial == 2 then teleport(bike_trial_coords(time_trial_loc[3]))
-		end
-	end
+    ImGui.Text("Par Time: " .. get_par_time(selected_trial, time_trial_loc[selected_trial + 1]))
+    
+    selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
+    
+    if ImGui.Button("Teleport##trials") then
+        if selected_trial == 0 then teleport(standard_trial_coords(time_trial_loc[1]))
+        elseif selected_trial == 1 then teleport(rc_trial_coords(time_trial_loc[2]))
+        elseif selected_trial == 2 then teleport(bike_trial_coords(time_trial_loc[3]))
+        end
+    end
 end)
 
 ls_tags_tab:add_imgui(function()
@@ -1741,28 +1742,28 @@ ls_tags_tab:add_imgui(function()
     selected_tag = ImGui.Combo("Select Tag", selected_tag, { "1", "2", "3", "4", "5" }, 5)
     
     if ImGui.Button("Teleport") then
-    	if not ls_tag_sprayed[selected_tag + 1] then
-    		teleport(ls_tag_coords(ls_tag_loc[selected_tag + 1]))
-    	else
-    		gui.show_message("Daily Collectibles", "LS Tag has already been sprayed.")
-    	end
+        if not ls_tag_sprayed[selected_tag + 1] then
+            teleport(ls_tag_coords(ls_tag_loc[selected_tag + 1]))
+        else
+            gui.show_message("Daily Collectibles", "LS Tag has already been sprayed.")
+        end
     end
-	
+    
     ImGui.SameLine()
-    esp_ls_tag = ImGui.Checkbox("Draw ESP", esp_ls_tag)	
+    esp_ls_tag = ImGui.Checkbox("Draw ESP", esp_ls_tag) 
 end)
 
 madrazo_hits_tab:add_imgui(function()
     ImGui.Text("Status: " .. (hit_completed and "completed" or "ready"))
     
     if ImGui.Button("Teleport") then
-    	if not hit_completed then
-    		teleport(madrazo_hit_coords(hit_loc))
-    	else
-    		gui.show_message("Daily Collectibles", "Madrazo Hit has already been completed.")
-    	end
+        if not hit_completed then
+            teleport(madrazo_hit_coords(hit_loc))
+        else
+            gui.show_message("Daily Collectibles", "Madrazo Hit has already been completed.")
+        end
     end
 
     ImGui.SameLine()
-    esp_madrazo_hit = ImGui.Checkbox("Draw ESP", esp_madrazo_hit)	
+    esp_madrazo_hit = ImGui.Checkbox("Draw ESP", esp_madrazo_hit)   
 end)
