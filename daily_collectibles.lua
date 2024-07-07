@@ -398,6 +398,7 @@ local vehicle_bitset           = 0
 local dead_drop_collected      = false
 local stash_house_raided       = false
 local shipwrecked_collected    = false
+local spray_can_collected      = false
 local hit_completed            = false
 local exotic_reward_ready      = false
 local safe_code                = ""
@@ -1021,9 +1022,9 @@ local function format_int(number)
     return minus .. int:reverse():gsub("^,", "") .. fraction
 end
 
-local function get_daily_reset_time(target_time)
+local function get_daily_reset_time()
     local current_utc = os.date("!*t")
-    local hours_left  = (24 - current_utc.hour + target_time) % 24
+    local hours_left  = (24 - current_utc.hour + 5) % 24
     local mins_left   = 60 - current_utc.min
     local secs_left   = 60 - current_utc.sec
     return hours_left, mins_left, secs_left
@@ -1430,6 +1431,7 @@ script.register_looped("Daily Collectibles", function()
     ls_tag_sprayed[3]           = stats.get_packed_stat_bool(42254)
     ls_tag_sprayed[4]           = stats.get_packed_stat_bool(42255)
     ls_tag_sprayed[5]           = stats.get_packed_stat_bool(42256)
+    spray_can_collected         = stats.get_packed_stat_bool(51189)
     hit_completed               = stats.get_packed_stat_bool(42269)
     weekly_obj_id               = tunables.get_int("MP_WEEKLY_OBJECTIVE_ID_OVERRIDE")
     weekly_obj_override         = tunables.get_int("MP_WEEKLY_OBJECTIVE_COUNT_OVERRIDE")
@@ -1449,27 +1451,44 @@ script.register_looped("Daily Collectibles", function()
 end)
 
 daily_collectibles_tab:add_imgui(function()
-    local hours, minutes, seconds    = get_daily_reset_time(5)
-    local hours2, minutes2, seconds2 = get_daily_reset_time(6)
+    local hours, minutes, seconds = get_daily_reset_time()
     
     ImGui.Text(string.format("Daily Reset Time (6 AM UTC): %02d:%02d:%02d", hours, minutes, seconds))
-    ImGui.Text("- Daily Challenges")
-    ImGui.Text("- Hidden Caches")
-    ImGui.Text("- Treasure Chests")
-    ImGui.Text("- Shipwreck")
-    ImGui.Text("- Buried Stashes")
-    ImGui.Text("- Junk Energy Skydives")
-    
-    ImGui.Separator()
-    
-    ImGui.Text(string.format("Daily Reset Time (7 AM UTC): %02d:%02d:%02d", hours2, minutes2, seconds2))
-    ImGui.Text("- Weekly Challenge")
-    ImGui.Text("- Exotic Exports")
-    ImGui.Text("- Stash House")
-    ImGui.Text("- Street Dealers")
-    ImGui.Text("- RC Bandito Time Trial")
-    ImGui.Text("- Junk Energy Bike Time Trial")
-    ImGui.Text("- G's Cache")
+	
+    if ImGui.Button("Reset Daily Collectibles") then
+        script.run_in_fiber(function()
+            stats.set_packed_stat_bool(36628, false) -- G's Cache
+            stats.set_packed_stat_bool(36657, false) -- Stash House
+            stats.set_packed_stat_bool(31734, false) -- Shipwreck
+            stats.set_packed_stat_bool(30297, false) -- Hidden Cache 1
+            stats.set_packed_stat_bool(30298, false) -- Hidden Cache 2
+            stats.set_packed_stat_bool(30299, false) -- Hidden Cache 3
+            stats.set_packed_stat_bool(30300, false) -- Hidden Cache 4
+            stats.set_packed_stat_bool(30301, false) -- Hidden Cache 5
+            stats.set_packed_stat_bool(30302, false) -- Hidden Cache 6
+            stats.set_packed_stat_bool(30303, false) -- Hidden Cache 7
+            stats.set_packed_stat_bool(30304, false) -- Hidden Cache 8
+            stats.set_packed_stat_bool(30305, false) -- Hidden Cache 9
+            stats.set_packed_stat_bool(30306, false) -- Hidden Cache 10
+            stats.set_packed_stat_bool(30307, false) -- Treasure Chest 1
+            stats.set_packed_stat_bool(30308, false) -- Treasure Chest 2
+            stats.set_packed_stat_bool(25522, false) -- Buried Stash 1
+            stats.set_packed_stat_bool(25523, false) -- Buried Stash 2
+            stats.set_packed_stat_bool(42252, false) -- LS Tag 1
+            stats.set_packed_stat_bool(42253, false) -- LS Tag 2
+            stats.set_packed_stat_bool(42254, false) -- LS Tag 3
+            stats.set_packed_stat_bool(42255, false) -- LS Tag 4
+            stats.set_packed_stat_bool(42256, false) -- LS Tag 5
+            stats.set_packed_stat_bool(42269, false) -- Madrazo Hit
+            stats.set_int("MPX_CBV_DELIVERED_BS", 0) -- Exotic Exports
+            stats.set_int("MPX_CBV_STATE", 0) -- Exotic Exports
+        end)
+    end
+    if ImGui.IsItemHovered() then
+    	ImGui.BeginTooltip()
+    	ImGui.Text("Switch session to apply the changes.")
+    	ImGui.EndTooltip()
+    end
 end)
 
 challenges_tab:add_imgui(function()
@@ -1731,6 +1750,13 @@ end)
 
 ls_tags_tab:add_imgui(function()
     ImGui.Text("Status: " .. (ls_tag_sprayed[selected_tag + 1] and "sprayed" or "ready"))
+    ImGui.Text("Spray Can Collected: " .. (spray_can_collected and "Yes" or "No"))
+    ImGui.SameLine()
+    if ImGui.SmallButton("" .. (spray_can_collected and "Uncollect" or "Collect")) then
+        script.run_in_fiber(function()
+            stats.set_packed_stat_bool(51189, not spray_can_collected)
+        end)
+    end
     
     selected_tag = ImGui.Combo("Select Tag", selected_tag, { "1", "2", "3", "4", "5" }, 5)
     
