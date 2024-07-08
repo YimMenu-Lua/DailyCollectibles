@@ -1248,6 +1248,51 @@ local function get_par_time(trial_variant, trial_location)
     return "unavailable"
 end
 
+local function set_daily_collectibles_state(state)
+    stats.set_packed_stat_bool(36628, state) -- G's Cache
+    stats.set_packed_stat_bool(36657, state) -- Stash House
+    stats.set_packed_stat_bool(31734, state) -- Shipwreck
+    stats.set_packed_stat_bool(30297, state) -- Hidden Cache 1
+    stats.set_packed_stat_bool(30298, state) -- Hidden Cache 2
+    stats.set_packed_stat_bool(30299, state) -- Hidden Cache 3
+    stats.set_packed_stat_bool(30300, state) -- Hidden Cache 4
+    stats.set_packed_stat_bool(30301, state) -- Hidden Cache 5
+    stats.set_packed_stat_bool(30302, state) -- Hidden Cache 6
+    stats.set_packed_stat_bool(30303, state) -- Hidden Cache 7
+    stats.set_packed_stat_bool(30304, state) -- Hidden Cache 8
+    stats.set_packed_stat_bool(30305, state) -- Hidden Cache 9
+    stats.set_packed_stat_bool(30306, state) -- Hidden Cache 10
+    stats.set_packed_stat_bool(30307, state) -- Treasure Chest 1
+    stats.set_packed_stat_bool(30308, state) -- Treasure Chest 2
+    stats.set_packed_stat_bool(25522, state) -- Buried Stash 1
+    stats.set_packed_stat_bool(25523, state) -- Buried Stash 2
+    stats.set_packed_stat_bool(42252, state) -- LS Tag 1
+    stats.set_packed_stat_bool(42253, state) -- LS Tag 2
+    stats.set_packed_stat_bool(42254, state) -- LS Tag 3
+    stats.set_packed_stat_bool(42255, state) -- LS Tag 4
+    stats.set_packed_stat_bool(42256, state) -- LS Tag 5
+    stats.set_packed_stat_bool(42269, state) -- Madrazo Hit
+    -- Next-gen exclusive, but the packed stats and the interaction menu functionality is available on PC
+    stats.set_packed_stat_bool(42059, state) -- Shoot Animals photography
+    stats.set_packed_stat_bool(42060, state) -- Shoot Animals photography
+    stats.set_packed_stat_bool(42061, state) -- Shoot Animals photography
+    for skydive_index = 0, 9 do
+    	-- See the getter of script event 1916113629, another stupid R* thing
+    	stats.set_packed_stat_int((34837 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Checkpoint
+    	stats.set_packed_stat_int((34839 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Accurate Landing
+    	stats.set_packed_stat_int((34838 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Partime
+    	stats.set_packed_stat_int((34840 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Gold
+    end
+    for lantern_index = 34252, 34261 do
+    	stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+    end
+    for lantern_index = 34512, 34701 do
+    	stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+    end
+    stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
+    stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports	
+end
+
 local function draw_text(location, text)
     local _, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
 
@@ -1455,40 +1500,19 @@ daily_collectibles_tab:add_imgui(function()
     
     ImGui.Text(string.format("Daily Reset Time (6 AM UTC): %02d:%02d:%02d", hours, minutes, seconds))
 	
-    if ImGui.Button("Reset Daily Collectibles") then
+    if ImGui.Button("Reset All Daily Collectibles") then
         script.run_in_fiber(function()
-            stats.set_packed_stat_bool(36628, false) -- G's Cache
-            stats.set_packed_stat_bool(36657, false) -- Stash House
-            stats.set_packed_stat_bool(31734, false) -- Shipwreck
-            stats.set_packed_stat_bool(30297, false) -- Hidden Cache 1
-            stats.set_packed_stat_bool(30298, false) -- Hidden Cache 2
-            stats.set_packed_stat_bool(30299, false) -- Hidden Cache 3
-            stats.set_packed_stat_bool(30300, false) -- Hidden Cache 4
-            stats.set_packed_stat_bool(30301, false) -- Hidden Cache 5
-            stats.set_packed_stat_bool(30302, false) -- Hidden Cache 6
-            stats.set_packed_stat_bool(30303, false) -- Hidden Cache 7
-            stats.set_packed_stat_bool(30304, false) -- Hidden Cache 8
-            stats.set_packed_stat_bool(30305, false) -- Hidden Cache 9
-            stats.set_packed_stat_bool(30306, false) -- Hidden Cache 10
-            stats.set_packed_stat_bool(30307, false) -- Treasure Chest 1
-            stats.set_packed_stat_bool(30308, false) -- Treasure Chest 2
-            stats.set_packed_stat_bool(25522, false) -- Buried Stash 1
-            stats.set_packed_stat_bool(25523, false) -- Buried Stash 2
-            stats.set_packed_stat_bool(42252, false) -- LS Tag 1
-            stats.set_packed_stat_bool(42253, false) -- LS Tag 2
-            stats.set_packed_stat_bool(42254, false) -- LS Tag 3
-            stats.set_packed_stat_bool(42255, false) -- LS Tag 4
-            stats.set_packed_stat_bool(42256, false) -- LS Tag 5
-            stats.set_packed_stat_bool(42269, false) -- Madrazo Hit
-            stats.set_int("MPX_CBV_DELIVERED_BS", 0) -- Exotic Exports
-            stats.set_int("MPX_CBV_STATE", 0) -- Exotic Exports
+            set_daily_collectibles_state(false)
+            gui.show_message("Daily Collectibles", "All Daily Collectibles have been reset.")
         end)
     end
-    if ImGui.IsItemHovered() then
-    	ImGui.BeginTooltip()
-    	ImGui.Text("Switch session to apply the changes.")
-    	ImGui.EndTooltip()
+    
+    if ImGui.Button("Complete All Daily Collectibles") then
+        set_daily_collectibles_state(true)
+        gui.show_message("Daily Collectibles", "All Daily Collectibles have been completed.")
     end
+    
+    ImGui.Text("Switch session to apply the changes.")
 end)
 
 challenges_tab:add_imgui(function()
