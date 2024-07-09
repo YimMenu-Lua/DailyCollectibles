@@ -1711,7 +1711,9 @@ exotic_exports_tab:add_imgui(function()
                 gui.show_message("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
             else
                 script.run_in_fiber(function()
-                    if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
+                    if PLAYER.GET_PLAYER_WANTED_LEVEL(self.get_id()) ~= 0 then
+                        gui.show_message("Daily Collectibles", "Lose your wanted level.")
+                    elseif HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
                         teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
                     else
                         gui.show_message("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
