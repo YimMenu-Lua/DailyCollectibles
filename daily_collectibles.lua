@@ -33,332 +33,6 @@ local current_objectives_global_offset = 5570
 local weekly_objectives_global         = 2737992
 local objectives_state_global          = 1574744
 
--- Credit to Senexis: https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/daily_objectives.json https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/weekly_objectives.json
-local daily_challenges = {
-  "Participate in a Land Race.",
-  "Participate in a Bike Race.",
-  "Participate in an Air Race.",
-  "Participate in a Sea Race.",
-  "Participate in a Rally Race.",
-  "Participate in a GTA Race.",
-  "Participate in a Non-Contact Race.",
-  "Participate in a Team Deathmatch.",
-  "Participate in a Deathmatch.",
-  "Participate in a Vehicle Deathmatch.",
-  "Participate in a Parachute Jump.",
-  "Participate in a Last Team Standing.",
-  "Participate in a Capture - Contend.",
-  "Participate in a Capture - Hold.",
-  "Participate in a Capture - Raid.",
-  "Participate in a Capture - GTA.",
-  "Participate in a Versus Mission.",
-  "Complete a Contact Mission.",
-  "Participate in a Survival.",
-  "Hold up a store.",
-  "Complete a Gang Attack.",
-  "Participate in an Impromptu Race.",
-  "Participate in One on One Deathmatch.",
-  "Go to the Movies.",
-  "Fly under a bridge in an Air Race.",
-  "Ride on one of the Fairground Rides.",
-  "Steal a vehicle from the military base.",
-  "Mod a vehicle at a car mod shop.",
-  "Perform a Stunt Jump.",
-  "Deliver an Export vehicle to Simeon.",
-  "Collect a Bounty.",
-  "Kill a player while Off the Radar.",
-  "Kill a revealed player.",
-  "Bribe the Cops then cause havoc.",
-  "Call a Mugger on another player.",
-  "Use some Bull Shark Testosterone.",
-  "Collect an Ammo Drop.",
-  "Play a game of Darts.",
-  "Play a round of Golf.",
-  "Play a match of Tennis.",
-  "Challenge a player at Arm Wrestling.",
-  "Go for a round at the Shooting Range.",
-  "Complete a Flight School lesson.",
-  "Kill 10 players.",
-  "Destroy 10 vehicles.",
-  "Steal 10 vehicles.",
-  "Escape a 3 star Wanted Level.",
-  "Fall for 325 feet and survive.",
-  "Parachute from 650 feet.",
-  "Deploy your parachute near the ground.",
-  "Perform a wheelie for 10 seconds.",
-  "Participate in a Capture.",
-  "Participate in the Featured Series.",
-  "Participate in the Adversary Series.",
-  "Participate in the Stunt Series.",
-  "Participate in the Special Race Series.",
-  "Participate in the Transform Series.",
-  "Participate in the SASS Series.",
-  "Participate in the Arena War Series.",
-  "Participate in the Bunker Series.",
-  "Participate in the Race Series.",
-  "Participate in the Survival Series.",
-  "Participate in a King of the Hill.",
-  "Participate in a Client Job.",
-  "Participate in VIP Work.",
-  "Participate in Club Work.",
-  "Participate in a Clubhouse Contract.",
-  "Participate in a Business Battle.",
-  "Participate in a Freemode Event.",
-  "Participate in a Freemode Challenge.",
-  "Complete a Lowrider mission.",
-  "Complete a Dispatch mission.",
-  "Complete a Heist Setup.",
-  "Complete a Heist Finale.",
-  "Complete a Doomsday Heist Prep.",
-  "Complete a Doomsday Heist Setup.",
-  "Complete a Doomsday Heist Finale.",
-  "Participate in Come Out To Play.",
-  "Participate in Siege Mentality.",
-  "Participate in Hasta La Vista.",
-  "Participate in Cross the Line.",
-  "Participate in Hunting Pack.",
-  "Participate in Keep the Pace.",
-  "Participate in Offense Defense.",
-  "Participate in Relay.",
-  "Participate in Slasher.",
-  "Participate in Extraction.",
-  "Participate in Beast vs. Slasher.",
-  "Participate in Drop Zone.",
-  "Participate in Till Death Do Us Part.",
-  "Participate in Sumo.",
-  "Participate in Inch By Inch.",
-  "Participate in Trading Places.",
-  "Participate in Power Play.",
-  "Participate in Entourage.",
-  "Participate in Slipstream.",
-  "Participate in Lost vs Damned.",
-  "Participate in Deadline.",
-  "Participate in Kill Quota.",
-  "Participate in Turf Wars.",
-  "Participate in Vehicle Vendetta.",
-  "Participate in Collection Time.",
-  "Participate in Juggernaut.",
-  "Participate in Resurrection.",
-  "Participate in Tiny Racers.",
-  "Participate in Dawn Raid.",
-  "Participate in Overtime Rumble.",
-  "Participate in Power Mad.",
-  "Participate in Overtime Shootout.",
-  "Participate in Motor Wars.",
-  "Participate in Bombushka Run.",
-  "Participate in Stockpile.",
-  "Participate in The Vespucci Job.",
-  "Participate in Hunting Pack (Remix).",
-  "Participate in Trading Places (Remix).",
-  "Participate in Running Back (Remix).",
-  "Participate in Sumo (Remix).",
-  "Participate in Running Back.",
-  "Participate in Every Bullet Counts.",
-  "Participate in Rhino Hunt.",
-  "Participate in In and Out.",
-  "Participate in Bomb Ball.",
-  "Participate in Buzzer Beater.",
-  "Participate in Carnage.",
-  "Participate in Tag Team.",
-  "Participate in Games Masters.",
-  "Participate in Here Come the Monsters.",
-  "Participate in Wreck It.",
-  "Participate in Hot Bomb.",
-  "Participate in Flag War.",
-  "Play the Shooting Range at a Bunker.",
-  "Hire a player for your Motorcycle Club.",
-  "Hire a player for your Organization.",
-  "Set yourself as Looking for Work.",
-  "Set yourself as Looking for an MC.",
-  "Resupply the Cocaine Lockup.",
-  "Resupply the Weed Farm.",
-  "Resupply the Counterfeit Cash Factory.",
-  "Resupply the Meth Lab.",
-  "Resupply the Document Forgery Office.",
-  "Resupply the Bunker.",
-  "Source Special Cargo.",
-  "Source Air-Freight Cargo.",
-  "Source Vehicle Cargo.",
-  "Sell Special Cargo.",
-  "Sell Air-Freight Cargo.",
-  "Sell Weapons.",
-  "Sell Cocaine.",
-  "Sell Weed.",
-  "Sell Counterfeit Cash.",
-  "Sell Meth.",
-  "Sell Forged Documents.",
-  "Export Vehicle Cargo.",
-  "Sell Goods from your Nightclub.",
-  "Complete Club Management.",
-  "Order a drink from a bar.",
-  "Dance in a player owned Nightclub.",
-  "Relax in a hot tub.",
-  "Fly a Drone.",
-  "Drive an RC Bandito.",
-  "Go Scuba Diving.",
-  "Have a snowball fight.",
-  "Get a headshot with the Double-Action Revolver.",
-  "Rampage with the Stone Hatchet.",
-  "Modify a MKII weapon.",
-  "Modify an aircraft at your Hangar.",
-  "Modify a vehicle at your Arena Workshop.",
-  "Modify a vehicle at Benny's Original Motor Works.",
-  "Modify a vehicle in the Mobile Operations Center.",
-  "Modify a vehicle in the Avenger.",
-  "Modify a vehicle at the Clubhouse.",
-  "Visit The Diamond Casino & Resort.",
-  "Complete a mission for The Diamond Casino & Resort.",
-  "Spin the Lucky Wheel.",
-  "Complete a Special Vehicle Work.",
-  "Complete a Simeon Repo.",
-  "Complete a Diamond Casino Heist Prep.",
-  "Complete The Diamond Casino Heist Finale.",
-  "Play any game in an Arcade.",
-  "Dance in The Music Locker.",
-  "Dance at the Cayo Perico beach party.",
-  "Participate in the Street Race Series.",
-  "Participate in the Pursuit Series.",
-  "Visit the LS Car Meet.",
-  "Visit the LS Car Meet with a Personal Vehicle.",
-  "Drive an LS Car Meet vehicle in the Test Track.",
-  "Spectate the Test Track inside the LS Car Meet.",
-  "Participate in a Sprint at the LS Car Meet.",
-  "Deliver an Exotic Exports Vehicle to the Docks.",
-  "Complete a Planning Work mission.",
-  "Complete a Contract for KDJ and Sessanta.",
-  "Participate in a Scramble at the LS Car Meet.",
-  "Participate in a Head-to-Head at the LS Car Meet.",
-  "Complete 1 lap of the Time Trial at the LS Car Meet.",
-  "Visit Record A Studios.",
-  "Complete a Security Contract.",
-  "Complete a Payphone Hit.",
-  "Complete an Investigation for Dr. Dre.",
-  "Complete a Short Trip.",
-  "Participate in a HSW Race.",
-  "Participate in the Community Series.",
-  "Participate in the Cayo Perico Series.",
-  "Participate in Assault on Cayo Perico.",
-  "Visit The Freakshop.",
-  "Complete a First Dose mission.",
-  "Complete a Last Dose mission.",
-  "Complete a Fooligan Job.",
-  "Complete one fare during Taxi Work.",
-  "Raid a Stash House.",
-  "Collect G's Cache.",
-  "Sell any product to a Street Dealer.",
-  "Complete a Junk Energy Time Trial.",
-  "Complete a Resupply Mission for the Acid Lab.",
-  "Sell Acid.",
-  "Complete a Project Overthrow mission.",
-  "Complete an LSA Operation.",
-  "Complete Slush Fund.",
-  "Complete Scene of the Crime.",
-  "Participate in the Drag Race Series.",
-  "Participate in the Drift Race Series.",
-  "Recover a vehicle using the Tow Truck.",
-  "Photograph an animal for the LS Tourist Board."
-}
-
-local weekly_challenges = {
-  "Complete 5 Fooligan Jobs.",
-  "Complete the Assassination Bonus on 5 Payphone Hits.",
-  "Complete 10 Security Contracts.",
-  "Complete 3 Short Trips.",
-  "Complete Don't Fuck with Dre.",
-  "Complete the Elite Challenge for The Cayo Perico Heist.",
-  "Complete The Cayo Perico Heist undetected.",
-  "Complete The Cayo Perico Heist without dying.",
-  "Complete The Cayo Perico Heist 2 times.",
-  "Complete any Diamond Casino Heist Elite Challenge.",
-  "Complete The Diamond Casino Heist 2 times.",
-  "Rob the Daily Vault in The Diamond Casino Heist.",
-  "Complete 5 Casino Works for Agatha Baker.",
-  "Complete the Elite Challenge for The Data Breaches.",
-  "Complete the Elite Challenge for The Bogdan Problem.",
-  "Complete the Elite Challenge for The Doomsday Scenario.",
-  "Complete The Doomsday Scenario.",
-  "Participate in 10 Arena War modes.",
-  "Win 3 Arena War modes.",
-  "Complete 5 LSA Operations on Specialist.",
-  "Complete 1 Project Overthrow Missions.",
-  "Complete 5 Mobile Operations.",
-  "Complete 5 Mobile Operations on Hard difficulty.",
-  "Complete 5 Special Vehicle Works on Hard difficulty.",
-  "Complete 5 Special Vehicle Works.",
-  "Complete 10 Clubhouse Contracts.",
-  "Complete 5 Motorcycle Club Challenges.",
-  "Participate in 5 VIP Challenges.",
-  "Complete 3 Heist finales.",
-  "Complete all 10 waves of a Survival.",
-  "Survive 5 waves in a Survival without dying.",
-  "Participate in 6 Drag Races.",
-  "Win 5 Races.",
-  "Win 5 LS Car Meet Races.",
-  "Beat the par time in 3 Time Trials.",
-  "Beat the par time in 3 RC Bandito Time Trials.",
-  "Win 3 Deathmatches.",
-  "Win 3 Team Deathmatches.",
-  "Win 3 Drag or Drift Races.",
-  "Win 5 Adversary Modes.",
-  "Participate in 6 Drift Races.",
-  "Complete 25 fares during Taxi Work.",
-  "Achieve a gold medal in 10 Junk Energy Skydives.",
-  "Beat the par time in 3 Junk Energy Time Trials.",
-  "Collect 3 player bounties.",
-  "Deliver 3 Export vehicles to Simeon.",
-  "Steal from 3 Stash Houses.",
-  "Collect 3 G's Caches.",
-  "Discover 3 Shipwrecks.",
-  "Sell to 3 Street Dealers.",
-  "Complete 3 Last Dose Missions.",
-  "Complete 3 First Dose Missions.",
-  "Collect 10 Hidden Caches.",
-  "Complete 5 CEO or VIP Works.",
-  "Win 3 Stunt Races.",
-  "Win 3 Hotring Series Races.",
-  "Win 3 Open Wheel Races.",
-  "Win 3 RC Bandito Races.",
-  "Win 3 Pursuit Races.",
-  "Complete 5 Terrorbyte Client Jobs.",
-  "Complete 5 Nightclub Management Missions.",
-  "Sell $3,000,000 across all businesses.",
-  "Earn $100,000 in wages as an Associate or Bodyguard.",
-  "Complete 3 Business Resupply Missions.",
-  "Complete 3 Gerald's Last Play Missions.",
-  "Complete 3 Premium Deluxe Repo Work Missions.",
-  "Complete 3 A Superyacht Life Missions.",
-  "Complete 3 Bunker Research Missions.",
-  "Complete the Ammu-Nation Contract 3 times.",
-  "Complete a Salvage Yard Robbery without dying.",
-  "Deliver 10 Exotic Exports vehicles.",
-  "Complete 3 Auto Shop Contract Finales.",
-  "Deliver 3 vehicles for the Auto Shop Service.",
-  "Complete 3 Salvage Yard Robberies.",
-  "Complete Scene of the Crime.",
-  "Recover 10 vehicles using the Tow Truck.",
-  "Photograph 10 animals for Shoot Animals photography.",
-  "Create a Job in the Job Creator.",
-  "Steal from 2 Armored Trucks.",
-  "Take part in 5 Freemode Challenges.",
-  "Participate in 5 Freemode Events.",
-  "Successfully Complete 10 Stunt Jumps.",
-  "Earn $50,000 Arcade daily earnings.",
-  "Complete 5 Business Battles.",
-  "Complete 3 Last Dose Missions on Hard.",
-  "Eat 3 peyote.",
-  "Earn $2,000,000 from selling Special Cargo.",
-  "Earn $2,000,000 from selling Vehicle Cargo.",
-  "Earn $50,000 from Nightclub daily earnings.",
-  "Earn $2,000,000 from selling Product.",
-  "Complete The Data Breaches.",
-  "Complete The Bogdan Problem.",
-  "Complete 3 First Dose Missions on Hard.",
-  "Win in 3 Snowball Deathmatches.",
-  "Win Beast vs. Slasher.",
-  "Fight off the Gooch.",
-  "Kill your clone in Clone Slasher."
-}
-
 local selected_dealer    = 0
 local selected_cache     = 0
 local selected_skydive   = 0
@@ -1016,6 +690,429 @@ local madrazo_hit_coords = {
     [14] = vec3:new(-559.1921, 175.2093, 67.6451)
 }
 
+-- Credit to Senexis: https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/daily_objectives.json https://github.com/Senexis/RDO-GG-Tunables/blob/main/public/data/weekly_objectives.json
+local daily_challenges = {
+  "Participate in a Land Race.",
+  "Participate in a Bike Race.",
+  "Participate in an Air Race.",
+  "Participate in a Sea Race.",
+  "Participate in a Rally Race.",
+  "Participate in a GTA Race.",
+  "Participate in a Non-Contact Race.",
+  "Participate in a Team Deathmatch.",
+  "Participate in a Deathmatch.",
+  "Participate in a Vehicle Deathmatch.",
+  "Participate in a Parachute Jump.",
+  "Participate in a Last Team Standing.",
+  "Participate in a Capture - Contend.",
+  "Participate in a Capture - Hold.",
+  "Participate in a Capture - Raid.",
+  "Participate in a Capture - GTA.",
+  "Participate in a Versus Mission.",
+  "Complete a Contact Mission.",
+  "Participate in a Survival.",
+  "Hold up a store.",
+  "Complete a Gang Attack.",
+  "Participate in an Impromptu Race.",
+  "Participate in One on One Deathmatch.",
+  "Go to the Movies.",
+  "Fly under a bridge in an Air Race.",
+  "Ride on one of the Fairground Rides.",
+  "Steal a vehicle from the military base.",
+  "Mod a vehicle at a car mod shop.",
+  "Perform a Stunt Jump.",
+  "Deliver an Export vehicle to Simeon.",
+  "Collect a Bounty.",
+  "Kill a player while Off the Radar.",
+  "Kill a revealed player.",
+  "Bribe the Cops then cause havoc.",
+  "Call a Mugger on another player.",
+  "Use some Bull Shark Testosterone.",
+  "Collect an Ammo Drop.",
+  "Play a game of Darts.",
+  "Play a round of Golf.",
+  "Play a match of Tennis.",
+  "Challenge a player at Arm Wrestling.",
+  "Go for a round at the Shooting Range.",
+  "Complete a Flight School lesson.",
+  "Kill 10 players.",
+  "Destroy 10 vehicles.",
+  "Steal 10 vehicles.",
+  "Escape a 3 star Wanted Level.",
+  "Fall for 325 feet and survive.",
+  "Parachute from 650 feet.",
+  "Deploy your parachute near the ground.",
+  "Perform a wheelie for 10 seconds.",
+  "Participate in a Capture.",
+  "Participate in the Featured Series.",
+  "Participate in the Adversary Series.",
+  "Participate in the Stunt Series.",
+  "Participate in the Special Race Series.",
+  "Participate in the Transform Series.",
+  "Participate in the SASS Series.",
+  "Participate in the Arena War Series.",
+  "Participate in the Bunker Series.",
+  "Participate in the Race Series.",
+  "Participate in the Survival Series.",
+  "Participate in a King of the Hill.",
+  "Participate in a Client Job.",
+  "Participate in VIP Work.",
+  "Participate in Club Work.",
+  "Participate in a Clubhouse Contract.",
+  "Participate in a Business Battle.",
+  "Participate in a Freemode Event.",
+  "Participate in a Freemode Challenge.",
+  "Complete a Lowrider mission.",
+  "Complete a Dispatch mission.",
+  "Complete a Heist Setup.",
+  "Complete a Heist Finale.",
+  "Complete a Doomsday Heist Prep.",
+  "Complete a Doomsday Heist Setup.",
+  "Complete a Doomsday Heist Finale.",
+  "Participate in Come Out To Play.",
+  "Participate in Siege Mentality.",
+  "Participate in Hasta La Vista.",
+  "Participate in Cross the Line.",
+  "Participate in Hunting Pack.",
+  "Participate in Keep the Pace.",
+  "Participate in Offense Defense.",
+  "Participate in Relay.",
+  "Participate in Slasher.",
+  "Participate in Extraction.",
+  "Participate in Beast vs. Slasher.",
+  "Participate in Drop Zone.",
+  "Participate in Till Death Do Us Part.",
+  "Participate in Sumo.",
+  "Participate in Inch By Inch.",
+  "Participate in Trading Places.",
+  "Participate in Power Play.",
+  "Participate in Entourage.",
+  "Participate in Slipstream.",
+  "Participate in Lost vs Damned.",
+  "Participate in Deadline.",
+  "Participate in Kill Quota.",
+  "Participate in Turf Wars.",
+  "Participate in Vehicle Vendetta.",
+  "Participate in Collection Time.",
+  "Participate in Juggernaut.",
+  "Participate in Resurrection.",
+  "Participate in Tiny Racers.",
+  "Participate in Dawn Raid.",
+  "Participate in Overtime Rumble.",
+  "Participate in Power Mad.",
+  "Participate in Overtime Shootout.",
+  "Participate in Motor Wars.",
+  "Participate in Bombushka Run.",
+  "Participate in Stockpile.",
+  "Participate in The Vespucci Job.",
+  "Participate in Hunting Pack (Remix).",
+  "Participate in Trading Places (Remix).",
+  "Participate in Running Back (Remix).",
+  "Participate in Sumo (Remix).",
+  "Participate in Running Back.",
+  "Participate in Every Bullet Counts.",
+  "Participate in Rhino Hunt.",
+  "Participate in In and Out.",
+  "Participate in Bomb Ball.",
+  "Participate in Buzzer Beater.",
+  "Participate in Carnage.",
+  "Participate in Tag Team.",
+  "Participate in Games Masters.",
+  "Participate in Here Come the Monsters.",
+  "Participate in Wreck It.",
+  "Participate in Hot Bomb.",
+  "Participate in Flag War.",
+  "Play the Shooting Range at a Bunker.",
+  "Hire a player for your Motorcycle Club.",
+  "Hire a player for your Organization.",
+  "Set yourself as Looking for Work.",
+  "Set yourself as Looking for an MC.",
+  "Resupply the Cocaine Lockup.",
+  "Resupply the Weed Farm.",
+  "Resupply the Counterfeit Cash Factory.",
+  "Resupply the Meth Lab.",
+  "Resupply the Document Forgery Office.",
+  "Resupply the Bunker.",
+  "Source Special Cargo.",
+  "Source Air-Freight Cargo.",
+  "Source Vehicle Cargo.",
+  "Sell Special Cargo.",
+  "Sell Air-Freight Cargo.",
+  "Sell Weapons.",
+  "Sell Cocaine.",
+  "Sell Weed.",
+  "Sell Counterfeit Cash.",
+  "Sell Meth.",
+  "Sell Forged Documents.",
+  "Export Vehicle Cargo.",
+  "Sell Goods from your Nightclub.",
+  "Complete Club Management.",
+  "Order a drink from a bar.",
+  "Dance in a player owned Nightclub.",
+  "Relax in a hot tub.",
+  "Fly a Drone.",
+  "Drive an RC Bandito.",
+  "Go Scuba Diving.",
+  "Have a snowball fight.",
+  "Get a headshot with the Double-Action Revolver.",
+  "Rampage with the Stone Hatchet.",
+  "Modify a MKII weapon.",
+  "Modify an aircraft at your Hangar.",
+  "Modify a vehicle at your Arena Workshop.",
+  "Modify a vehicle at Benny's Original Motor Works.",
+  "Modify a vehicle in the Mobile Operations Center.",
+  "Modify a vehicle in the Avenger.",
+  "Modify a vehicle at the Clubhouse.",
+  "Visit The Diamond Casino & Resort.",
+  "Complete a mission for The Diamond Casino & Resort.",
+  "Spin the Lucky Wheel.",
+  "Complete a Special Vehicle Work.",
+  "Complete a Simeon Repo.",
+  "Complete a Diamond Casino Heist Prep.",
+  "Complete The Diamond Casino Heist Finale.",
+  "Play any game in an Arcade.",
+  "Dance in The Music Locker.",
+  "Dance at the Cayo Perico beach party.",
+  "Participate in the Street Race Series.",
+  "Participate in the Pursuit Series.",
+  "Visit the LS Car Meet.",
+  "Visit the LS Car Meet with a Personal Vehicle.",
+  "Drive an LS Car Meet vehicle in the Test Track.",
+  "Spectate the Test Track inside the LS Car Meet.",
+  "Participate in a Sprint at the LS Car Meet.",
+  "Deliver an Exotic Exports Vehicle to the Docks.",
+  "Complete a Planning Work mission.",
+  "Complete a Contract for KDJ and Sessanta.",
+  "Participate in a Scramble at the LS Car Meet.",
+  "Participate in a Head-to-Head at the LS Car Meet.",
+  "Complete 1 lap of the Time Trial at the LS Car Meet.",
+  "Visit Record A Studios.",
+  "Complete a Security Contract.",
+  "Complete a Payphone Hit.",
+  "Complete an Investigation for Dr. Dre.",
+  "Complete a Short Trip.",
+  "Participate in a HSW Race.",
+  "Participate in the Community Series.",
+  "Participate in the Cayo Perico Series.",
+  "Participate in Assault on Cayo Perico.",
+  "Visit The Freakshop.",
+  "Complete a First Dose mission.",
+  "Complete a Last Dose mission.",
+  "Complete a Fooligan Job.",
+  "Complete one fare during Taxi Work.",
+  "Raid a Stash House.",
+  "Collect G's Cache.",
+  "Sell any product to a Street Dealer.",
+  "Complete a Junk Energy Time Trial.",
+  "Complete a Resupply Mission for the Acid Lab.",
+  "Sell Acid.",
+  "Complete a Project Overthrow mission.",
+  "Complete an LSA Operation.",
+  "Complete Slush Fund.",
+  "Complete Scene of the Crime.",
+  "Participate in the Drag Race Series.",
+  "Participate in the Drift Race Series.",
+  "Recover a vehicle using the Tow Truck.",
+  "Photograph an animal for the LS Tourist Board."
+}
+
+local weekly_challenges = {
+  "Complete 5 Fooligan Jobs.",
+  "Complete the Assassination Bonus on 5 Payphone Hits.",
+  "Complete 10 Security Contracts.",
+  "Complete 3 Short Trips.",
+  "Complete Don't Fuck with Dre.",
+  "Complete the Elite Challenge for The Cayo Perico Heist.",
+  "Complete The Cayo Perico Heist undetected.",
+  "Complete The Cayo Perico Heist without dying.",
+  "Complete The Cayo Perico Heist 2 times.",
+  "Complete any Diamond Casino Heist Elite Challenge.",
+  "Complete The Diamond Casino Heist 2 times.",
+  "Rob the Daily Vault in The Diamond Casino Heist.",
+  "Complete 5 Casino Works for Agatha Baker.",
+  "Complete the Elite Challenge for The Data Breaches.",
+  "Complete the Elite Challenge for The Bogdan Problem.",
+  "Complete the Elite Challenge for The Doomsday Scenario.",
+  "Complete The Doomsday Scenario.",
+  "Participate in 10 Arena War modes.",
+  "Win 3 Arena War modes.",
+  "Complete 5 LSA Operations on Specialist.",
+  "Complete 1 Project Overthrow Missions.",
+  "Complete 5 Mobile Operations.",
+  "Complete 5 Mobile Operations on Hard difficulty.",
+  "Complete 5 Special Vehicle Works on Hard difficulty.",
+  "Complete 5 Special Vehicle Works.",
+  "Complete 10 Clubhouse Contracts.",
+  "Complete 5 Motorcycle Club Challenges.",
+  "Participate in 5 VIP Challenges.",
+  "Complete 3 Heist finales.",
+  "Complete all 10 waves of a Survival.",
+  "Survive 5 waves in a Survival without dying.",
+  "Participate in 6 Drag Races.",
+  "Win 5 Races.",
+  "Win 5 LS Car Meet Races.",
+  "Beat the par time in 3 Time Trials.",
+  "Beat the par time in 3 RC Bandito Time Trials.",
+  "Win 3 Deathmatches.",
+  "Win 3 Team Deathmatches.",
+  "Win 3 Drag or Drift Races.",
+  "Win 5 Adversary Modes.",
+  "Participate in 6 Drift Races.",
+  "Complete 25 fares during Taxi Work.",
+  "Achieve a gold medal in 10 Junk Energy Skydives.",
+  "Beat the par time in 3 Junk Energy Time Trials.",
+  "Collect 3 player bounties.",
+  "Deliver 3 Export vehicles to Simeon.",
+  "Steal from 3 Stash Houses.",
+  "Collect 3 G's Caches.",
+  "Discover 3 Shipwrecks.",
+  "Sell to 3 Street Dealers.",
+  "Complete 3 Last Dose Missions.",
+  "Complete 3 First Dose Missions.",
+  "Collect 10 Hidden Caches.",
+  "Complete 5 CEO or VIP Works.",
+  "Win 3 Stunt Races.",
+  "Win 3 Hotring Series Races.",
+  "Win 3 Open Wheel Races.",
+  "Win 3 RC Bandito Races.",
+  "Win 3 Pursuit Races.",
+  "Complete 5 Terrorbyte Client Jobs.",
+  "Complete 5 Nightclub Management Missions.",
+  "Sell $3,000,000 across all businesses.",
+  "Earn $100,000 in wages as an Associate or Bodyguard.",
+  "Complete 3 Business Resupply Missions.",
+  "Complete 3 Gerald's Last Play Missions.",
+  "Complete 3 Premium Deluxe Repo Work Missions.",
+  "Complete 3 A Superyacht Life Missions.",
+  "Complete 3 Bunker Research Missions.",
+  "Complete the Ammu-Nation Contract 3 times.",
+  "Complete a Salvage Yard Robbery without dying.",
+  "Deliver 10 Exotic Exports vehicles.",
+  "Complete 3 Auto Shop Contract Finales.",
+  "Deliver 3 vehicles for the Auto Shop Service.",
+  "Complete 3 Salvage Yard Robberies.",
+  "Complete Scene of the Crime.",
+  "Recover 10 vehicles using the Tow Truck.",
+  "Photograph 10 animals for Shoot Animals photography.",
+  "Create a Job in the Job Creator.",
+  "Steal from 2 Armored Trucks.",
+  "Take part in 5 Freemode Challenges.",
+  "Participate in 5 Freemode Events.",
+  "Successfully Complete 10 Stunt Jumps.",
+  "Earn $50,000 Arcade daily earnings.",
+  "Complete 5 Business Battles.",
+  "Complete 3 Last Dose Missions on Hard.",
+  "Eat 3 peyote.",
+  "Earn $2,000,000 from selling Special Cargo.",
+  "Earn $2,000,000 from selling Vehicle Cargo.",
+  "Earn $50,000 from Nightclub daily earnings.",
+  "Earn $2,000,000 from selling Product.",
+  "Complete The Data Breaches.",
+  "Complete The Bogdan Problem.",
+  "Complete 3 First Dose Missions on Hard.",
+  "Win in 3 Snowball Deathmatches.",
+  "Win Beast vs. Slasher.",
+  "Fight off the Gooch.",
+  "Kill your clone in Clone Slasher."
+}
+
+local challenge_times = {
+    [0] = "00:40.00",
+    [1] = "00:40.00",
+    [2] = "00:45.00",
+    [3] = "01:25.00",
+    [4] = "01:45.00",
+    [5] = "01:35.00",
+    [6] = "01:10.00",
+    [7] = "00:40.00",
+    [8] = "02:50.00",
+    [9] = "02:50.00",
+    [10] = "02:00.00",
+    [11] = "01:55.00",
+    [12] = "01:25.00",
+    [13] = "01:20.00",
+    [14] = "02:15.00",
+    [15] = "01:30.00",
+    [16] = "01:30.00",
+    [17] = "01:47.00",
+    [18] = "01:40.00",
+    [19] = "01:50.00",
+    [20] = "01:50.00",
+    [21] = "01:35.00",
+    [22] = "01:55.00",
+    [23] = "01:50.00",
+    [24] = "01:25.00"
+}
+
+local par_times = {
+    [0] = {
+        [0] = "01:43.20",
+        [1] = "02:04.40",
+        [2] = "02:04.90",
+        [3] = "00:46.30",
+        [4] = "04:09.50",
+        [5] = "01:44.00",
+        [6] = "00:38.50",
+        [7] = "01:10.10",
+        [8] = "02:15.00",
+        [9] = "02:07.20",
+        [10] = "01:41.30",
+        [11] = "01:17.80",
+        [12] = "00:58.80",
+        [13] = "02:29.40",
+        [14] = "01:00.00",
+        [15] = "01:19.00",
+        [16] = "01:43.40",
+        [17] = "01:24.20",
+        [18] = "02:58.80",
+        [19] = "01:26.60",
+        [20] = "01:16.60",
+        [21] = "00:54.20",
+        [22] = "01:40.00",
+        [23] = "02:05.00",
+        [24] = "02:00.00",
+        [25] = "02:35.00",
+        [26] = "01:20.00",
+        [27] = "02:24.00",
+        [28] = "02:16.00",
+        [29] = "01:50.00",
+        [30] = "01:26.00",
+        [31] = "02:10.00"
+    },
+    [1] = {
+        [0] = "01:50.00",
+        [1] = "01:30.00",
+        [2] = "01:20.00",
+        [3] = "01:27.00",
+        [4] = "01:10.00",
+        [5] = "01:32.00",
+        [6] = "02:05.00",
+        [7] = "01:12.00",
+        [8] = "01:53.00",
+        [9] = "01:20.00",
+        [10] = "01:23.00",
+        [11] = "01:18.00",
+        [12] = "01:27.00",
+        [13] = "01:22.00"
+    },
+    [2] = {
+        [0] = "02:20.00",
+        [1] = "02:00.00",
+        [2] = "01:55.00",
+        [3] = "01:35.00",
+        [4] = "02:10.00",
+        [5] = "01:40.00",
+        [6] = "02:00.00",
+        [7] = "01:50.00",
+        [8] = "01:35.00",
+        [9] = "01:20.00",
+        [10] = "01:50.00",
+        [11] = "01:35.00",
+        [12] = "02:10.00",
+        [13] = "01:50.00"
+    }
+}
+
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
     int = int:reverse():gsub("(%d%d%d)", "%1,")
@@ -1147,150 +1244,51 @@ local function is_second_part(hash)
     return true
 end
 
-local function get_challenge_time(skydive_location)
-    if skydive_location == 0 then return "00:40.00"
-    elseif skydive_location == 1 then return "00:40.00"
-    elseif skydive_location == 2 then return "00:45.00"
-    elseif skydive_location == 3 then return "01:25.00"
-    elseif skydive_location == 4 then return "01:45.00"
-    elseif skydive_location == 5 then return "01:35.00"
-    elseif skydive_location == 6 then return "01:10.00"
-    elseif skydive_location == 7 then return "00:40.00"
-    elseif skydive_location == 8 then return "02:50.00"
-    elseif skydive_location == 9 then return "02:50.00"
-    elseif skydive_location == 10 then return "02:00.00"
-    elseif skydive_location == 11 then return "01:55.00"
-    elseif skydive_location == 12 then return "01:25.00"
-    elseif skydive_location == 13 then return "01:20.00"
-    elseif skydive_location == 14 then return "02:15.00"
-    elseif skydive_location == 15 then return "01:30.00"
-    elseif skydive_location == 16 then return "01:30.00"
-    elseif skydive_location == 17 then return "01:47.00"
-    elseif skydive_location == 18 then return "01:40.00"
-    elseif skydive_location == 19 then return "01:50.00"
-    elseif skydive_location == 20 then return "01:50.00"
-    elseif skydive_location == 21 then return "01:35.00"
-    elseif skydive_location == 22 then return "01:55.00"
-    elseif skydive_location == 23 then return "01:50.00"
-    elseif skydive_location == 24 then return "01:25.00"
-    end
-    return "unavailable"
-end
-
-local function get_par_time(trial_variant, trial_location)
-    if trial_variant == 0 then
-    	if trial_location == 0 then return "01:43.20"
-    	elseif trial_location == 1 then return "02:04.40"
-    	elseif trial_location == 2 then return "02:04.90"
-    	elseif trial_location == 3 then return "00:46.30"
-    	elseif trial_location == 4 then return "04:09.50"
-    	elseif trial_location == 5 then return "01:44.00"
-    	elseif trial_location == 6 then return "00:38.50"
-    	elseif trial_location == 7 then return "01:10.10"
-    	elseif trial_location == 8 then return "02:15.00"
-    	elseif trial_location == 9 then return "02:07.20"
-    	elseif trial_location == 10 then return "01:41.30"
-    	elseif trial_location == 11 then return "01:17.80"
-    	elseif trial_location == 12 then return "00:58.80"
-    	elseif trial_location == 13 then return "02:29.40"
-    	elseif trial_location == 14 then return "01:00.00"
-    	elseif trial_location == 15 then return "01:19.00"
-    	elseif trial_location == 16 then return "01:43.40"
-    	elseif trial_location == 17 then return "01:24.20"
-    	elseif trial_location == 18 then return "02:58.80"
-    	elseif trial_location == 19 then return "01:26.60"
-    	elseif trial_location == 20 then return "01:16.60"
-    	elseif trial_location == 21 then return "00:54.20"
-    	elseif trial_location == 22 then return "01:40.00"
-    	elseif trial_location == 23 then return "02:05.00"
-    	elseif trial_location == 24 then return "02:00.00"
-    	elseif trial_location == 25 then return "02:35.00"
-    	elseif trial_location == 26 then return "01:20.00"
-    	elseif trial_location == 27 then return "02:24.00"
-    	elseif trial_location == 28 then return "02:16.00"
-    	elseif trial_location == 29 then return "01:50.00"
-    	elseif trial_location == 30 then return "01:26.00"
-    	elseif trial_location == 31 then return "02:10.00"
-    	end
-    elseif trial_variant == 1 then
-    	if trial_location == 0 then return "01:50.00"
-    	elseif trial_location == 1 then return "01:30.00"
-    	elseif trial_location == 2 then return "01:20.00"
-    	elseif trial_location == 3 then return "01:27.00"
-    	elseif trial_location == 4 then return "01:10.00"
-    	elseif trial_location == 5 then return "01:32.00"
-    	elseif trial_location == 6 then return "02:05.00"
-    	elseif trial_location == 7 then return "01:12.00"
-    	elseif trial_location == 8 then return "01:53.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:23.00"
-    	elseif trial_location == 11 then return "01:18.00"
-    	elseif trial_location == 12 then return "01:27.00"
-    	elseif trial_location == 13 then return "01:22.00"
-    	end
-    elseif trial_variant == 2 then
-    	if trial_location == 0 then return "02:20.00"
-    	elseif trial_location == 1 then return "02:00.00"
-    	elseif trial_location == 2 then return "01:55.00"
-    	elseif trial_location == 3 then return "01:35.00"
-    	elseif trial_location == 4 then return "02:10.00"
-    	elseif trial_location == 5 then return "01:40.00"
-    	elseif trial_location == 6 then return "02:00.00"
-    	elseif trial_location == 7 then return "01:50.00"
-    	elseif trial_location == 8 then return "01:35.00"
-    	elseif trial_location == 9 then return "01:20.00"
-    	elseif trial_location == 10 then return "01:50.00"
-    	elseif trial_location == 11 then return "01:35.00"
-    	elseif trial_location == 12 then return "02:10.00"
-    	elseif trial_location == 13 then return "01:50.00"
-    	end
-    end
-    return "unavailable"
-end
-
 local function set_daily_collectibles_state(state)
-    stats.set_packed_stat_bool(36628, state) -- G's Cache
-    stats.set_packed_stat_bool(36657, state) -- Stash House
-    stats.set_packed_stat_bool(31734, state) -- Shipwreck
-    stats.set_packed_stat_bool(30297, state) -- Hidden Cache 1
-    stats.set_packed_stat_bool(30298, state) -- Hidden Cache 2
-    stats.set_packed_stat_bool(30299, state) -- Hidden Cache 3
-    stats.set_packed_stat_bool(30300, state) -- Hidden Cache 4
-    stats.set_packed_stat_bool(30301, state) -- Hidden Cache 5
-    stats.set_packed_stat_bool(30302, state) -- Hidden Cache 6
-    stats.set_packed_stat_bool(30303, state) -- Hidden Cache 7
-    stats.set_packed_stat_bool(30304, state) -- Hidden Cache 8
-    stats.set_packed_stat_bool(30305, state) -- Hidden Cache 9
-    stats.set_packed_stat_bool(30306, state) -- Hidden Cache 10
-    stats.set_packed_stat_bool(30307, state) -- Treasure Chest 1
-    stats.set_packed_stat_bool(30308, state) -- Treasure Chest 2
-    stats.set_packed_stat_bool(25522, state) -- Buried Stash 1
-    stats.set_packed_stat_bool(25523, state) -- Buried Stash 2
-    stats.set_packed_stat_bool(42252, state) -- LS Tag 1
-    stats.set_packed_stat_bool(42253, state) -- LS Tag 2
-    stats.set_packed_stat_bool(42254, state) -- LS Tag 3
-    stats.set_packed_stat_bool(42255, state) -- LS Tag 4
-    stats.set_packed_stat_bool(42256, state) -- LS Tag 5
-    stats.set_packed_stat_bool(42269, state) -- Madrazo Hit
-    -- Next-gen exclusive, but the packed stats and the interaction menu functionality is available on PC
-    stats.set_packed_stat_bool(42059, state) -- Shoot Animals photography
-    stats.set_packed_stat_bool(42060, state) -- Shoot Animals photography
-    stats.set_packed_stat_bool(42061, state) -- Shoot Animals photography
-    for skydive_index = 0, 9 do
-    	-- See the getter of script event 1916113629, another stupid R* thing
-    	stats.set_packed_stat_int((34837 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Checkpoint
-    	stats.set_packed_stat_int((34839 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Accurate Landing
-    	stats.set_packed_stat_int((34838 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Partime
-    	stats.set_packed_stat_int((34840 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Gold
-    end
-    for lantern_index = 34252, 34261 do
-    	stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
-    end
-    for lantern_index = 34512, 34701 do
-    	stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
-    end
-    stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
-    stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports	
+    script.run_in_fiber(function()
+        stats.set_packed_stat_bool(36628, state) -- G's Cache
+        stats.set_packed_stat_bool(36657, state) -- Stash House
+        stats.set_packed_stat_bool(31734, state) -- Shipwreck
+        stats.set_packed_stat_bool(30297, state) -- Hidden Cache 1
+        stats.set_packed_stat_bool(30298, state) -- Hidden Cache 2
+        stats.set_packed_stat_bool(30299, state) -- Hidden Cache 3
+        stats.set_packed_stat_bool(30300, state) -- Hidden Cache 4
+        stats.set_packed_stat_bool(30301, state) -- Hidden Cache 5
+        stats.set_packed_stat_bool(30302, state) -- Hidden Cache 6
+        stats.set_packed_stat_bool(30303, state) -- Hidden Cache 7
+        stats.set_packed_stat_bool(30304, state) -- Hidden Cache 8
+        stats.set_packed_stat_bool(30305, state) -- Hidden Cache 9
+        stats.set_packed_stat_bool(30306, state) -- Hidden Cache 10
+        stats.set_packed_stat_bool(30307, state) -- Treasure Chest 1
+        stats.set_packed_stat_bool(30308, state) -- Treasure Chest 2
+        stats.set_packed_stat_bool(25522, state) -- Buried Stash 1
+        stats.set_packed_stat_bool(25523, state) -- Buried Stash 2
+        stats.set_packed_stat_bool(42252, state) -- LS Tag 1
+        stats.set_packed_stat_bool(42253, state) -- LS Tag 2
+        stats.set_packed_stat_bool(42254, state) -- LS Tag 3
+        stats.set_packed_stat_bool(42255, state) -- LS Tag 4
+        stats.set_packed_stat_bool(42256, state) -- LS Tag 5
+        stats.set_packed_stat_bool(42269, state) -- Madrazo Hit
+        -- Next-gen exclusive, but the packed stats and the interaction menu functionality is available on PC
+        stats.set_packed_stat_bool(42059, state) -- Shoot Animals Photography 1
+        stats.set_packed_stat_bool(42060, state) -- Shoot Animals Photography 2
+        stats.set_packed_stat_bool(42061, state) -- Shoot Animals Photography 3
+        for skydive_index = 0, 9 do
+            -- See the getter of script event 1916113629, another stupid R* thing
+            stats.set_packed_stat_int((34837 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Checkpoint
+            stats.set_packed_stat_int((34839 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Accurate Landing
+            stats.set_packed_stat_int((34838 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Partime
+            stats.set_packed_stat_int((34840 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Gold
+        end
+        for lantern_index = 34252, 34261 do
+            stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+        end
+        for lantern_index = 34512, 34701 do
+            stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+        end
+        stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
+        stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports
+    end)
 end
 
 local function draw_text(location, text)
@@ -1501,10 +1499,8 @@ daily_collectibles_tab:add_imgui(function()
     ImGui.Text(string.format("Daily Reset Time (6 AM UTC): %02d:%02d:%02d", hours, minutes, seconds))
 	
     if ImGui.Button("Reset All Daily Collectibles") then
-        script.run_in_fiber(function()
-            set_daily_collectibles_state(false)
-            gui.show_message("Daily Collectibles", "All Daily Collectibles have been reset.")
-        end)
+        set_daily_collectibles_state(false)
+        gui.show_message("Daily Collectibles", "All Daily Collectibles have been reset.")
     end
     
     if ImGui.Button("Complete All Daily Collectibles") then
@@ -1642,7 +1638,7 @@ hidden_cache_tab:add_imgui(function()
 end)
 
 junk_skydive_tab:add_imgui(function()
-    ImGui.Text("Challenge Time: " .. get_challenge_time(junk_skydive_loc[selected_skydive + 1]))
+    ImGui.Text("Challenge Time: " .. challenge_times[junk_skydive_loc[selected_skydive + 1]])
     
     selected_skydive = ImGui.Combo("Select Skydive", selected_skydive, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
     
@@ -1760,7 +1756,7 @@ exotic_exports_tab:add_imgui(function()
 end)
 
 time_trials_tab:add_imgui(function()
-    ImGui.Text("Par Time: " .. get_par_time(selected_trial, time_trial_loc[selected_trial + 1]))
+    ImGui.Text("Par Time: " .. par_times[selected_trial][time_trial_loc[selected_trial + 1]])
     
     selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
     
