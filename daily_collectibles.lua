@@ -1556,7 +1556,7 @@ end)
 
 stash_house_tab:add_imgui(function()
     if not stash_house_raided then
-        ImGui.Text("Safe Code: " .. safe_code)
+        ImGui.Text("Safe Code: " .. (safe_code ~= nil and safe_code or "unavailable"))
     end
     ImGui.Text("Status: " .. (stash_house_raided and "raided" or "ready"))
     
