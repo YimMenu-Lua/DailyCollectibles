@@ -1,16 +1,16 @@
 local daily_collectibles_tab = gui.get_tab("Daily Collectibles")
 
 local challenges_tab     = daily_collectibles_tab:add_tab("Challenges")
+local hidden_cache_tab   = daily_collectibles_tab:add_tab("Hidden Caches")
+local treasure_chest_tab = daily_collectibles_tab:add_tab("Treasure Chests")
+local shipwrecked_tab    = daily_collectibles_tab:add_tab("Shipwreck")
+local buried_stash_tab   = daily_collectibles_tab:add_tab("Buried Stashes")
+local junk_skydive_tab   = daily_collectibles_tab:add_tab("Junk Energy Skydives")
+local time_trials_tab    = daily_collectibles_tab:add_tab("Time Trials")
+local exotic_exports_tab = daily_collectibles_tab:add_tab("Exotic Exports")
 local dead_drop_tab      = daily_collectibles_tab:add_tab("G's Cache")
 local stash_house_tab    = daily_collectibles_tab:add_tab("Stash House")
 local street_dealer_tab  = daily_collectibles_tab:add_tab("Street Dealers")
-local shipwrecked_tab    = daily_collectibles_tab:add_tab("Shipwreck")
-local hidden_cache_tab   = daily_collectibles_tab:add_tab("Hidden Caches")
-local junk_skydive_tab   = daily_collectibles_tab:add_tab("Junk Energy Skydives")
-local treasure_chest_tab = daily_collectibles_tab:add_tab("Treasure Chests")
-local buried_stash_tab   = daily_collectibles_tab:add_tab("Buried Stashes")
-local exotic_exports_tab = daily_collectibles_tab:add_tab("Exotic Exports")
-local time_trials_tab    = daily_collectibles_tab:add_tab("Time Trials")
 local ls_tags_tab        = daily_collectibles_tab:add_tab("LS Tags")
 local madrazo_hits_tab   = daily_collectibles_tab:add_tab("Madrazo Hits")
 
@@ -92,6 +92,28 @@ local meth_unit                = {}
 local weed_unit                = {}
 local cocaine_unit             = {}
 local acid_unit                = {}
+
+local collectable_types = {
+    COLLECTABLE_MOVIE_PROPS = 0,
+    COLLECTABLE_HIDDEN_CACHES = 1,
+    COLLECTABLE_TREASURE_CHESTS = 2,
+    COLLECTABLE_RADIO_STATIONS = 3,
+    COLLECTABLE_USB_PIRATE_RADIO = 4,
+    COLLECTABLE_SHIPWRECKED = 5,
+    COLLECTABLE_BURIED_STASH = 6,
+    -- COLLECTABLE_METAL_DETECTOR = 7, unused (turned into random event)
+    COLLECTABLE_TRICK_OR_TREAT = 8,
+    COLLECTABLE_LD_ORGANICS = 9,
+    COLLECTABLE_SKYDIVES = 10,
+    -- COLLECTABLE_SIGHTSEEING = 11, unused (turned into random event)
+    -- COLLECTABLE_POLICE_BADGES = 12, unused (CnC)
+    COLLECTABLE_GUN_PARTS = 13, -- (crime scene random event, remnant from CnC)
+    -- 14-15 unknown/doesn't exist
+    COLLECTABLE_SNOWMEN = 16,
+    COLLECTABLE_DEAD_DROP = 17,
+    -- 18 unknown/doesn't exist
+    COLLECTABLE_TAGGING = 19
+}
 
 local dead_drop_coords = {
     [0] = {
@@ -1291,6 +1313,10 @@ local function set_daily_collectibles_state(state)
     end)
 end
 
+local function set_collectable_collected(collectable_type, collectable_index)
+    script.call_function("SCC", "freemode", "2D 05 33 00 00", 0, {collectable_type, collectable_index, 1, 1, 0})
+end
+
 local function draw_text(location, text)
     local _, screen_x, screen_y = GRAPHICS.GET_SCREEN_COORD_FROM_WORLD_COORD(location.x, location.y, location.z, screen_x, screen_y)
 
@@ -1487,9 +1513,8 @@ script.register_looped("Daily Collectibles", function()
     exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
     total_products              = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
     all_products                = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-    -- TO-DO: Remove these when LS Tags & Madrazo Hits are officially released
-    tunables.set_bool(-2022924242, true)
-    tunables.set_bool(-676725789, true)    
+    -- TO-DO: Remove this when LS Tags is officially released
+    tunables.set_bool(-2022924242, true) 
     draw_esp()
 end)
 
@@ -1539,112 +1564,30 @@ challenges_tab:add_imgui(function()
     end
 end)
 
-dead_drop_tab:add_imgui(function()
-    ImGui.Text("Status: " .. (dead_drop_collected and "collected" or "ready"))
-    
-    if ImGui.Button("Teleport") then
-        if not dead_drop_collected then
-			teleport(dead_drop_coords[dead_drop_area][dead_drop_loc] or vec3:new(0, 0, 0))
-        else
-            gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
-        end
-    end
-    
-    ImGui.SameLine()
-    esp_gs_cache = ImGui.Checkbox("Draw ESP", esp_gs_cache)
-end)
-
-stash_house_tab:add_imgui(function()
-    if not stash_house_raided then
-        ImGui.Text("Safe Code: " .. (safe_code ~= nil and safe_code or "unavailable"))
-    end
-    ImGui.Text("Status: " .. (stash_house_raided and "raided" or "ready"))
-    
-    if ImGui.Button("Teleport") then
-        if not stash_house_raided then
-            script.run_in_fiber(function (script)
-                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
-                    teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
-                end
-            end)
-        else
-            gui.show_message("Daily Collectibles", "Stash House has already been raided.")
-        end
-    end
-    
-    ImGui.SameLine()
-    esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
-    
-    if ImGui.Button("Enter Safe Combination") then
-        for i = 0, 2, 1 do
-            local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)) + 1)
-            locals.set_float("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)), safe_combination)
-        end
-    end
-end)
-
-street_dealer_tab:add_imgui(function()
-    selected_dealer = ImGui.Combo("Select Dealer", selected_dealer, { "1", "2", "3" }, 3)
-    
-    if ImGui.Button("Teleport") then
-        teleport(street_dealer_coords[street_dealer_loc[selected_dealer]] or vec3:new(0, 0, 0))
-    end
-    
-    ImGui.SameLine()
-    
-    esp_street_dealers = ImGui.Checkbox("Draw ESP", esp_street_dealers)
-    
-    ImGui.Text("Weed: $" .. format_int(max_weed * weed_unit[selected_dealer + 1]) .. " (" .. format_int(max_weed) .. " unit * " .. format_int(weed_unit[selected_dealer + 1]) .. ")")
-    ImGui.Text("Meth: $" .. format_int(max_meth * meth_unit[selected_dealer + 1]) .. " (" .. format_int(max_meth) .. " unit * " .. format_int(meth_unit[selected_dealer + 1]) .. ")")
-    ImGui.Text("Cocaine: $" .. format_int(max_cocaine * cocaine_unit[selected_dealer + 1]) .. " (" .. format_int(max_cocaine) .. " unit * " .. format_int(cocaine_unit[selected_dealer + 1]) .. ")")
-    ImGui.Text("Acid: $" .. format_int(max_acid * acid_unit[selected_dealer + 1]) .. " (" .. format_int(max_acid) .. " unit * " .. format_int(acid_unit[selected_dealer + 1]) .. ")")
-    ImGui.Text("Total: $" .. format_int(total_products))
-    
-    ImGui.Separator()
-    
-    ImGui.Text("All: $" .. format_int(all_products))
-end)
-
-shipwrecked_tab:add_imgui(function()
-    ImGui.Text("Status: " .. (shipwrecked_collected and "collected" or "ready"))
-    
-    if ImGui.Button("Teleport") then
-        if not shipwrecked_collected then
-            teleport(shipwrecked_coords[shipwrecked_loc] or vec3:new(0, 0, 0))
-        else
-            gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
-        end
-    end
-
-    ImGui.SameLine()
-    esp_shipwreck = ImGui.Checkbox("Draw ESP", esp_shipwreck)
-end)
-
 hidden_cache_tab:add_imgui(function()
-    ImGui.Text("Status: " .. (hidden_cache_collected[selected_cache + 1] and "collected" or "ready"))
-    
-    selected_cache = ImGui.Combo("Select Cache", selected_cache, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
-    
-    if ImGui.Button("Teleport") then
-        if not hidden_cache_collected[selected_cache + 1] then
-            teleport(hidden_cache_coords[hidden_cache_loc[selected_cache + 1]] or vec3:new(0, 0, 0))
-        else
-            gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
-        end
-    end
-
-    ImGui.SameLine()
-    esp_hidden_cache = ImGui.Checkbox("Draw ESP", esp_hidden_cache)
-end)
-
-junk_skydive_tab:add_imgui(function()
-    ImGui.Text("Challenge Time: " .. challenge_times[junk_skydive_loc[selected_skydive + 1]])
-    
-    selected_skydive = ImGui.Combo("Select Skydive", selected_skydive, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
-    
-    if ImGui.Button("Teleport") then
-        teleport(junk_skydive_coords[junk_skydive_loc[selected_skydive + 1]] or vec3:new(0, 0, 0))
-    end
+   ImGui.Text("Status: " .. (hidden_cache_collected[selected_cache + 1] and "collected" or "ready"))
+   
+   selected_cache = ImGui.Combo("Select Cache", selected_cache, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
+   
+   if ImGui.Button("Teleport") then
+       if not hidden_cache_collected[selected_cache + 1] then
+           teleport(hidden_cache_coords[hidden_cache_loc[selected_cache + 1]] or vec3:new(0, 0, 0))
+       else
+           gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
+       end
+   end
+   
+   ImGui.SameLine()
+   
+   if ImGui.Button("Collect") then
+       if not hidden_cache_collected[selected_cache + 1] then
+   		set_collectable_collected(collectable_types.COLLECTABLE_HIDDEN_CACHES, selected_cache)
+       else
+           gui.show_message("Daily Collectibles", "Hidden Cache has already been collected.")
+       end
+   end
+   
+   esp_hidden_cache = ImGui.Checkbox("Draw ESP", esp_hidden_cache)
 end)
 
 treasure_chest_tab:add_imgui(function()
@@ -1659,9 +1602,42 @@ treasure_chest_tab:add_imgui(function()
             gui.show_message("Daily Collectibles", "Treasure Chest has already been collected.")
         end
     end
-
+    
     ImGui.SameLine()
+    
+    if ImGui.Button("Collect") then
+        if not treasure_chest_collected[selected_treasure + 1] then
+    		set_collectable_collected(collectable_types.COLLECTABLE_TREASURE_CHESTS, selected_treasure)
+        else
+            gui.show_message("Daily Collectibles", "Treasure Chest has already been collected.")
+        end
+    end
+    
     esp_treasure_chest = ImGui.Checkbox("Draw ESP", esp_treasure_chest)
+end)
+
+shipwrecked_tab:add_imgui(function()
+    ImGui.Text("Status: " .. (shipwrecked_collected and "collected" or "ready"))
+    
+    if ImGui.Button("Teleport") then
+        if not shipwrecked_collected then
+            teleport(shipwrecked_coords[shipwrecked_loc] or vec3:new(0, 0, 0))
+        else
+            gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
+        end
+    end
+    
+    ImGui.SameLine()
+    
+    if ImGui.Button("Collect") then
+        if not shipwrecked_collected then
+    		set_collectable_collected(collectable_types.COLLECTABLE_SHIPWRECKED, 0)
+        else
+            gui.show_message("Daily Collectibles", "Shipwreck has already been collected.")
+        end
+    end
+    
+    esp_shipwreck = ImGui.Checkbox("Draw ESP", esp_shipwreck)
 end)
 
 buried_stash_tab:add_imgui(function()
@@ -1676,9 +1652,41 @@ buried_stash_tab:add_imgui(function()
             gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
         end
     end
-
+    
     ImGui.SameLine()
+    
+    if ImGui.Button("Collect") then
+        if not buried_stash_collected[selected_stash + 1] then
+    		set_collectable_collected(collectable_types.COLLECTABLE_BURIED_STASH, selected_stash)
+        else
+            gui.show_message("Daily Collectibles", "Buried Stash has already been collected.")
+        end
+    end
+    
     esp_buried_stash = ImGui.Checkbox("Draw ESP", esp_buried_stash)
+end)
+
+junk_skydive_tab:add_imgui(function()
+    ImGui.Text("Challenge Time: " .. challenge_times[junk_skydive_loc[selected_skydive + 1]])
+    
+    selected_skydive = ImGui.Combo("Select Skydive", selected_skydive, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
+    
+    if ImGui.Button("Teleport") then
+        teleport(junk_skydive_coords[junk_skydive_loc[selected_skydive + 1]] or vec3:new(0, 0, 0))
+    end
+end)
+
+time_trials_tab:add_imgui(function()
+    ImGui.Text("Par Time: " .. par_times[selected_trial][time_trial_loc[selected_trial + 1]])
+    
+    selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
+    
+    if ImGui.Button("Teleport") then
+        if selected_trial == 0 then teleport(standard_trial_coords[time_trial_loc[1]])
+        elseif selected_trial == 1 then teleport(rc_trial_coords[time_trial_loc[2]])
+        elseif selected_trial == 2 then teleport(bike_trial_coords[time_trial_loc[3]])
+        end
+    end
 end)
 
 exotic_exports_tab:add_imgui(function()
@@ -1701,7 +1709,7 @@ exotic_exports_tab:add_imgui(function()
             gui.show_message("Daily Collectibles", "You have already delivered all the vehicles.")
         end
     end
-
+    
     ImGui.SameLine()
     esp_exotic_vehicle = ImGui.Checkbox("Draw ESP", esp_exotic_vehicle)
     
@@ -1757,17 +1765,80 @@ exotic_exports_tab:add_imgui(function()
     end
 end)
 
-time_trials_tab:add_imgui(function()
-    ImGui.Text("Par Time: " .. par_times[selected_trial][time_trial_loc[selected_trial + 1]])
-    
-    selected_trial = ImGui.Combo("Select Variant", selected_trial, { "Standard Time Trial", "RC Bandito Time Trial", "Junk Energy Bike Time Trial" }, 3)
+dead_drop_tab:add_imgui(function()
+    ImGui.Text("Status: " .. (dead_drop_collected and "collected" or "ready"))
     
     if ImGui.Button("Teleport") then
-        if selected_trial == 0 then teleport(standard_trial_coords[time_trial_loc[1]])
-        elseif selected_trial == 1 then teleport(rc_trial_coords[time_trial_loc[2]])
-        elseif selected_trial == 2 then teleport(bike_trial_coords[time_trial_loc[3]])
+        if not dead_drop_collected then
+            teleport(dead_drop_coords[dead_drop_area][dead_drop_loc] or vec3:new(0, 0, 0))
+        else
+            gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
         end
     end
+    
+    ImGui.SameLine()
+    
+    if ImGui.Button("Collect") then
+        if not dead_drop_collected then
+            set_collectable_collected(collectable_types.COLLECTABLE_DEAD_DROP, 0)
+        else
+            gui.show_message("Daily Collectibles", "G's Cache has already been collected.")
+        end
+    end
+    
+    esp_gs_cache = ImGui.Checkbox("Draw ESP", esp_gs_cache)
+end)
+
+stash_house_tab:add_imgui(function()
+    if not stash_house_raided then
+        ImGui.Text("Safe Code: " .. (safe_code ~= nil and safe_code or "unavailable"))
+    end
+    ImGui.Text("Status: " .. (stash_house_raided and "raided" or "ready"))
+    
+    if ImGui.Button("Teleport") then
+        if not stash_house_raided then
+            script.run_in_fiber(function (script)
+                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
+                    teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
+                end
+            end)
+        else
+            gui.show_message("Daily Collectibles", "Stash House has already been raided.")
+        end
+    end
+    
+    ImGui.SameLine()
+	
+    if ImGui.Button("Enter Safe Combination") then
+        for i = 0, 2, 1 do
+            local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)) + 1)
+            locals.set_float("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)), safe_combination)
+        end
+    end	
+    
+    esp_stash_house = ImGui.Checkbox("Draw ESP", esp_stash_house)
+end)
+
+street_dealer_tab:add_imgui(function()
+    selected_dealer = ImGui.Combo("Select Dealer", selected_dealer, { "1", "2", "3" }, 3)
+    
+    if ImGui.Button("Teleport") then
+        teleport(street_dealer_coords[street_dealer_loc[selected_dealer]] or vec3:new(0, 0, 0))
+    end
+    
+    ImGui.SameLine()
+    
+    esp_street_dealers = ImGui.Checkbox("Draw ESP", esp_street_dealers)
+    
+    ImGui.Text("Weed: $" .. format_int(max_weed * weed_unit[selected_dealer + 1]) .. " (" .. format_int(max_weed) .. " unit * " .. format_int(weed_unit[selected_dealer + 1]) .. ")")
+    ImGui.Text("Meth: $" .. format_int(max_meth * meth_unit[selected_dealer + 1]) .. " (" .. format_int(max_meth) .. " unit * " .. format_int(meth_unit[selected_dealer + 1]) .. ")")
+    ImGui.Text("Cocaine: $" .. format_int(max_cocaine * cocaine_unit[selected_dealer + 1]) .. " (" .. format_int(max_cocaine) .. " unit * " .. format_int(cocaine_unit[selected_dealer + 1]) .. ")")
+    ImGui.Text("Acid: $" .. format_int(max_acid * acid_unit[selected_dealer + 1]) .. " (" .. format_int(max_acid) .. " unit * " .. format_int(acid_unit[selected_dealer + 1]) .. ")")
+    ImGui.Text("Total: $" .. format_int(total_products))
+    
+    ImGui.Separator()
+    
+    ImGui.Text("All: $" .. format_int(all_products))
 end)
 
 ls_tags_tab:add_imgui(function()
@@ -1791,6 +1862,15 @@ ls_tags_tab:add_imgui(function()
     end
     
     ImGui.SameLine()
+    
+    if ImGui.Button("Spray") then
+        if not ls_tag_sprayed[selected_tag + 1] then
+            set_collectable_collected(collectable_types.COLLECTABLE_TAGGING, selected_tag)
+        else
+            gui.show_message("Daily Collectibles", "LS Tag has already been sprayed.")
+        end
+    end
+    
     esp_ls_tag = ImGui.Checkbox("Draw ESP", esp_ls_tag)
 end)
 
@@ -1804,7 +1884,13 @@ madrazo_hits_tab:add_imgui(function()
             gui.show_message("Daily Collectibles", "Madrazo Hit has already been completed.")
         end
     end
-
-    ImGui.SameLine()
+	
+    -- TO-DO: Come up with a proper solution.
+    --ImGui.SameLine()
+    --if ImGui.Button("Complete (Debug)") then
+    --    script.add_patch("fm_content_daily_bounty", "CMHB", "56 ? ? 50 ? ? 56 ? ? 74 5D", 0, { 0x2B, 0x00, 0x00 })
+    --    script.call_function("CMH", "fm_content_daily_bounty", "2D 00 05 00 00 74 5D", 0, {})
+    --end
+	
     esp_madrazo_hit = ImGui.Checkbox("Draw ESP", esp_madrazo_hit)
 end)
