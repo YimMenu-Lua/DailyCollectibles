@@ -1314,7 +1314,15 @@ local function set_daily_collectibles_state(state)
 end
 
 local function set_collectable_collected(collectable_type, collectable_index)
-    script.call_function("SCC", "freemode", "2D 05 33 00 00", 0, {collectable_type, collectable_index, 1, 1, 0})
+    script.run_in_fiber(function()
+        scr_function.call_script_function("freemode", "SCC", "2D 05 33 00 00", "void", {
+            { "int", collectable_type },
+            { "int", collectable_index },
+            { "bool", true }, -- Set Collected
+            { "bool", true }, -- Print Help Message
+            { "bool", false } -- Disable Trick or Treat Effects
+        })
+    end)
 end
 
 local function draw_text(location, text)
@@ -1513,8 +1521,6 @@ script.register_looped("Daily Collectibles", function()
     exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
     total_products              = (max_cocaine * cocaine_unit[selected_dealer + 1] + max_meth * meth_unit[selected_dealer + 1] + max_weed * weed_unit[selected_dealer + 1] + max_acid * acid_unit[selected_dealer + 1])
     all_products                = (max_cocaine * cocaine_unit[1] + max_meth * meth_unit[1] + max_weed * weed_unit[1] + max_acid * acid_unit[1] + max_cocaine * cocaine_unit[2] + max_meth * meth_unit[2] + max_weed * weed_unit[2] + max_acid * acid_unit[2] + max_cocaine * cocaine_unit[3] + max_meth * meth_unit[3] + max_weed * weed_unit[3] + max_acid * acid_unit[3])
-    -- TO-DO: Remove this when LS Tags is officially released
-    tunables.set_bool(-2022924242, true) 
     draw_esp()
 end)
 
