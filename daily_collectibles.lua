@@ -102,6 +102,15 @@ local COLLECTABLE_DEAD_DROP        = 17
 -- 18 unknown/doesn't exist
 local COLLECTABLE_TAGGING          = 19
 
+-- if (COLLECTABLES_TREASURE_CHESTS && IS_PLAYER_ON_CAYO_SCOPE_PREP(PLAYER::PLAYER_ID()))
+-- This patch replaces IAND with PUSH_CONST_1, so the result of IS_PLAYER_ON_CAYO_SCOPE_PREP is always considered true for this check.
+-- The condition will still fail if COLLECTABLES_TREASURE_CHESTS tunable is false (it doesn't matter because this is the behaviour we want).
+script.add_patch("freemode", "Bypass Treasure Chest CP Check", "5D A4 9C 22 1F", 4, { 0x72 })
+
+-- This patch sets the value of bVar0 to true in the function used to check if buried stashes should spawn.
+-- Rockstar uses this variable to skip Cayo Perico checks in their debug builds, so we do exactly what they do.
+script.add_patch("freemode", "Bypass Buried Stash CP Check", "71 39 02 38 02 06 56 ? ? 2C", 0, { 0x72 })
+
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
     int = int:reverse():gsub("(%d%d%d)", "%1,")
@@ -259,7 +268,7 @@ script.register_looped("Daily Collectibles", function()
     daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (1 * 3)))
     daily_obj[3]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (2 * 3)))
     weekly_obj_id               = globals.get_int(weekly_objectives_global + (1 + (0 * 6)))
-    weekly_obj_override         = globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 1)
+    weekly_obj_override         = globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 2)
     dealer_loc[1]               = globals.get_int(global_three + global_three_offset_one + 1 + (0 * 7))
     dealer_loc[2]               = globals.get_int(global_three + global_three_offset_one + 1 + (1 * 7))
     dealer_loc[3]               = globals.get_int(global_three + global_three_offset_one + 1 + (2 * 7))
@@ -447,6 +456,8 @@ treasure_chest_tab:add_imgui(function()
             gui.show_error("Daily Collectibles", "Treasure Chest has already been collected.")
         end
     end
+	
+    ImGui.Text("Enable Cayo Perico from Self -> Teleport to not fall into the water.")
 end)
 
 shipwrecked_tab:add_imgui(function()
@@ -497,6 +508,8 @@ buried_stash_tab:add_imgui(function()
             gui.show_error("Daily Collectibles", "Buried Stash has already been collected.")
         end
     end
+	
+    ImGui.Text("Enable Cayo Perico from Self -> Teleport to not fall into the water.")
 end)
 
 junk_skydive_tab:add_imgui(function()
