@@ -26,12 +26,14 @@ local global_four             = 1882247
 local global_five             = 1949771
 local global_five_offset      = 5878
 
-local freemode_local_one    = 14386
-local freemode_local_two    = 14436
-local freemode_local_three  = 15239
-local stash_house_local_one = 3521
-local skydive_local_one     = 253
-local skydive_local_two     = 3194
+local freemode_local_one     = 14386
+local freemode_local_two     = 14436
+local freemode_local_three   = 15239
+local stash_house_local_one  = 3521
+local skydive_local_one      = 253
+local skydive_local_two      = 3194
+local daily_bounty_local_one = 2533
+local daily_bounty_local_two = 216
 
 local current_objectives_global        = 2359296
 local current_objectives_global_offset = 5570
@@ -68,6 +70,7 @@ local exotic_reward_ready      = false
 local always_gold_medal        = false
 local pause_timer              = false
 local bail_office_owned        = false
+local weapon_of_choice         = false
 local weekly_obj_str           = ""
 local safe_code                = ""
 local daily_obj                = {}
@@ -356,9 +359,9 @@ script.register_looped("Daily Collectibles", function()
         max_weed * (weed_unit[1] + weed_unit[2] + weed_unit[3]) +
         max_acid * (acid_unit[1] + acid_unit[2] + acid_unit[3])
     )
-
+    -- We need to check for the script or else the game will crash in case the user tries to switch session
     if always_gold_medal then
-        if script.is_active("fm_content_skydive") then -- We need to check this or else the game will crash in case the user tries to switch session
+        if script.is_active("fm_content_skydive") then
             local checkpoints = locals.get_int("fm_content_skydive", skydive_local_one + 143) - 1
             local skydive_bs  = locals.get_int("fm_content_skydive", skydive_local_two + (1 + (self.get_id() * 51)) + 43 + 1)
             skydive_bs        = skydive_bs | (1 << 4) -- Set Accurate Landing bit
@@ -369,8 +372,14 @@ script.register_looped("Daily Collectibles", function()
         end
     end
     if pause_timer then
-        if script.is_active("fm_content_bicycle_time_trial") then -- We need to check this or else the game will crash in case the user tries to switch session
+        if script.is_active("fm_content_bicycle_time_trial") then
             locals.set_int("fm_content_bicycle_time_trial", fm_content_shared_local + 3, NETWORK.GET_NETWORK_TIME())
+        end
+    end
+    if weapon_of_choice then
+        if script.is_active("fm_content_daily_bounty") then
+            local bonus_completed = locals.get_int("fm_content_daily_bounty", daily_bounty_local_one + 369 + 1) | (1 << 4)
+            locals.set_int("fm_content_daily_bounty", daily_bounty_local_one + 369 + 1, bonus_completed)
         end
     end
 end)
@@ -786,4 +795,19 @@ madrazo_hits_tab:add_imgui(function()
             gui.show_error("Daily Collectibles", "You must own a Bail Office.")
         end
     end
+	
+    ImGui.SameLine()
+	
+    if ImGui.Button("Teleport to Target") then
+        if not hit_completed then
+            script.run_in_fiber(function()
+                local coords = locals.get_vec3("fm_content_daily_bounty", daily_bounty_local_two + 419 + 1 + (1 + (0 *4)))
+                teleport(coords or vec3:new(0, 0, 0))
+            end)
+        else
+            gui.show_error("Daily Collectibles", "Madrazo Hit has already been completed.")		
+        end
+    end
+	
+    weapon_of_choice = ImGui.Checkbox("Complete Weapon of Choice", weapon_of_choice)
 end)
