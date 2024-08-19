@@ -30,13 +30,15 @@ local freemode_local_one    = 14386
 local freemode_local_two    = 14436
 local freemode_local_three  = 15239
 local stash_house_local_one = 3521
-local stash_house_local_two = 119
-local btt_local_one         = 119
+local skydive_local_one     = 253
+local skydive_local_two     = 3194
 
 local current_objectives_global        = 2359296
 local current_objectives_global_offset = 5570
 local weekly_objectives_global         = 2737992
 local objectives_state_global          = 1574744
+
+local fm_content_shared_local = 119
 
 local selected_dealer    = 0
 local selected_cache     = 0
@@ -63,6 +65,7 @@ local shipwrecked_collected    = false
 local spray_can_collected      = false
 local hit_completed            = false
 local exotic_reward_ready      = false
+local always_gold_medal        = false
 local pause_timer              = false
 local bail_office_owned        = false
 local weekly_obj_str           = ""
@@ -198,9 +201,9 @@ local function set_daily_collectable_state(state)
         for lantern_index = 34512, 34701 do
             stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
         end
-		stats.set_int("MPPLY_TIMETRIAL_COMPLETED_WEEK", state and trial_loc[1] or -1) -- Standard Time Trial
-		stats.set_int("MPPLY_RCTTCOMPLETEDWEEK", state and trial_loc[2] or -1) -- RC Bandito Time Trial
-		stats.set_int("MPPLY_BTTCOMPLETED", state and trial_loc[3] or -1) -- Junk Energy Bike Time Trial
+        stats.set_int("MPPLY_TIMETRIAL_COMPLETED_WEEK", state and trial_loc[1] or -1) -- Standard Time Trial
+        stats.set_int("MPPLY_RCTTCOMPLETEDWEEK", state and trial_loc[2] or -1) -- RC Bandito Time Trial
+        stats.set_int("MPPLY_BTTCOMPLETED", state and trial_loc[3] or -1) -- Junk Energy Bike Time Trial
         stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
         stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports
     end)
@@ -354,9 +357,20 @@ script.register_looped("Daily Collectibles", function()
         max_acid * (acid_unit[1] + acid_unit[2] + acid_unit[3])
     )
 
+    if always_gold_medal then
+        if script.is_active("fm_content_skydive") then -- We need to check this or else the game will crash in case the user tries to switch session
+            local checkpoints = locals.get_int("fm_content_skydive", skydive_local_one + 143) - 1
+            local skydive_bs  = locals.get_int("fm_content_skydive", skydive_local_two + (1 + (self.get_id() * 51)) + 43 + 1)
+            skydive_bs        = skydive_bs | (1 << 4) -- Set Accurate Landing bit
+            skydive_bs        = skydive_bs | (1 << 7) -- Set Par Time bit
+            locals.set_int("fm_content_skydive", fm_content_shared_local + 2, checkpoints)
+            locals.set_int("fm_content_skydive", fm_content_shared_local + 21, NETWORK.GET_NETWORK_TIME()) -- Set the timer to 0 (not required but why not)
+            locals.set_int("fm_content_skydive", skydive_local_two + (1 + (self.get_id() * 51)) + 43 + 1, skydive_bs)
+        end
+    end
     if pause_timer then
-        if script.is_active("fm_content_bicycle_time_trial") then
-            locals.set_int("fm_content_bicycle_time_trial", btt_local_one + 3, NETWORK.GET_NETWORK_TIME())
+        if script.is_active("fm_content_bicycle_time_trial") then -- We need to check this or else the game will crash in case the user tries to switch session
+            locals.set_int("fm_content_bicycle_time_trial", fm_content_shared_local + 3, NETWORK.GET_NETWORK_TIME())
         end
     end
 end)
@@ -520,6 +534,10 @@ junk_skydive_tab:add_imgui(function()
             teleport(get_collectable_coords(COLLECTABLE_SKYDIVES, selected_skydive) or vec3:new(0, 0, 0))
         end)
     end
+	
+    ImGui.SameLine()
+	
+    always_gold_medal = ImGui.Checkbox("Always Gold Medal", always_gold_medal)
 end)
 
 time_trials_tab:add_imgui(function()
@@ -687,8 +705,8 @@ stash_house_tab:add_imgui(function()
     
     if ImGui.Button("Enter Safe Combination") then
         for i = 0, 2 do
-            local safe_combination = locals.get_int("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)) + 1)
-            locals.set_float("fm_content_stash_house", stash_house_local_two + 22 + (1 + (i * 2)), safe_combination)
+            local safe_combination = locals.get_int("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)) + 1)
+            locals.set_float("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)), safe_combination)
         end
     end
 end)
