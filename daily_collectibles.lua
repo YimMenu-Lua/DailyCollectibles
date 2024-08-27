@@ -111,11 +111,11 @@ local COLLECTABLE_TAGGING          = 19
 -- if (COLLECTABLES_TREASURE_CHESTS && IS_PLAYER_ON_CAYO_SCOPE_PREP(PLAYER::PLAYER_ID()))
 -- This patch replaces IAND with PUSH_CONST_1, so the result of IS_PLAYER_ON_CAYO_SCOPE_PREP is always considered true for this check.
 -- The condition will still fail if COLLECTABLES_TREASURE_CHESTS tunable is false (it doesn't matter because this is the behaviour we want).
-local treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "5D A4 9C 22 1F", 4, { 0x72 })
+treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "5D A4 9C 22 1F", 4, { 0x72 })
 
 -- This patch sets the value of bVar0 to true in the function used to check if buried stashes should spawn.
 -- Rockstar uses this variable to skip Cayo Perico checks in their debug builds, so we do exactly what they do.
-local buried_stash_patch = scr_patch:new("freemode", "BBSSC", "71 39 02 38 02 06 56 ? ? 2C", 0, { 0x72 })
+buried_stash_patch = scr_patch:new("freemode", "BBSSC", "71 39 02 38 02 06 56 ? ? 2C", 0, { 0x72 })
 
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
