@@ -269,6 +269,11 @@ local function get_vehicle_name(index, return_joaat)
     end
 end
 
+event.register_handler(menu_event.ScriptsReloaded, function()
+    treasure_chest_patch:disable_patch()
+    buried_stash_patch:disable_patch()
+end)
+
 script.register_looped("Daily Collectibles", function()
     daily_obj[1]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (0 * 3)))
     daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (1 * 3)))
