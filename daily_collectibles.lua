@@ -621,7 +621,7 @@ exotic_exports_tab:add_imgui(function()
         end
     end
     
-    if ImGui.Button("Deliver Vehicle") then
+    if ImGui.Button("Teleport to Docks") then
         if vehicle_bitset ~= 1023 then
             if not exotic_reward_ready then
                 gui.show_error("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
@@ -649,6 +649,38 @@ exotic_exports_tab:add_imgui(function()
                     break
                 end
             end
+        else
+            gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
+        end
+    end
+	
+    if ImGui.Button("Deliver Vehicle") then
+        if vehicle_bitset ~= 1023 then
+            script.run_in_fiber(function()
+                local next_veh = 0
+                for i = 1, 10 do
+                    if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
+                        next_veh = get_vehicle_name(i, true)
+                        break
+                    end
+                end              
+                tunables.set_bool("ENABLE_FM_DELIVERY_CHALK_AUTO_CLEANUP_DELIVERED", false)            
+                scr_function.call_script_function("freemode", "PDE", "2D 0C 2A 00 00", "void", {
+                    { "int", 0 },
+                    { "int", self.get_id() },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", 0 },
+                    { "int", next_veh },
+                    { "int", 273 }
+                })
+                tunables.set_bool("ENABLE_FM_DELIVERY_CHALK_AUTO_CLEANUP_DELIVERED", true)
+            end)
         else
             gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
         end
