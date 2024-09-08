@@ -26,6 +26,11 @@ local global_four             = 1882247
 local global_five             = 1949771
 local global_five_offset      = 5878
 
+local current_objectives_global        = 2359296
+local current_objectives_global_offset = 5570
+local weekly_objectives_global         = 2737992
+local objectives_state_global          = 1574744
+
 local freemode_local_one     = 14386
 local freemode_local_two     = 14436
 local freemode_local_three   = 15239
@@ -34,11 +39,6 @@ local skydive_local_one      = 253
 local skydive_local_two      = 3194
 local daily_bounty_local_one = 2533
 local daily_bounty_local_two = 216
-
-local current_objectives_global        = 2359296
-local current_objectives_global_offset = 5570
-local weekly_objectives_global         = 2737992
-local objectives_state_global          = 1574744
 
 local fm_content_shared_local = 119
 
@@ -60,7 +60,6 @@ local total_products           = 0
 local all_products             = 0
 local active_vehicle           = 0
 local vehicle_bitset           = 0
-local vehicle_coords           = vec3:new(0, 0, 0)
 local dead_drop_collected      = false
 local stash_house_raided       = false
 local shipwrecked_collected    = false
@@ -72,7 +71,7 @@ local pause_timer              = false
 local bail_office_owned        = false
 local weapon_of_choice         = false
 local weekly_obj_str           = ""
-local safe_code                = ""
+local safe_code                = "N/A"
 local daily_obj                = {}
 local daily_obj_str            = {}
 local dealer_loc               = {}
@@ -83,10 +82,10 @@ local treasure_chest_collected = {}
 local buried_stash_collected   = {}
 local trial_beaten             = {}
 local ls_tag_sprayed           = {}
-local meth_unit                = {}
-local weed_unit                = {}
-local cocaine_unit             = {}
-local acid_unit                = {}
+local meth_unit                = { 0, 0, 0 }
+local weed_unit                = { 0, 0, 0 }
+local cocaine_unit             = { 0, 0, 0 }
+local acid_unit                = { 0, 0, 0 }
 
 local COLLECTABLE_MOVIE_PROPS      = 0
 local COLLECTABLE_HIDDEN_CACHES    = 1
@@ -111,11 +110,18 @@ local COLLECTABLE_TAGGING          = 19
 -- if (COLLECTABLES_TREASURE_CHESTS && IS_PLAYER_ON_CAYO_SCOPE_PREP(PLAYER::PLAYER_ID()))
 -- This patch replaces IAND with PUSH_CONST_1, so the result of IS_PLAYER_ON_CAYO_SCOPE_PREP is always considered true for this check.
 -- The condition will still fail if COLLECTABLES_TREASURE_CHESTS tunable is false (it doesn't matter because this is the behaviour we want).
-treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "5D A4 9C 22 1F", 4, { 0x72 })
+treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "5D A4 9C 22 1F", 4, {0x72})
 
 -- This patch sets the value of bVar0 to true in the function used to check if buried stashes should spawn.
 -- Rockstar uses this variable to skip Cayo Perico checks in their debug builds, so we do exactly what they do.
-buried_stash_patch = scr_patch:new("freemode", "BBSSC", "71 39 02 38 02 06 56 ? ? 2C", 0, { 0x72 })
+buried_stash_patch = scr_patch:new("freemode", "BBSSC", "71 39 02 38 02 06 56 ? ? 2C", 0, {0x72})
+
+-- This patch prevents freemode from disabling the docks blip and corona if player is wanted.
+exotic_exports_patch1 = scr_patch:new("freemode", "EXBWC1", "2C 05 06 11 71 09 39 2A", 0, {0x00, 0x00, 0x00, 0x00, 0x00, 0x71})
+
+-- This patch bypasses the wanted level restrictions in gb_delivery.
+-- It should not conflict with any other deliveries (hopefully).
+exotic_exports_patch2 = scr_patch:new("gb_delivery", "EXBWC2", "2D 02 04 00 00 2C ? ? ? 2C", 5, {0x71, 0x2E, 0x02, 0x01})
 
 local function format_int(number)
     local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
@@ -133,9 +139,10 @@ end
 
 local function teleport(coords)
     if (coords == nil or ((coords.x + coords.y + coords.z) == 0)) then -- Sanity check to make sure we don't send the user to the void if a function fails
+        gui.show_error("Daily Collectibles", "Failed to teleport. Coordinates are not valid.")
         return
     end
-    PED.SET_PED_COORDS_KEEP_VEHICLE(PLAYER.PLAYER_PED_ID(), coords.x, coords.y, coords.z)
+    PED.SET_PED_COORDS_KEEP_VEHICLE(self.get_ped(), coords.x, coords.y, coords.z)
 end
 
 local function has_bit_set(address, pos)
@@ -143,6 +150,9 @@ local function has_bit_set(address, pos)
 end
 
 local function get_collectable_coords(collectable_type, collectable_index)
+    if not script.is_active("freemode") then
+        return nil
+    end
     local coords = scr_function.call_script_function("freemode", GDCC, "vector3", {
         { "int", collectable_type },
         { "int", collectable_index }
@@ -151,96 +161,91 @@ local function get_collectable_coords(collectable_type, collectable_index)
 end
 
 local function set_collectable_collected(collectable_type, collectable_index)
-    script.run_in_fiber(function()
-        scr_function.call_script_function("freemode", "SCC", "2D 05 33 00 00", "void", {
-            { "int", collectable_type },
-            { "int", collectable_index },
-            { "bool", true },  -- Set Collected
-            { "bool", true },  -- Print Help Message
-            { "bool", false }  -- Disable Trick or Treat Effects
-        })
-    end)
+    if not script.is_active("freemode") then
+        return
+    end
+    scr_function.call_script_function("freemode", "SCC", "2D 05 33 00 00", "void", {
+        { "int", collectable_type },
+        { "int", collectable_index },
+        { "bool", true },  -- Set Collected
+        { "bool", true },  -- Print Help Message
+        { "bool", false }  -- Disable Trick or Treat Effects
+    })
 end
 
 local function set_daily_collectable_state(state)
-    script.run_in_fiber(function()
-        stats.set_packed_stat_bool(36628, state) -- G's Cache
-        stats.set_packed_stat_bool(36657, state) -- Stash House
-        stats.set_packed_stat_bool(31734, state) -- Shipwreck
-        stats.set_packed_stat_bool(30297, state) -- Hidden Cache 1
-        stats.set_packed_stat_bool(30298, state) -- Hidden Cache 2
-        stats.set_packed_stat_bool(30299, state) -- Hidden Cache 3
-        stats.set_packed_stat_bool(30300, state) -- Hidden Cache 4
-        stats.set_packed_stat_bool(30301, state) -- Hidden Cache 5
-        stats.set_packed_stat_bool(30302, state) -- Hidden Cache 6
-        stats.set_packed_stat_bool(30303, state) -- Hidden Cache 7
-        stats.set_packed_stat_bool(30304, state) -- Hidden Cache 8
-        stats.set_packed_stat_bool(30305, state) -- Hidden Cache 9
-        stats.set_packed_stat_bool(30306, state) -- Hidden Cache 10
-        stats.set_packed_stat_bool(30307, state) -- Treasure Chest 1
-        stats.set_packed_stat_bool(30308, state) -- Treasure Chest 2
-        stats.set_packed_stat_bool(25522, state) -- Buried Stash 1
-        stats.set_packed_stat_bool(25523, state) -- Buried Stash 2
-        stats.set_packed_stat_bool(42252, state) -- LS Tag 1
-        stats.set_packed_stat_bool(42253, state) -- LS Tag 2
-        stats.set_packed_stat_bool(42254, state) -- LS Tag 3
-        stats.set_packed_stat_bool(42255, state) -- LS Tag 4
-        stats.set_packed_stat_bool(42256, state) -- LS Tag 5
-        stats.set_packed_stat_bool(42269, state) -- Madrazo Hit
-        -- Next-gen exclusive, but the packed stats and the interaction menu functionality is available on PC
-        stats.set_packed_stat_bool(42059, state) -- Shoot Animals Photography 1
-        stats.set_packed_stat_bool(42060, state) -- Shoot Animals Photography 2
-        stats.set_packed_stat_bool(42061, state) -- Shoot Animals Photography 3
-        for skydive_index = 0, 9 do
-            -- See the getter of script event 1916113629, another stupid R* thing
-            stats.set_packed_stat_int((34837 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Checkpoint
-            stats.set_packed_stat_int((34839 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Accurate Landing
-            stats.set_packed_stat_int((34838 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Partime
-            stats.set_packed_stat_int((34840 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Gold
-        end
-        for lantern_index = 34252, 34261 do
-            stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
-        end
-        for lantern_index = 34512, 34701 do
-            stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
-        end
-        stats.set_int("MPPLY_TIMETRIAL_COMPLETED_WEEK", state and trial_loc[1] or -1) -- Standard Time Trial
-        stats.set_int("MPPLY_RCTTCOMPLETEDWEEK", state and trial_loc[2] or -1) -- RC Bandito Time Trial
-        stats.set_int("MPPLY_BTTCOMPLETED", state and trial_loc[3] or -1) -- Junk Energy Bike Time Trial
-        stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
-        stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports
-    end)
+    stats.set_packed_stat_bool(36628, state) -- G's Cache
+    stats.set_packed_stat_bool(36657, state) -- Stash House
+    stats.set_packed_stat_bool(31734, state) -- Shipwreck
+    stats.set_packed_stat_bool(30297, state) -- Hidden Cache 1
+    stats.set_packed_stat_bool(30298, state) -- Hidden Cache 2
+    stats.set_packed_stat_bool(30299, state) -- Hidden Cache 3
+    stats.set_packed_stat_bool(30300, state) -- Hidden Cache 4
+    stats.set_packed_stat_bool(30301, state) -- Hidden Cache 5
+    stats.set_packed_stat_bool(30302, state) -- Hidden Cache 6
+    stats.set_packed_stat_bool(30303, state) -- Hidden Cache 7
+    stats.set_packed_stat_bool(30304, state) -- Hidden Cache 8
+    stats.set_packed_stat_bool(30305, state) -- Hidden Cache 9
+    stats.set_packed_stat_bool(30306, state) -- Hidden Cache 10
+    stats.set_packed_stat_bool(30307, state) -- Treasure Chest 1
+    stats.set_packed_stat_bool(30308, state) -- Treasure Chest 2
+    stats.set_packed_stat_bool(25522, state) -- Buried Stash 1
+    stats.set_packed_stat_bool(25523, state) -- Buried Stash 2
+    stats.set_packed_stat_bool(42252, state) -- LS Tag 1
+    stats.set_packed_stat_bool(42253, state) -- LS Tag 2
+    stats.set_packed_stat_bool(42254, state) -- LS Tag 3
+    stats.set_packed_stat_bool(42255, state) -- LS Tag 4
+    stats.set_packed_stat_bool(42256, state) -- LS Tag 5
+    stats.set_packed_stat_bool(42269, state) -- Madrazo Hit
+    -- Next-gen exclusive, but the packed stats and the interaction menu functionality are available on PC
+    stats.set_packed_stat_bool(42059, state) -- Shoot Animals Photography 1
+    stats.set_packed_stat_bool(42060, state) -- Shoot Animals Photography 2
+    stats.set_packed_stat_bool(42061, state) -- Shoot Animals Photography 3
+    for skydive_index = 0, 9 do
+        -- See the getter of script event 1916113629, another stupid R* thing
+        stats.set_packed_stat_int((34837 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Checkpoint
+        stats.set_packed_stat_int((34839 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Accurate Landing
+        stats.set_packed_stat_int((34838 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Partime
+        stats.set_packed_stat_int((34840 + skydive_index * 4), state and junk_skydive_loc[skydive_index + 1] or -1) -- Junk Energy Skydives Gold
+    end
+    for lantern_index = 34252, 34261 do
+        stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+    end
+    for lantern_index = 34512, 34701 do
+        stats.set_packed_stat_bool(lantern_index, state) -- Trick or Treat
+    end
+    stats.set_int("MPPLY_TIMETRIAL_COMPLETED_WEEK", state and trial_loc[1] or -1) -- Standard Time Trial
+    stats.set_int("MPPLY_RCTTCOMPLETEDWEEK", state and trial_loc[2] or -1) -- RC Bandito Time Trial
+    stats.set_int("MPPLY_BTTCOMPLETED", state and trial_loc[3] or -1) -- Junk Energy Bike Time Trial
+    stats.set_int("MPX_CBV_DELIVERED_BS", state and 1023 or 0) -- Exotic Exports
+    stats.set_int("MPX_CBV_STATE", state and 1 or 0) -- Exotic Exports
 end
 
-local function spawn_vehicle(vehicle_joaat)
-    script.run_in_fiber(function(script)
-        local load_counter = 0
-        while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
-            STREAMING.REQUEST_MODEL(vehicle_joaat)
-            script:yield()
-            if load_counter > 100 then
-                return
-            else
-                load_counter = load_counter + 1
-            end
+local function spawn_vehicle(vehicle_joaat, scr)
+    local load_counter = 0
+    while not STREAMING.HAS_MODEL_LOADED(vehicle_joaat) do
+        STREAMING.REQUEST_MODEL(vehicle_joaat)
+        scr:yield()
+        if load_counter > 100 then
+            return
+        else
+            load_counter = load_counter + 1
         end
-        local location = ENTITY.GET_ENTITY_COORDS(self.get_ped(), false)
-        local veh = VEHICLE.CREATE_VEHICLE(vehicle_joaat, location.x, location.y, location.z, ENTITY.GET_ENTITY_HEADING(self.get_ped()), true, false, false)
-        STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
-        DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
-        local network_id = NETWORK.VEH_TO_NET(veh)
-        if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
-            NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(network_id, true)
-        end
-        VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
-        PED.SET_PED_INTO_VEHICLE(self.get_ped(), veh, -1)
-        ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
-    end)
+    end
+    local veh = VEHICLE.CREATE_VEHICLE(vehicle_joaat, self.get_pos().x, self.get_pos().y, self.get_pos().z, ENTITY.GET_ENTITY_HEADING(self.get_ped()), true, false, false)
+    STREAMING.SET_MODEL_AS_NO_LONGER_NEEDED(vehicle_joaat)
+    DECORATOR.DECOR_SET_INT(veh, "MPBitset", 0)
+    if NETWORK.NETWORK_GET_ENTITY_IS_NETWORKED(veh) then
+        NETWORK.SET_NETWORK_ID_EXISTS_ON_ALL_MACHINES(NETWORK.VEH_TO_NET(veh), true)
+    end
+    VEHICLE.SET_VEHICLE_IS_STOLEN(veh, false)
+    PED.SET_PED_INTO_VEHICLE(self.get_ped(), veh, -1)
+    ENTITY.SET_ENTITY_AS_NO_LONGER_NEEDED(veh)
 end
 
 local function get_safe_code()
     if not script.is_active("fm_content_stash_house") then
-        return "unavailable"
+        return "N/A"
     else
         local safe_codes = {
             [0] = "05-02-91",
@@ -260,18 +265,32 @@ local function get_safe_code()
 end
 
 local function get_vehicle_name(index, return_joaat)
-    local offset = globals.get_int(global_one + index) + 1
+    local offset        = globals.get_int(global_one + index) + 1
     local vehicle_joaat = globals.get_uint(global_two + offset)
-    if return_joaat == true then
+    if return_joaat then
         return vehicle_joaat
     else
-        return vehicles.get_vehicle_display_name(vehicle_joaat)
+        local display_name = vehicles.get_vehicle_display_name(vehicle_joaat)
+        return display_name ~= "" and display_name or "N/A"
     end
+end
+
+local function get_next_vehicle_hash()
+    local hash = 0
+    for i = 1, 10 do
+        if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
+            hash = get_vehicle_name(i, true)
+            break
+        end
+    end
+    return hash
 end
 
 event.register_handler(menu_event.ScriptsReloaded, function()
     treasure_chest_patch:disable_patch()
     buried_stash_patch:disable_patch()
+    exotic_exports_patch1:disable_patch()
+    exotic_exports_patch2:disable_patch()
 end)
 
 script.register_looped("Daily Collectibles", function()
@@ -297,7 +316,6 @@ script.register_looped("Daily Collectibles", function()
     acid_unit[3]                = globals.get_int(global_three + global_three_offset_one + 1 + (2 * 7) + 5) -- MPX_STREET_DEALER_2_ACID_PRICE
     active_vehicle              = globals.get_uint(global_three + global_three_offset_two + 3)
     exotic_order_cooldown       = globals.get_int(global_five + global_five_offset)
-    vehicle_coords              = globals.get_vec3(global_four + 1 + (1 + (3 * 15)) + 10)
     trial_loc[1]                = locals.get_int("freemode", freemode_local_one + 11)
     trial_loc[2]                = locals.get_int("freemode", freemode_local_two)
     trial_loc[3]                = locals.get_int("freemode", freemode_local_three + 3)
@@ -376,7 +394,7 @@ script.register_looped("Daily Collectibles", function()
             locals.set_int("fm_content_skydive", skydive_local_two + (1 + (self.get_id() * 51)) + 43 + 1, skydive_bs)
         end
     end
-    if pause_timer then
+    if not trial_beaten[3] and pause_timer then
         if script.is_active("fm_content_bicycle_time_trial") then
             locals.set_int("fm_content_bicycle_time_trial", fm_content_shared_local + 3, NETWORK.GET_NETWORK_TIME())
         end
@@ -395,13 +413,17 @@ daily_collectibles_tab:add_imgui(function()
     ImGui.Text(string.format("Daily Reset Time (6 AM UTC): %02d:%02d:%02d", hours, minutes, seconds))
     
     if ImGui.Button("Reset All Daily Collectibles") then
-        set_daily_collectable_state(false)
-        gui.show_message("Daily Collectibles", "All Daily Collectibles have been reset.")
+        script.run_in_fiber(function()
+            set_daily_collectable_state(false)
+            gui.show_message("Daily Collectibles", "All Daily Collectibles have been reset.")
+        end)
     end
     
     if ImGui.Button("Complete All Daily Collectibles") then
-        set_daily_collectable_state(true)
-        gui.show_message("Daily Collectibles", "All Daily Collectibles have been completed.")
+        script.run_in_fiber(function()
+            set_daily_collectable_state(true)
+            gui.show_message("Daily Collectibles", "All Daily Collectibles have been completed.")
+        end)
     end
     
     ImGui.Text("Switch session to apply the changes.")
@@ -409,7 +431,7 @@ end)
 
 challenges_tab:add_imgui(function()
     if ImGui.TreeNode("Daily Challenges") then
-        if daily_obj[1] or daily_obj[2] or daily_obj[3] then
+        if daily_obj[1] > -1 or daily_obj[2] > -1 or daily_obj[3] > -1 then
             ImGui.Text(daily_obj_str[1])
             ImGui.Text(daily_obj_str[2])
             ImGui.Text(daily_obj_str[3])
@@ -425,12 +447,12 @@ challenges_tab:add_imgui(function()
     end
     
     if ImGui.Button("Complete all Challenges") then
-        for i = 0, 2 do -- Unlock all daily rewards
+        for i = 0, 2 do -- Unlock all Daily Challenges
             local objective = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (i * 3)))
             globals.set_int(objectives_state_global + 1 + (1 + (i * 1)), objective)
         end
         globals.set_int(objectives_state_global, 1)
-        globals.set_int(weekly_objectives_global + (1 + (0 * 6)) + 1, globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 2)) -- Unlock Weekly Objective
+        globals.set_int(weekly_objectives_global + (1 + (0 * 6)) + 1, globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 2)) -- Unlock Weekly Challenge
     end
 end)
 
@@ -440,23 +462,26 @@ hidden_cache_tab:add_imgui(function()
     selected_cache = ImGui.Combo("Select Cache", selected_cache, { "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" }, 10)
     
     if ImGui.Button("Teleport") then
-        if not hidden_cache_collected[selected_cache + 1] then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_HIDDEN_CACHES, selected_cache) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Hidden Cache has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not hidden_cache_collected[selected_cache + 1] then
+                local coords = get_collectable_coords(COLLECTABLE_HIDDEN_CACHES, selected_cache)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "Hidden Cache has already been collected.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Collect") then
-        if not hidden_cache_collected[selected_cache + 1] then
-            set_collectable_collected(COLLECTABLE_HIDDEN_CACHES, selected_cache)
-        else
-            gui.show_error("Daily Collectibles", "Hidden Cache has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not hidden_cache_collected[selected_cache + 1] then
+                set_collectable_collected(COLLECTABLE_HIDDEN_CACHES, selected_cache)
+            else
+                gui.show_error("Daily Collectibles", "Hidden Cache has already been collected.")
+            end
+        end)
     end
 end)
 
@@ -466,25 +491,28 @@ treasure_chest_tab:add_imgui(function()
     selected_treasure = ImGui.Combo("Select Treasure", selected_treasure, { "1", "2" }, 2)
     
     if ImGui.Button("Teleport") then
-        if not treasure_chest_collected[selected_treasure + 1] then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_TREASURE_CHESTS, selected_treasure) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Treasure Chest has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not treasure_chest_collected[selected_treasure + 1] then
+                local coords = get_collectable_coords(COLLECTABLE_TREASURE_CHESTS, selected_treasure)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "Treasure Chest has already been collected.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Collect") then
-        if not treasure_chest_collected[selected_treasure + 1] then
-            set_collectable_collected(COLLECTABLE_TREASURE_CHESTS, selected_treasure)
-        else
-            gui.show_error("Daily Collectibles", "Treasure Chest has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not treasure_chest_collected[selected_treasure + 1] then
+                set_collectable_collected(COLLECTABLE_TREASURE_CHESTS, selected_treasure)
+            else
+                gui.show_error("Daily Collectibles", "Treasure Chest has already been collected.")
+            end
+        end)
     end
-	
+    
     ImGui.Text("Enable Cayo Perico from Self -> Teleport to not fall into the water.")
 end)
 
@@ -492,23 +520,26 @@ shipwrecked_tab:add_imgui(function()
     ImGui.Text("Status: " .. (shipwrecked_collected and "collected" or "ready"))
     
     if ImGui.Button("Teleport") then
-        if not shipwrecked_collected then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_SHIPWRECKED, 0) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Shipwreck has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not shipwrecked_collected then
+                local coords = get_collectable_coords(COLLECTABLE_SHIPWRECKED, 0)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "Shipwreck has already been collected.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Collect") then
-        if not shipwrecked_collected then
-            set_collectable_collected(COLLECTABLE_SHIPWRECKED, 0)
-        else
-            gui.show_error("Daily Collectibles", "Shipwreck has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not shipwrecked_collected then
+                set_collectable_collected(COLLECTABLE_SHIPWRECKED, 0)
+            else
+                gui.show_error("Daily Collectibles", "Shipwreck has already been collected.")
+            end
+        end)
     end
 end)
 
@@ -518,25 +549,28 @@ buried_stash_tab:add_imgui(function()
     selected_stash = ImGui.Combo("Select Stash", selected_stash, { "1", "2" }, 2)
     
     if ImGui.Button("Teleport") then
-        if not buried_stash_collected[selected_stash + 1] then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_BURIED_STASH, selected_stash) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Buried Stash has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not buried_stash_collected[selected_stash + 1] then
+                local coords = get_collectable_coords(COLLECTABLE_BURIED_STASH, selected_stash)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "Buried Stash has already been collected.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Collect") then
-        if not buried_stash_collected[selected_stash + 1] then
-            set_collectable_collected(COLLECTABLE_BURIED_STASH, selected_stash)
-        else
-            gui.show_error("Daily Collectibles", "Buried Stash has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not buried_stash_collected[selected_stash + 1] then
+                set_collectable_collected(COLLECTABLE_BURIED_STASH, selected_stash)
+            else
+                gui.show_error("Daily Collectibles", "Buried Stash has already been collected.")
+            end
+        end)
     end
-	
+    
     ImGui.Text("Enable Cayo Perico from Self -> Teleport to not fall into the water.")
 end)
 
@@ -545,12 +579,13 @@ junk_skydive_tab:add_imgui(function()
     
     if ImGui.Button("Teleport") then
         script.run_in_fiber(function()
-            teleport(get_collectable_coords(COLLECTABLE_SKYDIVES, selected_skydive) or vec3:new(0, 0, 0))
+            local coords = get_collectable_coords(COLLECTABLE_SKYDIVES, selected_skydive)
+            teleport(coords)
         end)
     end
-	
+    
     ImGui.SameLine()
-	
+    
     always_gold_medal = ImGui.Checkbox("Always Gold Medal", always_gold_medal)
 end)
 
@@ -560,11 +595,34 @@ time_trials_tab:add_imgui(function()
     if ImGui.Button("Teleport") then
         script.run_in_fiber(function()
             if selected_trial == 0 then
-                teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(430)))
+                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(430)) then
+                    local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(430))
+                    teleport(coords)
+                else
+                    gui.show_error("Daily Collectibles", "Please enable Interaction Menu -> Preferences -> Map Blip Options -> Activities -> Time Trial.")
+                end
             elseif selected_trial == 1 then
-                teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(673)))
+                if not trial_beaten[2] then
+                    if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(673)) then
+                        local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(673))
+                        teleport(coords)
+                    else
+                        gui.show_error("Daily Collectibles", "Please enable Interaction Menu -> Preferences -> Map Blip Options -> Activities -> RC Bandito Time Trial.")
+                    end
+                else
+                    gui.show_error("Daily Collectibles", "Time Trial has already been beaten.")
+                end
             elseif selected_trial == 2 then
-                teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(860)))
+                if not trial_beaten[3] then
+                    if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(860)) then
+                        local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(860))
+                        teleport(coords)
+                    else
+                        gui.show_error("Daily Collectibles", "Please enable Interaction Menu -> Preferences -> Map Blip Options -> Activities -> Junk Energy Time Trial.")
+                    end
+                else
+                    gui.show_error("Daily Collectibles", "Time Trial has already been beaten.")
+                end
             end
         end)
     end
@@ -575,11 +633,15 @@ time_trials_tab:add_imgui(function()
         if ImGui.Button("Beat Trial") then
             script.run_in_fiber(function()
                 if not trial_beaten[1] then
-                    locals.set_int("freemode", freemode_local_one + 13, NETWORK.GET_NETWORK_TIME())
-                    local tt_struct = locals.get_pointer("freemode", freemode_local_one)
-                    scr_function.call_script_function("freemode", "PTTE", "2D 01 19 00 00 38", "void", {
-                        { "ptr", tt_struct }
-                    })
+                    if script.is_active("freemode") then
+                        locals.set_int("freemode", freemode_local_one + 13, NETWORK.GET_NETWORK_TIME())
+                        local tt_struct = locals.get_pointer("freemode", freemode_local_one)
+                        scr_function.call_script_function("freemode", "PTTE", "2D 01 19 00 00 38", "void", {
+                            { "ptr", tt_struct }
+                        })
+                    end
+                else
+                    gui.show_error("Daily Collectibles", "Time Trial has already been beaten.")
                 end
             end)
         end
@@ -587,20 +649,20 @@ time_trials_tab:add_imgui(function()
         if ImGui.Button("Beat Trial") then
             script.run_in_fiber(function()
                 if not trial_beaten[2] then
-                    locals.set_int("freemode", freemode_local_two + 6, NETWORK.GET_NETWORK_TIME())
-                    local rctt_struct = locals.get_pointer("freemode", freemode_local_two)
-                    scr_function.call_script_function("freemode", "PRCTTE", "2D 01 17 00 00 38 00 40", "void", {
-                        { "ptr", rctt_struct }
-                    })
+                    if script.is_active("freemode") then
+                        locals.set_int("freemode", freemode_local_two + 6, NETWORK.GET_NETWORK_TIME())
+                        local rctt_struct = locals.get_pointer("freemode", freemode_local_two)
+                        scr_function.call_script_function("freemode", "PRCTTE", "2D 01 17 00 00 38 00 40", "void", {
+                            { "ptr", rctt_struct }
+                        })
+                    end
+                else
+                    gui.show_error("Daily Collectibles", "Time Trial has already been beaten.")
                 end
             end)
         end
     elseif selected_trial == 2 then
-        if not trial_beaten[3] then
-            pause_timer = ImGui.Checkbox("Pause Timer", pause_timer)
-        else
-            pause_timer = false
-        end
+        pause_timer = ImGui.Checkbox("Pause Timer", pause_timer)
     end
 end)
 
@@ -608,98 +670,99 @@ exotic_exports_tab:add_imgui(function()
     ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
     
     if ImGui.Button("Teleport to Vehicle") then
-        if vehicle_bitset ~= 1023 then
-            if vehicle_coords then
-                script.run_in_fiber(function()
-                    teleport(vehicle_coords)
-                end)
+        script.run_in_fiber(function()
+            if vehicle_bitset ~= 1023 then
+                local is_available = globals.get_int(global_four + 1 + (1 + (3 * 15))) >= 1
+                if is_available then
+                    local coords = globals.get_vec3(global_four + 1 + (1 + (3 * 15)) + 10)
+                    teleport(coords)
+                else
+                    gui.show_error("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
+                end
             else
-                gui.show_error("Daily Collectibles", "Please wait until the next vehicle is spawned (90 seconds).")
+                gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
             end
-        else
-            gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
-        end
+        end)
     end
     
     if ImGui.Button("Teleport to Docks") then
-        if vehicle_bitset ~= 1023 then
-            if not exotic_reward_ready then
-                gui.show_error("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
-            else
-                script.run_in_fiber(function()
-                    if PLAYER.GET_PLAYER_WANTED_LEVEL(self.get_id()) ~= 0 then
-                        gui.show_error("Daily Collectibles", "Lose your wanted level.")
-                    elseif HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
-                        teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780)))
+        script.run_in_fiber(function()
+            if vehicle_bitset ~= 1023 then
+                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(780)) then
+                    if exotic_reward_ready then
+                        local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(780))
+                        teleport(coords)
                     else
-                        gui.show_error("Daily Collectibles", "Please get in an Exotic Exports Vehicle.")
+                        gui.show_error("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
                     end
-                end)
+                else
+                    gui.show_error("Daily Collectibles", "Please get in an Exotic Exports Vehicle or enable Interaction Menu -> Preferences -> Map Blip Options -> Rival Gameplay -> Auto Shop Businesses.")
+                end
+            else
+                gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
             end
-        else
-            gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
-        end
+        end)
     end
     
     if ImGui.Button("Spawn Next Vehicle") then
-        if vehicle_bitset ~= 1023 then
-            for i = 1, 10 do
-                if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
-                    spawn_vehicle(get_vehicle_name(i, true))
-                    break
-                end
+        script.run_in_fiber(function(script)
+            if vehicle_bitset ~= 1023 then
+                local next_veh = get_next_vehicle_hash()
+                spawn_vehicle(next_veh, script)
+            else
+                gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
             end
-        else
-            gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
-        end
+        end)
     end
-	
-    if ImGui.Button("Deliver Vehicle") then
-        if vehicle_bitset ~= 1023 then
-            script.run_in_fiber(function()
-                local next_veh = 0
-                for i = 1, 10 do
-                    if not has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
-                        next_veh = get_vehicle_name(i, true)
-                        break
+    
+    if ImGui.Button("Deliver Next Vehicle") then
+        script.run_in_fiber(function()
+            if vehicle_bitset ~= 1023 then
+                if exotic_reward_ready then
+                    if script.is_active("freemode") then
+                        local next_veh = get_next_vehicle_hash()
+                        scr_function.call_script_function("freemode", "PDE", "2D 0C 2A 00 00", "void", {
+                            { "int", 0 },
+                            { "int", self.get_id() },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", 0 },
+                            { "int", next_veh },
+                            { "int", 273 }
+                        })
+                        globals.set_int(global_five + global_five_offset, NETWORK.GET_NETWORK_TIME())
                     end
-                end              
-                tunables.set_bool("ENABLE_FM_DELIVERY_CHALK_AUTO_CLEANUP_DELIVERED", false)            
-                scr_function.call_script_function("freemode", "PDE", "2D 0C 2A 00 00", "void", {
-                    { "int", 0 },
-                    { "int", self.get_id() },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", 0 },
-                    { "int", next_veh },
-                    { "int", 273 }
-                })
-                tunables.set_bool("ENABLE_FM_DELIVERY_CHALK_AUTO_CLEANUP_DELIVERED", true)
-            end)
-        else
-            gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
-        end
+                else
+                    gui.show_error("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
+                end
+            else
+                gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
+            end
+        end)
     end
     
     ImGui.Text("Today's List:")
     
     for i = 1, 10 do
-        if active_vehicle == get_vehicle_name(i, true) then
+        local veh_hash  = get_vehicle_name(i, true)
+        local veh_name  = get_vehicle_name(i, false)
+        local veh_index = globals.get_int(global_one + i)
+        if active_vehicle == veh_hash then
             ImGui.Text(i .. " -")
             ImGui.SameLine()
-            ImGui.TextColored(0.5, 0.5, 1, 1, get_vehicle_name(i, false) .. " (Active)")
+            ImGui.TextColored(0.5, 0.5, 1, 1, veh_name .. " (Active)")
         else
-            if has_bit_set(vehicle_bitset, globals.get_int(global_one + i)) then
+            if has_bit_set(vehicle_bitset, veh_index) then
                 ImGui.Text(i .. " -")
                 ImGui.SameLine()
-                ImGui.TextColored(0, 1, 0, 1, get_vehicle_name(i, false) .. " (Delivered)")
+                ImGui.TextColored(0, 1, 0, 1, veh_name .. " (Delivered)")
             else
-                ImGui.Text(i .. " - " .. get_vehicle_name(i, false))
+                ImGui.Text(i .. " - " .. veh_name)
             end
         end
     end
@@ -709,50 +772,57 @@ dead_drop_tab:add_imgui(function()
     ImGui.Text("Status: " .. (dead_drop_collected and "collected" or "ready"))
     
     if ImGui.Button("Teleport") then
-        if not dead_drop_collected then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_DEAD_DROP, 0) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "G's Cache has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not dead_drop_collected then
+                local coords = get_collectable_coords(COLLECTABLE_DEAD_DROP, 0)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "G's Cache has already been collected.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Collect") then
-        if not dead_drop_collected then
-            set_collectable_collected(COLLECTABLE_DEAD_DROP, 0)
-        else
-            gui.show_error("Daily Collectibles", "G's Cache has already been collected.")
-        end
+        script.run_in_fiber(function()
+            if not dead_drop_collected then
+                set_collectable_collected(COLLECTABLE_DEAD_DROP, 0)
+            else
+                gui.show_error("Daily Collectibles", "G's Cache has already been collected.")
+            end
+        end)
     end
 end)
 
 stash_house_tab:add_imgui(function()
-    if not stash_house_raided then
-        ImGui.Text("Safe Code: " .. (safe_code ~= nil and safe_code or "unavailable"))
-    end
     ImGui.Text("Status: " .. (stash_house_raided and "raided" or "ready"))
     
+    if not stash_house_raided then
+        ImGui.Text("Safe Code: " .. (safe_code ~= nil and safe_code or "N/A"))
+    end
+    
     if ImGui.Button("Teleport") then
-        if not stash_house_raided then
-            script.run_in_fiber(function()
-                if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(845)) then
-                    teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845)))
-                end
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Stash House has already been raided.")
-        end
+        script.run_in_fiber(function()
+            if not stash_house_raided then
+                local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(845))
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "Stash House has already been raided.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Enter Safe Combination") then
-        for i = 0, 2 do
-            local safe_combination = locals.get_int("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)) + 1)
-            locals.set_float("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)), safe_combination)
+        if script.is_active("fm_content_stash_house") then
+            for i = 0, 2 do
+                local safe_combination = locals.get_int("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)) + 1)
+                locals.set_float("fm_content_stash_house", fm_content_shared_local + 22 + (1 + (i * 2)), safe_combination)
+            end
+        else
+            gui.show_error("Daily Collectibles", "You must be in a Stash House.")
         end
     end
 end)
@@ -762,10 +832,13 @@ street_dealer_tab:add_imgui(function()
     
     if ImGui.Button("Teleport") then
         script.run_in_fiber(function()
-            local coords = scr_function.call_script_function("freemode", GSDC, "vector3", {
-                { "int", dealer_loc[selected_dealer + 1] }
-            })
-            teleport(coords or vec3:new(0, 0, 0))
+            local coords = nil
+            if script.is_active("freemode") then
+                coords = scr_function.call_script_function("freemode", GSDC, "vector3", {
+                    { "int", dealer_loc[selected_dealer + 1] }
+                })
+            end
+            teleport(coords)
         end)
     end
     
@@ -782,8 +855,8 @@ end)
 
 ls_tags_tab:add_imgui(function()
     ImGui.Text("Status: " .. (ls_tag_sprayed[selected_tag + 1] and "sprayed" or "ready"))
-    ImGui.Text("Spray Can Collected: " .. (spray_can_collected and "Yes" or "No"))
     
+    ImGui.Text("Spray Can Collected: " .. (spray_can_collected and "Yes" or "No"))
     ImGui.SameLine()
     if ImGui.SmallButton("" .. (spray_can_collected and "Uncollect" or "Collect")) then
         script.run_in_fiber(function()
@@ -794,23 +867,26 @@ ls_tags_tab:add_imgui(function()
     selected_tag = ImGui.Combo("Select Tag", selected_tag, { "1", "2", "3", "4", "5" }, 5)
     
     if ImGui.Button("Teleport") then
-        if not ls_tag_sprayed[selected_tag + 1] then
-            script.run_in_fiber(function()
-                teleport(get_collectable_coords(COLLECTABLE_TAGGING, selected_tag) or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "LS Tag has already been sprayed.")
-        end
+        script.run_in_fiber(function()
+            if not ls_tag_sprayed[selected_tag + 1] then
+                local coords = get_collectable_coords(COLLECTABLE_TAGGING, selected_tag)
+                teleport(coords)
+            else
+                gui.show_error("Daily Collectibles", "LS Tag has already been sprayed.")
+            end
+        end)
     end
     
     ImGui.SameLine()
     
     if ImGui.Button("Spray") then
-        if not ls_tag_sprayed[selected_tag + 1] then
-            set_collectable_collected(COLLECTABLE_TAGGING, selected_tag)
-        else
-            gui.show_error("Daily Collectibles", "LS Tag has already been sprayed.")
-        end
+        script.run_in_fiber(function()
+            if not ls_tag_sprayed[selected_tag + 1] then
+                set_collectable_collected(COLLECTABLE_TAGGING, selected_tag)
+            else
+                gui.show_error("Daily Collectibles", "LS Tag has already been sprayed.")
+            end
+        end)
     end
 end)
 
@@ -818,33 +894,32 @@ madrazo_hits_tab:add_imgui(function()
     ImGui.Text("Status: " .. (hit_completed and "completed" or "ready"))
     
     if ImGui.Button("Teleport") then
-        if bail_office_owned then
+        script.run_in_fiber(function()
+            if bail_office_owned then
+                if not hit_completed then
+                    local coords = HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(886))
+                    teleport(coords)
+                else
+                    gui.show_error("Daily Collectibles", "Madrazo Hit has already been completed.")
+                end
+            else
+                gui.show_error("Daily Collectibles", "You must own a Bail Office.")
+            end
+        end)
+    end
+    
+    ImGui.SameLine()
+    
+    if ImGui.Button("Teleport to Target") then
+        script.run_in_fiber(function()
             if not hit_completed then
-                script.run_in_fiber(function()
-                    if HUD.DOES_BLIP_EXIST(HUD.GET_FIRST_BLIP_INFO_ID(886)) then
-                        teleport(HUD.GET_BLIP_COORDS(HUD.GET_FIRST_BLIP_INFO_ID(886)))
-                    end
-                end)
+                local coords = locals.get_vec3("fm_content_daily_bounty", daily_bounty_local_two + 419 + 1 + (1 + (0 * 4)))
+                teleport(coords)
             else
                 gui.show_error("Daily Collectibles", "Madrazo Hit has already been completed.")
             end
-        else
-            gui.show_error("Daily Collectibles", "You must own a Bail Office.")
-        end
+        end)
     end
-	
-    ImGui.SameLine()
-	
-    if ImGui.Button("Teleport to Target") then
-        if not hit_completed then
-            script.run_in_fiber(function()
-                local coords = locals.get_vec3("fm_content_daily_bounty", daily_bounty_local_two + 419 + 1 + (1 + (0 *4)))
-                teleport(coords or vec3:new(0, 0, 0))
-            end)
-        else
-            gui.show_error("Daily Collectibles", "Madrazo Hit has already been completed.")		
-        end
-    end
-	
+    
     weapon_of_choice = ImGui.Checkbox("Complete Weapon of Choice", weapon_of_choice)
 end)
