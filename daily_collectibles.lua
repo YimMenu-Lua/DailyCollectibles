@@ -19,7 +19,7 @@ local GSDC = 0x5AAAFE
 
 local global_one              = 1943205
 local global_two              = 1943194
-local global_three            = 2738934
+local global_three            = 2738935
 local global_three_offset_one = 6813
 local global_three_offset_two = 6898
 local global_four             = 1882247
@@ -28,7 +28,7 @@ local global_five_offset      = 5878
 
 local current_objectives_global        = 2359296
 local current_objectives_global_offset = 5570
-local weekly_objectives_global         = 2737992
+local weekly_objectives_global         = 2737993
 local objectives_state_global          = 1574744
 
 local freemode_local_one     = 14386
@@ -431,7 +431,7 @@ end)
 
 challenges_tab:add_imgui(function()
     if ImGui.TreeNode("Daily Challenges") then
-        if daily_obj[1] > -1 or daily_obj[2] > -1 or daily_obj[3] > -1 then
+        if daily_obj[1] or daily_obj[2] or daily_obj[3] then
             ImGui.Text(daily_obj_str[1])
             ImGui.Text(daily_obj_str[2])
             ImGui.Text(daily_obj_str[3])
@@ -707,8 +707,12 @@ exotic_exports_tab:add_imgui(function()
     if ImGui.Button("Spawn Next Vehicle") then
         script.run_in_fiber(function(script)
             if vehicle_bitset ~= 1023 then
-                local next_veh = get_next_vehicle_hash()
-                spawn_vehicle(next_veh, script)
+                if exotic_reward_ready then
+                    local next_veh = get_next_vehicle_hash()
+                    spawn_vehicle(next_veh, script)
+                else
+                    gui.show_error("Daily Collectibles", "You have just delivered a vehicle. Wait a moment.")
+                end
             else
                 gui.show_error("Daily Collectibles", "You have already delivered all the vehicles.")
             end
