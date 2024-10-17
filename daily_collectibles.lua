@@ -366,7 +366,7 @@ script.register_looped("Daily Collectibles", function()
     daily_obj_str[1]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[1])
     daily_obj_str[2]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[2])
     daily_obj_str[3]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[3])
-    weekly_obj_str              = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION((weekly_obj_id < 99 and "AMWO_OBJ_" or "AMWO_OBJ_TX_") .. weekly_obj_id)
+    weekly_obj_str              = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION((weekly_obj_id < 99 and "AMWO_OBJ_" .. weekly_obj_id or "AMWO_OBJ_TX_" .. (weekly_obj_id - 100)))
     weekly_obj_str              = string.gsub(weekly_obj_str, "~a~", "")
     weekly_obj_str              = string.gsub(weekly_obj_str, "~1~", weekly_obj_override)
     exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
