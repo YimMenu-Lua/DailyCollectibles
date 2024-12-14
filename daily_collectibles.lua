@@ -14,33 +14,37 @@ local street_dealer_tab  = daily_collectibles_tab:add_tab("Street Dealers")
 local ls_tags_tab        = daily_collectibles_tab:add_tab("LS Tags")
 local madrazo_hits_tab   = daily_collectibles_tab:add_tab("Madrazo Hits")
 
-local GDCC = 0xBED3F
-local GSDC = 0x5AAAFE
+local GDCC = 0xC1D44
+local GSDC = 0x5CEAA5
 
-local global_one              = 1943205
-local global_two              = 1943194
-local global_three            = 2738935
-local global_three_offset_one = 6813
-local global_three_offset_two = 6898
-local global_four             = 1882247
-local global_five             = 1949771
-local global_five_offset      = 5878
+local global_one              = 1943602
+local global_two              = 1943591
+local global_three            = 2739811
+local global_three_offset_one = 6852
+local global_three_offset_two = 6937
+local global_four             = 1882379
+local global_five             = 1950396
+local global_five_offset      = 6028
 
 local current_objectives_global        = 2359296
-local current_objectives_global_offset = 5570
-local weekly_objectives_global         = 2737993
+local current_objectives_global_size   = 5571
+local current_objectives_global_offset = 4245
+local weekly_objectives_global         = 2738865
 local objectives_state_global          = 1574744
 
-local freemode_local_one     = 14386
-local freemode_local_two     = 14436
-local freemode_local_three   = 15239
-local stash_house_local_one  = 3521
-local skydive_local_one      = 253
-local skydive_local_two      = 3194
-local daily_bounty_local_one = 2533
-local daily_bounty_local_two = 216
+local freemode_local_one            = 14486
+local freemode_local_two            = 14536
+local freemode_local_three          = 15339
+local stash_house_local_one         = 3602
+local stash_house_local_one_offset  = 528
+local skydive_local_one             = 274
+local skydive_local_two             = 3305
+local daily_bounty_local_one        = 2612
+local daily_bounty_local_one_offset = 373
+local daily_bounty_local_two        = 237
+local daily_bounty_local_two_offset = 434
 
-local fm_content_shared_local = 119
+local fm_content_shared_local = 140
 
 local selected_dealer    = 0
 local selected_cache     = 0
@@ -87,37 +91,39 @@ local weed_unit                = { 0, 0, 0 }
 local cocaine_unit             = { 0, 0, 0 }
 local acid_unit                = { 0, 0, 0 }
 
-local COLLECTABLE_MOVIE_PROPS      = 0
+--local COLLECTABLE_MOVIE_PROPS      = 0
 local COLLECTABLE_HIDDEN_CACHES    = 1
 local COLLECTABLE_TREASURE_CHESTS  = 2
-local COLLECTABLE_RADIO_STATIONS   = 3
-local COLLECTABLE_USB_PIRATE_RADIO = 4
+--local COLLECTABLE_RADIO_STATIONS   = 3
+--local COLLECTABLE_USB_PIRATE_RADIO = 4
 local COLLECTABLE_SHIPWRECKED      = 5
 local COLLECTABLE_BURIED_STASH     = 6
---local COLLECTABLE_METAL_DETECTOR = 7 unused (turned into random event)
-local COLLECTABLE_TRICK_OR_TREAT   = 8
-local COLLECTABLE_LD_ORGANICS      = 9
+--local COLLECTABLE_METAL_DETECTOR = 7 -- unused (turned into random event)
+--local COLLECTABLE_TRICK_OR_TREAT   = 8
+--local COLLECTABLE_LD_ORGANICS      = 9
 local COLLECTABLE_SKYDIVES         = 10
---local COLLECTABLE_SIGHTSEEING    = 11 unused (turned into random event)
---local COLLECTABLE_POLICE_BADGES  = 12 unused (CnC)
-local COLLECTABLE_GUN_PARTS        = 13 -- (crime scene random event, remnant from CnC)
+--local COLLECTABLE_SIGHTSEEING    = 11 -- unused (turned into random event)
+--local COLLECTABLE_POLICE_BADGES  = 12 -- unused (CnC)
+--local COLLECTABLE_GUN_PARTS        = 13 -- (crime scene random event, remnant from CnC)
 -- 14-15 unknown/doesn't exist
-local COLLECTABLE_SNOWMEN          = 16
+--local COLLECTABLE_SNOWMEN          = 16
 local COLLECTABLE_DEAD_DROP        = 17
 -- 18 unknown/doesn't exist
 local COLLECTABLE_TAGGING          = 19
+--local COLLECTABLE_TAGGING2         = 20 -- I don't know what the fuck this is
+--local COLLECTABLE_YUANBAO          = 21
 
 -- if (COLLECTABLES_TREASURE_CHESTS && IS_PLAYER_ON_CAYO_SCOPE_PREP(PLAYER::PLAYER_ID()))
 -- This patch replaces IAND with PUSH_CONST_1, so the result of IS_PLAYER_ON_CAYO_SCOPE_PREP is always considered true for this check.
 -- The condition will still fail if COLLECTABLES_TREASURE_CHESTS tunable is false (it doesn't matter because this is the behaviour we want).
-treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "5D A4 9C 22 1F", 4, {0x72})
+treasure_chest_patch = scr_patch:new("freemode", "BTCSC", "1F 56 ? ? 38 00 47 ? ? 73", 0, {0x72})
 
 -- This patch sets the value of bVar0 to true in the function used to check if buried stashes should spawn.
 -- Rockstar uses this variable to skip Cayo Perico checks in their debug builds, so we do exactly what they do.
 buried_stash_patch = scr_patch:new("freemode", "BBSSC", "71 39 02 38 02 06 56 ? ? 2C", 0, {0x72})
 
 -- This patch prevents freemode from disabling the docks blip and corona if player is wanted.
-exotic_exports_patch1 = scr_patch:new("freemode", "EXBWC1", "2C 05 06 11 71 09 39 2A", 0, {0x00, 0x00, 0x00, 0x00, 0x00, 0x71})
+exotic_exports_patch1 = scr_patch:new("freemode", "EXBWC1", "2C ? ? ? 71 09 39 2A", 0, {0x00, 0x00, 0x00, 0x00, 0x00, 0x71})
 
 -- This patch bypasses the wanted level restrictions in gb_delivery.
 -- It should not conflict with any other deliveries (hopefully).
@@ -170,6 +176,23 @@ local function set_collectable_collected(collectable_type, collectable_index)
         { "bool", true },  -- Set Collected
         { "bool", true },  -- Print Help Message
         { "bool", false }  -- Disable Trick or Treat Effects
+    })
+end
+
+local function deliver_exotic_exports_vehicle(vehicle_hash)
+    scr_function.call_script_function("freemode", "PDE", "2D 0C 2A 00 00", "void", {
+        { "int", 0 },
+        { "int", self.get_id() },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", 0 },
+        { "int", vehicle_hash },
+        { "int", 273 }
     })
 end
 
@@ -259,7 +282,7 @@ local function get_safe_code()
             [8] = "44-23-37",
             [9] = "72-68-83"
         }
-        local safe_code_index = locals.get_int("fm_content_stash_house", stash_house_local_one + 527 + 13)
+        local safe_code_index = locals.get_int("fm_content_stash_house", stash_house_local_one + stash_house_local_one_offset + 13)
         return safe_codes[safe_code_index]
     end
 end
@@ -294,9 +317,9 @@ event.register_handler(menu_event.ScriptsReloaded, function()
 end)
 
 script.register_looped("Daily Collectibles", function()
-    daily_obj[1]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (0 * 3)))
-    daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (1 * 3)))
-    daily_obj[3]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (2 * 3)))
+    daily_obj[1]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_size)) + 681 + current_objectives_global_offset + (1 + (0 * 3)))
+    daily_obj[2]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_size)) + 681 + current_objectives_global_offset + (1 + (1 * 3)))
+    daily_obj[3]                = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_size)) + 681 + current_objectives_global_offset + (1 + (2 * 3)))
     weekly_obj_id               = globals.get_int(weekly_objectives_global + (1 + (0 * 6)))
     weekly_obj_override         = globals.get_int(weekly_objectives_global + (1 + (0 * 6)) + 2)
     dealer_loc[1]               = globals.get_int(global_three + global_three_offset_one + 1 + (0 * 7))
@@ -366,10 +389,10 @@ script.register_looped("Daily Collectibles", function()
     daily_obj_str[1]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[1])
     daily_obj_str[2]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[2])
     daily_obj_str[3]            = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION("AMDO_OBJ_" .. daily_obj[3])
-    weekly_obj_str              = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION((weekly_obj_id < 99 and "AMWO_OBJ_" .. weekly_obj_id or "AMWO_OBJ_TX_" .. (weekly_obj_id - 100)))
+    weekly_obj_str              = HUD.GET_FILENAME_FOR_AUDIO_CONVERSATION((weekly_obj_id < 102 and "AMWO_OBJ_" .. weekly_obj_id or "AMWO_OBJ_TX_" .. (weekly_obj_id - 100)))
     weekly_obj_str              = string.gsub(weekly_obj_str, "~a~", "")
     weekly_obj_str              = string.gsub(weekly_obj_str, "~1~", weekly_obj_override)
-    exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000
+    exotic_reward_ready         = MISC.ABSI(NETWORK.GET_TIME_DIFFERENCE(NETWORK.GET_NETWORK_TIME(), exotic_order_cooldown)) >= 30000 or not NETSHOPPING.NET_GAMESERVER_USE_SERVER_TRANSACTIONS() -- Check for FSL
     total_products = (
         max_cocaine * cocaine_unit[selected_dealer + 1] +
         max_meth * meth_unit[selected_dealer + 1] +
@@ -401,8 +424,8 @@ script.register_looped("Daily Collectibles", function()
     end
     if weapon_of_choice then
         if script.is_active("fm_content_daily_bounty") then
-            local bonus_completed = locals.get_int("fm_content_daily_bounty", daily_bounty_local_one + 369 + 1) | (1 << 4)
-            locals.set_int("fm_content_daily_bounty", daily_bounty_local_one + 369 + 1, bonus_completed)
+            local bonus_completed = locals.get_int("fm_content_daily_bounty", daily_bounty_local_one + daily_bounty_local_one_offset + 1) | (1 << 4)
+            locals.set_int("fm_content_daily_bounty", daily_bounty_local_one + daily_bounty_local_one_offset + 1, bonus_completed)
         end
     end
 end)
@@ -448,7 +471,7 @@ challenges_tab:add_imgui(function()
     
     if ImGui.Button("Complete all Challenges") then
         for i = 0, 2 do -- Unlock all Daily Challenges
-            local objective = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_offset)) + 681 + 4244 + (1 + (i * 3)))
+            local objective = globals.get_int(current_objectives_global + (1 + (0 * current_objectives_global_size)) + 681 + current_objectives_global_offset + (1 + (i * 3)))
             globals.set_int(objectives_state_global + 1 + (1 + (i * 1)), objective)
         end
         globals.set_int(objectives_state_global, 1)
@@ -666,9 +689,7 @@ time_trials_tab:add_imgui(function()
     end
 end)
 
-exotic_exports_tab:add_imgui(function()
-    ImGui.Text("Reward Ready: " .. (exotic_reward_ready and "Yes" or "No"))
-    
+exotic_exports_tab:add_imgui(function()    
     if ImGui.Button("Teleport to Vehicle") then
         script.run_in_fiber(function()
             if vehicle_bitset ~= 1023 then
@@ -725,20 +746,7 @@ exotic_exports_tab:add_imgui(function()
                 if exotic_reward_ready then
                     if script.is_active("freemode") then
                         local next_veh = get_next_vehicle_hash()
-                        scr_function.call_script_function("freemode", "PDE", "2D 0C 2A 00 00", "void", {
-                            { "int", 0 },
-                            { "int", self.get_id() },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", 0 },
-                            { "int", next_veh },
-                            { "int", 273 }
-                        })
+                        deliver_exotic_exports_vehicle(next_veh)
                         globals.set_int(global_five + global_five_offset, NETWORK.GET_NETWORK_TIME())
                     end
                 else
@@ -917,7 +925,7 @@ madrazo_hits_tab:add_imgui(function()
     if ImGui.Button("Teleport to Target") then
         script.run_in_fiber(function()
             if not hit_completed then
-                local coords = locals.get_vec3("fm_content_daily_bounty", daily_bounty_local_two + 419 + 1 + (1 + (0 * 4)))
+                local coords = locals.get_vec3("fm_content_daily_bounty", daily_bounty_local_two + daily_bounty_local_two_offset + 1 + (1 + (0 * 4)))
                 teleport(coords)
             else
                 gui.show_error("Daily Collectibles", "Madrazo Hit has already been completed.")
